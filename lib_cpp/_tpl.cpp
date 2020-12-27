@@ -20,8 +20,14 @@ using vvpll = vector<vector<pll>>;
 #define pb push_back
 #define tostr to_string
 #define ALL(A) A.begin(), A.end()
-constexpr ll INF = LONG_LONG_MAX;
+// constexpr ll INF = LONG_LONG_MAX;
+constexpr ll INF = 1e18;
 constexpr ll MOD = 1000000007;
+
+const string digits = "0123456789";
+const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string ascii_letters = ascii_lowercase + ascii_uppercase;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { vector<vector<T>> res(N, vector<T>(M, init)); return res; }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { vector<vector<vector<T>>> res(N, vector<vector<T>>(M, vector<T>(L, init))); return res; }
@@ -59,6 +65,9 @@ ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (re
 
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
+
+template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
+template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 
 int main() {
     cin.tie(0);

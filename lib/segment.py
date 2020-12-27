@@ -141,8 +141,10 @@ class BIT:
 
     def print(self):
         for i in range(self.n):
-            print(self.get(i), end=' ')
-        print()
+            if i == self.n-1:
+                print(self.get(i))
+            else:
+                print(self.get(i), end=' ')
 
 
 class BIT:
@@ -253,8 +255,10 @@ class SegTree:
 
     def print(self):
         for i in range(self.n):
-            print(self.get(i), end=' ')
-        print()
+            if i == self.n-1:
+                print(self.get(i))
+            else:
+                print(self.get(i), end=' ')
 
     def bisearch_fore(self, l, r, x, func):
         """ 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置 """
@@ -378,8 +382,10 @@ class SegTreeIndex:
 
     def print(self):
         for i in range(self.n):
-            print(self.get(i), end=' ')
-        print()
+            if i == self.n-1:
+                print(self.get(i))
+            else:
+                print(self.get(i), end=' ')
 
 
 class StarrySkyTree:
@@ -525,7 +531,7 @@ class SparseTable:
             for j in range(self.N):
                 self.dat[i][j] = self.func(self.dat[i-1][j], self.dat[i-1][min(j+(1<<(i-1)), self.N-1)])
         
-    def get(self, l, r):
+    def query(self, l, r):
         """ 区間[l,r)でのmin,maxを取得 """
 
         if l >= r or r > self.N:
@@ -540,7 +546,7 @@ class SparseTable:
         ng = l - 1
         while ng+1 < ok:
             mid = (ok+ng) // 2
-            if func(self.get(l, mid+1), x):
+            if func(self.query(l, mid+1), x):
                 ok = mid
             else:
                 ng = mid
@@ -556,7 +562,7 @@ class SparseTable:
         ng = r + 1
         while ok+1 < ng:
             mid = (ok+ng) // 2
-            if func(self.get(mid, r+1), x):
+            if func(self.query(mid, r+1), x):
                 ok = mid
             else:
                 ng = mid
@@ -566,19 +572,22 @@ class SparseTable:
             return -1
 
 
-def slide_min(func, A, k):
-    """ スライド最小値(演算、元の数列A、欲しい区間長k) """
+def slide_min(func, A, k, w=1, v=0):
+    """ スライド最小値(比較関数、元の数列、遷移回数、遷移幅、遷移の重み) """
     from collections import deque
 
-    que = deque()
-    res = []
     N = len(A)
-    for i in range(N):
-        while que and func(A[que[-1]], A[i]) == A[i]:
-            que.pop()
-        que.append(i)
-        if i-k+1 >= 0:
-            res.append(A[que[0]])
-            if que[0] == i-k+1:
+    res = A[:]
+    for a in range(w):
+        que = deque()
+        i = 0
+        while i*w+a < N:
+            val = A[i*w+a] - i*v
+            while que and func(que[-1][1], val) == val:
+                que.pop()
+            que.append((i, val))
+            res[i*w+a] = que[0][1] + i*v
+            if que[0][0] == i-k:
                 que.popleft()
+            i += 1
     return res

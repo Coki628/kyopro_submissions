@@ -213,7 +213,7 @@ struct SegTreeIndex {
     }
 
     pair<Monoid, int> query(int a, int b) {
-        Monoid L = M1, R = M1;
+        pair<Monoid, int> L = {M1, -1}, R = {M1, -1};
         for(a += sz, b += sz; a < b; a >>= 1, b >>= 1) {
             if(a & 1) L = compare(L, seg[a++]);
             if(b & 1) R = compare(seg[--b], R);
@@ -270,8 +270,8 @@ struct SparseTable {
     }
 
     // 区間[l,r)でのmin,maxを取得
-    ll get(ll l, ll r) {
-        if (l >= r) throw exception();
+    ll query(ll l, ll r) {
+        if (l >= r) assert(1);
         ll a = height[r-l];
         return func(dat[a][l], dat[a][r-(1<<a)]);
     }
@@ -282,7 +282,7 @@ struct SparseTable {
         ll ng = l - 1;
         while (ng+1 < ok) {
             ll mid = (ok+ng) / 2;
-            if (compare(get(l, mid+1), x)) {
+            if (compare(query(l, mid+1), x)) {
                 ok = mid;
             } else {
                 ng = mid;
@@ -301,7 +301,7 @@ struct SparseTable {
         ll ng = r + 1;
         while (ok+1 < ng) {
             ll mid = (ok+ng) / 2;
-            if (compare(get(mid, r+1), x)) {
+            if (compare(query(mid, r+1), x)) {
                 ok = mid;
             } else {
                 ng = mid;
@@ -674,6 +674,7 @@ struct DynamicLiChaoTree {
     const ll x_low;
     const ll x_high;
     const T id;
+    const bool is_min;
 
     struct Line {
         T a, b;
@@ -692,7 +693,8 @@ struct DynamicLiChaoTree {
 
     Node *root;
 
-    DynamicLiChaoTree(ll x_low, ll x_high, T id) : root{nullptr}, x_low(x_low), x_high(x_high), id(id) {}
+    // x_low,x_highは(多分)半開区間[x_low,x_high)あれば大丈夫
+    DynamicLiChaoTree(ll x_low, ll x_high, T id, bool is_min=true) : root{nullptr}, x_low(x_low), x_high(x_high), id(id), is_min(is_min) {}
 
     Node *add_line(Node *t, Line &x, const ll &l, const ll &r, const T &x_l, const T &x_r) {
         if(!t) return new Node(x);
@@ -720,7 +722,8 @@ struct DynamicLiChaoTree {
         }
     }
 
-    void add_line(const T &a, const T &b) {
+    void add_line(T a, T b) {
+        if (!is_min) a *= -1, b *= -1;
         Line x(a, b);
         root = add_line(root, x, x_low, x_high, x.get(x_low), x.get(x_high));
     }
@@ -745,7 +748,8 @@ struct DynamicLiChaoTree {
         return t;
     }
 
-    void add_segment(const ll &l, const ll &r, const T &a, const T &b) {
+    void add_segment(const ll &l, const ll &r, T a, T b) {
+        if (!is_min) a *= -1, b *= -1;
         Line x(a, b);
         root = add_segment(root, x, l, r - 1, x_low, x_high, x.get(x_low), x.get(x_high));
     }
@@ -760,7 +764,8 @@ struct DynamicLiChaoTree {
     }
 
     T query(const T &x) const {
-        return query(root, x_low, x_high, x);
+        if (is_min) return query(root, x_low, x_high, x);
+        return -query(root, x_low, x_high, x);
     }
 };
 
@@ -1265,3 +1270,29 @@ struct Mo {
         build(add, add, erase, erase, out);
     }
 };
+
+
+// スライド最小値(比較関数、元の数列、遷移回数、遷移幅、遷移の重み)
+template<typename T, typename F>
+vector<T> slide_min(const F &func, vector<T> &A, ll k, ll w=1, ll v=0) {
+
+    ll N = A.size();
+    auto res = A;
+    rep(a, 0, w) {
+        deque<pair<int, T>> que;
+        int i = 0;
+        while (i*w+a < N) {
+            ll val = A[i*w+a] - i*v;
+            while (!que.empty() and func(que.back().second, val) == val) {
+                que.pop_back();
+            }
+            que.pb({i, val});
+            res[i*w+a] = que.front().second + i*v;
+            if (que.front().first == i-k) {
+                que.pop_front();
+            }
+            i++;
+        }
+    }
+    return res;
+}

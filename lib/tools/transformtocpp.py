@@ -7,8 +7,8 @@
 import os
 import re
 
-path_r = '{0}/repos/Python/lib/tools/in.py'.format(os.environ['HOME'])
-path_w = '{0}/repos/Python/lib/tools/out.cpp'.format(os.environ['HOME'])
+path_r = '{0}/in.py'.format(os.getcwd())
+path_w = '{0}/out.cpp'.format(os.getcwd())
 
 out = []
 indent = '    '

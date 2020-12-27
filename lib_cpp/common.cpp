@@ -12,9 +12,11 @@ using vvpll = vector<vector<pll>>;
 #define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
 #define tostr to_string
-#define list2d(name, N, M, type, init) vector<vector<type>> name(N, vector<type>(M, init))
 constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
+
+template<typename T> vector<vector<T>> list2d(int N, int M, T init) { vector<vector<T>> res(N, vector<T>(M, init)); return res; }
+template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { vector<vector<vector<T>>> res(N, vector<vector<T>>(M, vector<T>(L, init))); return res; }
 
 void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
@@ -337,3 +339,22 @@ struct MatPow {
     return ret;
     }
 };
+
+
+// ダブリング
+vvl doubling(int MXLOG, vector<ll> &A) {
+
+    int N = A.size();
+    auto nxt = list2d(MXLOG, N, -1LL);
+    rep(i, 0, N) {
+        nxt[0][i] = A[i];
+    }
+    rep(k, 1, MXLOG) {
+        rep(i, 0, N) {
+            if (nxt[k-1][i] != -1) {
+                nxt[k][i] = nxt[k-1][nxt[k-1][i]];
+            }
+        }
+    }
+    return nxt;
+}
