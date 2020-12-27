@@ -1,0 +1,193 @@
+/**
+ * ・蟻本演習4-4-4
+ * ・自力AC！
+ * ・式変形、直線の式に関する高速化、Li Chao Tree
+ * ・求める答えを ans[i] = min{ A[j]+(j-i)^2 } とすると、式変形して、
+ * 　i^2 + min{ -2ji + A[j] + j^2 } として、min部分についてiをxとする1次関数にできる。
+ * 　f(x) = -2jx + A[j]+j^2 つまり y = ax + b の形で a = -2j, b = A[j]+j^2 となり、
+ * 　N個の各jについて直線の式が作れる。
+ * ・これにN個の各iについてxに入れていけばmin部分が分かり、あとは外に出しておいたi^2を足せばいい。
+ * ・この式変形のノウハウはedpc_zでLi Chao Treeを覚えた時のやり方を参考にした。
+ * 　遷移元jと絡まないi^2部分をminの外側に出したり、j^2部分は後ろに持ってきて定数項に含めたり。
+ * ・Li Chao Treeで解いたけど、多分中身はConvex Hull Trickも同じようなことしてんだよね？
+ * 　あんまり中の実装分かってないんだけど、ライブラリに感謝。
+ */
+
+// #pragma GCC target("avx2")
+// #pragma GCC optimize("O3")
+// #pragma GCC optimize("unroll-loops")
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld = long double;
+using pll = pair<ll, ll>;
+using pii = pair<int, int>;
+using vvl = vector<vector<ll>>;
+using vvi = vector<vector<int>>;
+using vvpll = vector<vector<pll>>;
+#define rep(i, a, b) for (ll i=(a); i<(b); i++)
+#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
+#define pb push_back
+#define tostr to_string
+#define ALL(A) A.begin(), A.end()
+constexpr ll INF = LONG_LONG_MAX;
+constexpr ll MOD = 1000000007;
+
+template<typename T> vector<vector<T>> list2d(int N, int M, T init) { vector<vector<T>> res(N, vector<T>(M, init)); return res; }
+template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { vector<vector<vector<T>>> res(N, vector<vector<T>>(M, vector<T>(L, init))); return res; }
+
+void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
+void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
+template<typename T> void print(T out) { cout << out << '\n'; }
+template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
+template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
+template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
+
+void Yes() { print("Yes"); }
+void No() { print("No"); }
+void YES() { print("YES"); }
+void NO() { print("NO"); }
+
+ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
+ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
+template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
+template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+
+template<typename T> T sum(vector<T> A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T max(vector<T> A) { return *max_element(ALL(A)); }
+template<typename T> T min(vector<T> A) { return *min_element(ALL(A)); }
+
+ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
+int toint(char num) { return num - '0'; }
+char tochar(int num) { return '0' + num; }
+int ord(char c) { return (int)c; }
+char chr(int a) { return (char)a; }
+
+ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
+
+int popcount(ll S) { return __builtin_popcountll(S); }
+ll gcd(ll a, ll b) { return __gcd(a, b); }
+
+template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
+template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
+
+// Li Chao Tree
+template<typename T>
+struct DynamicLiChaoTree {
+
+    const ll x_low;
+    const ll x_high;
+    const T id;
+
+    struct Line {
+        T a, b;
+
+        Line(T a, T b) : a(a), b(b) {}
+
+        inline T get(ll x) const { return a * x + b; }
+    };
+
+    struct Node {
+        Line x;
+        Node *l, *r;
+
+        Node(const Line &x) : x{x}, l{nullptr}, r{nullptr} {}
+    };
+
+    Node *root;
+
+    DynamicLiChaoTree(ll x_low, ll x_high, T id) : root{nullptr}, x_low(x_low), x_high(x_high), id(id) {}
+
+    Node *add_line(Node *t, Line &x, const ll &l, const ll &r, const T &x_l, const T &x_r) {
+        if(!t) return new Node(x);
+
+        T t_l = t->x.get(l), t_r = t->x.get(r);
+
+        if(t_l <= x_l && t_r <= x_r) {
+            return t;
+        } else if(t_l >= x_l && t_r >= x_r) {
+        t->x = x;
+            return t;
+        } else {
+            ll m = (l + r) / 2;
+            if(m == r) --m;
+            T t_m = t->x.get(m), x_m = x.get(m);
+            if(t_m > x_m) {
+                swap(t->x, x);
+                if(x_l >= t_l) t->l = add_line(t->l, x, l, m, t_l, t_m);
+                else t->r = add_line(t->r, x, m + 1, r, t_m + x.a, t_r);
+            } else {
+                if(t_l >= x_l) t->l = add_line(t->l, x, l, m, x_l, x_m);
+                else t->r = add_line(t->r, x, m + 1, r, x_m + x.a, x_r);
+            }
+            return t;
+        }
+    }
+
+    void add_line(const T &a, const T &b) {
+        Line x(a, b);
+        root = add_line(root, x, x_low, x_high, x.get(x_low), x.get(x_high));
+    }
+
+    Node *add_segment(Node *t, Line &x, const ll &a, const ll &b, const ll &l, const ll &r, const T &x_l, const T &x_r) {
+        if(r < a || b < l) return t;
+        if(a <= l && r <= b) {
+            Line y{x};
+            return add_line(t, y, l, r, x_l, x_r);
+        }
+        if(t) {
+            T t_l = t->x.get(l), t_r = t->x.get(r);
+            if(t_l <= x_l && t_r <= x_r) return t;
+        } else {
+            t = new Node(Line(0, id));
+        }
+        ll m = (l + r) / 2;
+        if(m == r) --m;
+        T x_m = x.get(m);
+        t->l = add_segment(t->l, x, a, b, l, m, x_l, x_m);
+        t->r = add_segment(t->r, x, a, b, m + 1, r, x_m + x.a, x_r);
+        return t;
+    }
+
+    void add_segment(const ll &l, const ll &r, const T &a, const T &b) {
+        Line x(a, b);
+        root = add_segment(root, x, l, r - 1, x_low, x_high, x.get(x_low), x.get(x_high));
+    }
+
+    T query(const Node *t, const ll &l, const ll &r, const T &x) const {
+        if(!t) return id;
+        if(l == r) return t->x.get(x);
+        ll m = (l + r) / 2;
+        if(m == r) --m;
+        if(x <= m) return min(t->x.get(x), query(t->l, l, m, x));
+        else return min(t->x.get(x), query(t->r, m + 1, r, x));
+    }
+
+    T query(const T &x) const {
+        return query(root, x_low, x_high, x);
+    }
+};
+
+int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
+    ll N;
+    cin >> N;
+    vector<ll> A(N+1);
+    rep(i, 1, N+1) cin >> A[i];
+
+    DynamicLiChaoTree<ll> lct(1, N+1, INF);
+    rep(j, 1, N+1) {
+        lct.add_line(-2*j, A[j]+j*j);
+    }
+    rep(i, 1, N+1) {
+        ll ans = lct.query(i)+i*i;
+        print(ans);
+    }
+    return 0;
+}
