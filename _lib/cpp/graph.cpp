@@ -45,32 +45,52 @@ int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
 
 
+// BFS
+vector<int> bfs(vvi &nodes, int src) {
+
+    int N = nodes.size();
+    vector<int> res(N, -1);
+    queue<int> que;
+    res[src] = 0;
+    que.push(src);
+
+    while(!que.empty()) {
+        int u = que.front(); que.pop();
+        for (auto v: nodes[u]) {
+            if (res[v] == -1) {
+                res[v] = res[u]+1;
+                que.push(v);
+            }
+        }
+    }
+    return res;
+}
+
+
 // ダイクストラ(テンプレートで小数コストも対応)
 template<typename T>
-vector<T> dijkstra(vector<vector<pair<ll, T>>> nodes, int src) {
+vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
 
-    ll N = nodes.size();
+    int N = nodes.size();
     vector<T> res(N, INF);
     priority_queue<pair<T, ll>, vector<pair<T, ll>>, greater<pair<T, ll>>> que;
     res[src] = 0;
-    que.push(mkp(0, src));
+    que.push({0, src});
 
     pair<T, ll> p;
     T dist, cost;
-    int cur, nxt;
+    int u, v;
     while(!que.empty()) {
         p = que.top(); que.pop();
-        dist = p.first;
-        cur = p.second;
-        if (res[cur] < dist) {
+        tie(dist, u) = p;
+        if (res[u] < dist) {
             continue;
         }
-        for (auto p: nodes[cur]) {
-            nxt = p.first;
-            cost = p.second;
-            if (dist + cost < res[nxt]) {
-                res[nxt] = dist + cost;
-                que.push(mkp(dist+cost, nxt));
+        for (auto p: nodes[u]) {
+            tie(v, cost) = p;
+            if (dist + cost < res[v]) {
+                res[v] = dist + cost;
+                que.push({dist+cost, v});
             }
         }
     }

@@ -79,9 +79,13 @@ int main() {
     // };
     // dfs(dfs, 0, -1);
 
-    // 3次元これでいけるみたいだ。
-    ll N, M, L;
-    vector N(M, vector(L, 0));
+    // これで数字判定できるんだって。。
+    if (isdigit('0')) {
+    }
+
+    // 逆順の回し方
+    // for (auto itr = rbegin(mp); itr != rend(mp); itr++) {
+    // }
 
     return 0;
 }

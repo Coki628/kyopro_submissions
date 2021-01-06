@@ -57,8 +57,8 @@ unordered_map<T, ll> Counter(vector<T> &A) {
 }
 
 
-map<char, ll> Counter(string S) {
-    map<char, ll> res;
+unordered_map<char, ll> Counter(string S) {
+    unordered_map<char, ll> res;
     for (char c : S) {
         res[c]++;
     }
@@ -357,4 +357,12 @@ vvl doubling(int MXLOG, vector<ll> &A) {
         }
     }
     return nxt;
+}
+
+
+// [l,r)の範囲で乱数生成
+ll randrange(ll l, ll r) {
+    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+    uniform_int_distribution<ll> rand(l, r-1);
+    return rand(mt);
 }

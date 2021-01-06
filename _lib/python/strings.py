@@ -185,11 +185,11 @@ class RollingHash:
         self.MOD = self.MASK61
         self.hash = [0] * (self.n + 1)
         self.pow = [1] * (self.n + 1)
- 
+
         for i, char in enumerate(string):
             self.hash[i+1] = self.calc_mod(self.mul(self.hash[i], self.BASE) + ord(char))
             self.pow[i+1] = self.calc_mod(self.mul(self.pow[i], self.BASE))
- 
+
     def calc_mod(self, x):
         """ x mod 2^61-1 を返す """
         xu = x >> 61
@@ -198,7 +198,7 @@ class RollingHash:
         if x >= self.MOD:
             x -= self.MASK61
         return x
- 
+
     def mul(self, a, b):
         """ a*b mod 2^61-1 を返す """
         au = a >> 31
@@ -209,16 +209,16 @@ class RollingHash:
         midu = mid >> 30
         midd = mid & self.MASK30
         return self.calc_mod(au * bu * 2 + midu + (midd << 31) + ad * bd)
- 
+
     def get_hash(self, l, r):
         """ string[l,r)のハッシュ値を返す：O(1) """
         res = self.calc_mod(self.hash[r] - self.mul(self.hash[l], self.pow[r - l]))
         return res
- 
+
     def merge(self, h1, h2, length2):
         """ ハッシュ値h1と長さlength2のハッシュ値h2を結合する：O(1) """
         return self.calc_mod(self.mul(h1, self.pow[length2]) + h2)
- 
+
     def get_lcp(self, l1, r1, l2, r2):
         """
             string[l1:r2]とstring[l2:r2]の最長共通接頭辞(Longest Common Prefix)の

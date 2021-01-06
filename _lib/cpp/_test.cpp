@@ -17,8 +17,14 @@ using vvpll = vector<vector<pll>>;
 #define pb push_back
 #define tostr to_string
 #define ALL(A) A.begin(), A.end()
-constexpr ll INF = LONG_LONG_MAX;
+// constexpr ll INF = LONG_LONG_MAX;
+constexpr ll INF = 1e18;
 constexpr ll MOD = 1000000007;
+
+const string digits = "0123456789";
+const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string ascii_letters = ascii_lowercase + ascii_uppercase;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { vector<vector<T>> res(N, vector<T>(M, init)); return res; }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { vector<vector<vector<T>>> res(N, vector<vector<T>>(M, vector<T>(L, init))); return res; }
@@ -35,12 +41,15 @@ void No() { print("No"); }
 void YES() { print("YES"); }
 void NO() { print("NO"); }
 
-template<typename T> inline bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
-template<typename T> inline bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
+ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
+template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
+template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
 
 template<typename T> T sum(vector<T> A) { T res = 0; for (T a: A) res += a; return res; }
-template<typename T> T max(vector<T> A) { T res = -numeric_limits<T>::max(); for (T a: A) chmax(res, a); return res; }
-template<typename T> T min(vector<T> A) { T res = numeric_limits<T>::max(); for (T a: A) chmin(res, a); return res; }
+template<typename T> T max(vector<T> A) { return *max_element(ALL(A)); }
+template<typename T> T min(vector<T> A) { return *min_element(ALL(A)); }
 
 ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
 int toint(char num) { return num - '0'; }
@@ -48,15 +57,14 @@ char tochar(int num) { return '0' + num; }
 int ord(char c) { return (int)c; }
 char chr(int a) { return (char)a; }
 
-inline ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
-inline ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
-
-inline ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
-inline ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
-pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
+ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
+
+template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
+template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 
 template<typename T>
 vector<T> accumulate(vector<T> &A) {
@@ -81,8 +89,5 @@ int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    vector<ll> A = {1, 2, 3, 4, 5};
-    auto acc = accumulate(A);
-    print(acc);
     return 0;
 }

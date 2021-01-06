@@ -57,9 +57,23 @@ ll gridtoid(ll i, ll j, ll W) {
     return i*W+j;
 }
 
-
 pll idtogrid(ll id, ll W) {
     return divmod(id, W);
+}
+
+
+// 余白付きグリッドを構築
+vector<string> build_grid(int H, int W, char intv, int offset=1) {
+
+    vector<string> res(H+offset*2);
+    rep(h, 0, offset) res[h] = string(W+offset*2, intv);
+    rep(h, offset, H+offset) {
+        string s;
+        cin >> s;
+        res[h] = string(offset, intv) + s + string(offset, intv);
+    }
+    rep(h, H+offset, H+offset*2) res[h] = string(W+offset*2, intv);
+    return res;
 }
 
 
@@ -80,7 +94,7 @@ vvl bfs(vector<vector<char>> &grid, vector<pii> src) {
         for (auto [dh, dw] : directions) {
             int nh = h + dh;
             int nw = w + dw;
-            if (grid[nh][nw] == -1) {
+            if (grid[nh][nw] == '#') {
                 continue;
             }
             if (res[nh][nw] == INF) {

@@ -60,6 +60,10 @@ with open(path_r) as f:
             s = re.search(r'\'.*\'', line).group(0).replace('\'', '')
             if len(s) >= 2:
                 line = line.replace('\'', '"')
+        # 引数のselfを消す
+        line = line.replace('(self, ', '(')
+        # クラス内のselfを消す
+        line = line.replace('self.', '')
 
         # if文
         if line.startswith('if '):
@@ -109,6 +113,15 @@ with open(path_r) as f:
         # 関数
         elif line.startswith('def '):
             line = line[:-1] + ' {'
+            # コンストラクタ
+            if line.startswith('def __init__'):
+                line = line.replace('def __init__', classname)
+
+        # クラス
+        elif line.startswith('class '):
+            line = line[:-1] + ' {'
+            line = line.replace('class', 'struct')
+            classname = line.split()[1]
 
         # ブロックを作らない通常の文
         else:
