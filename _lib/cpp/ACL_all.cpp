@@ -1,19 +1,18 @@
-#ifndef ATCODER_INTERNAL_BITOP_HPP
-#define ATCODER_INTERNAL_BITOP_HPP 1
+#include <algorithm>
+#include <array>
+#include <cassert>
+#include <type_traits>
+#include <vector>
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
 namespace atcoder {
 namespace internal {
-// @param n `0 <= n`
-// @return minimum non-negative `x` s.t. `n <= 2**x`
 int ceil_pow2(int n) {
     int x = 0;
     while ((1U << x) < (unsigned int)(n)) x++;
     return x;
 }
-// @param n `1 <= n`
-// @return minimum non-negative `x` s.t. `(n & (1 << x)) != 0`
 int bsf(unsigned int n) {
 #ifdef _MSC_VER
     unsigned long index;
@@ -25,42 +24,29 @@ int bsf(unsigned int n) {
 }
 }  // namespace internal
 }  // namespace atcoder
-#endif  // ATCODER_INTERNAL_BITOP_HPP
-#ifndef ATCODER_INTERNAL_MATH_HPP
-#define ATCODER_INTERNAL_MATH_HPP 1
+#include <cassert>
+#include <numeric>
+#include <type_traits>
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 #include <utility>
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 namespace atcoder {
 namespace internal {
-// @param m `1 <= m`
-// @return x mod m
 constexpr long long safe_mod(long long x, long long m) {
     x %= m;
     if (x < 0) x += m;
     return x;
 }
-// Fast moduler by barrett reduction
-// Reference: https://en.wikipedia.org/wiki/Barrett_reduction
-// NOTE: reconsider after Ice Lake
 struct barrett {
     unsigned int _m;
     unsigned long long im;
-    // @param m `1 <= m`
     barrett(unsigned int m) : _m(m), im((unsigned long long)(-1) / m + 1) {}
-    // @return m
     unsigned int umod() const { return _m; }
-    // @param a `0 <= a < m`
-    // @param b `0 <= b < m`
-    // @return `a * b % m`
     unsigned int mul(unsigned int a, unsigned int b) const {
-        // [1] m = 1
-        // a = b = im = 0, so okay
-        // [2] m >= 2
-        // im = ceil(2^64 / m)
-        // -> im * m = 2^64 + r (0 <= r < m)
-        // let z = a*b = c*m + d (0 <= c, d < m)
-        // a*b * im = (c*m + d) * im = c*(im*m) + d*im = c*2^64 + c*r + d*im
-        // c*r + d*im < m * m + m * im < m * m + 2^64 + m <= 2^64 + m * (m + 1) < 2^64 * 2
-        // ((ab * im) >> 64) == c or c + 1
         unsigned long long z = a;
         z *= b;
 #ifdef _MSC_VER
@@ -75,9 +61,6 @@ struct barrett {
         return v;
     }
 };
-// @param n `0 <= n`
-// @param m `1 <= m`
-// @return `(x ** n) % m`
 constexpr long long pow_mod_constexpr(long long x, long long n, int m) {
     if (m == 1) return 0;
     unsigned int _m = (unsigned int)(m);
@@ -90,17 +73,14 @@ constexpr long long pow_mod_constexpr(long long x, long long n, int m) {
     }
     return r;
 }
-// Reference:
-// M. Forisek and J. Jancina,
-// Fast Primality Testing for Integers That Fit into a Machine Word
-// @param n `0 <= n`
 constexpr bool is_prime_constexpr(int n) {
     if (n <= 1) return false;
     if (n == 2 || n == 7 || n == 61) return true;
     if (n % 2 == 0) return false;
     long long d = n - 1;
     while (d % 2 == 0) d /= 2;
-    for (long long a : {2, 7, 61}) {
+    constexpr long long bases[3] = {2, 7, 61};
+    for (long long a : bases) {
         long long t = d;
         long long y = pow_mod_constexpr(a, t, n);
         while (t != n - 1 && y != 1 && y != n - 1) {
@@ -114,25 +94,15 @@ constexpr bool is_prime_constexpr(int n) {
     return true;
 }
 template <int n> constexpr bool is_prime = is_prime_constexpr(n);
-// @param b `1 <= b`
-// @return pair(g, x) s.t. g = gcd(a, b), xa = g (mod b), 0 <= x < b/g
 constexpr std::pair<long long, long long> inv_gcd(long long a, long long b) {
     a = safe_mod(a, b);
     if (a == 0) return {b, 0};
-    // Contracts:
-    // [1] s - m0 * a = 0 (mod b)
-    // [2] t - m1 * a = 0 (mod b)
-    // [3] s * |m1| + t * |m0| <= b
     long long s = b, t = a;
     long long m0 = 0, m1 = 1;
     while (t) {
         long long u = s / t;
         s -= t * u;
         m0 -= m1 * u;  // |m1 * u| <= |m1| * s <= b
-        // [3]:
-        // (s - t * u) * |m1| + t * |m0 - m1 * u|
-        // <= s * |m1| - t * u * |m1| + t * (|m0| + |m1| * u)
-        // = s * |m1| + t * |m0| <= b
         auto tmp = s;
         s = t;
         t = tmp;
@@ -140,14 +110,9 @@ constexpr std::pair<long long, long long> inv_gcd(long long a, long long b) {
         m0 = m1;
         m1 = tmp;
     }
-    // by [3]: |m0| <= b/g
-    // by g != b: |m0| < b/g
     if (m0 < 0) m0 += b / s;
     return {s, m0};
 }
-// Compile time primitive root
-// @param m must be prime
-// @return primitive root (and minimum in now)
 constexpr int primitive_root_constexpr(int m) {
     if (m == 2) return 1;
     if (m == 167772161) return 3;
@@ -184,124 +149,6 @@ constexpr int primitive_root_constexpr(int m) {
 template <int m> constexpr int primitive_root = primitive_root_constexpr(m);
 }  // namespace internal
 }  // namespace atcoder
-#endif  // ATCODER_INTERNAL_MATH_HPP
-#ifndef ATCODER_INTERNAL_QUEUE_HPP
-#define ATCODER_INTERNAL_QUEUE_HPP 1
-#include <vector>
-namespace atcoder {
-namespace internal {
-template <class T> struct simple_queue {
-    std::vector<T> payload;
-    int pos = 0;
-    void reserve(int n) { payload.reserve(n); }
-    int size() const { return int(payload.size()) - pos; }
-    bool empty() const { return pos == int(payload.size()); }
-    void push(const T& t) { payload.push_back(t); }
-    T& front() { return payload[pos]; }
-    void clear() {
-        payload.clear();
-        pos = 0;
-    }
-    void pop() { pos++; }
-};
-}  // namespace internal
-}  // namespace atcoder
-#endif  // ATCODER_INTERNAL_QUEUE_HPP
-#ifndef ATCODER_INTERNAL_SCC_HPP
-#define ATCODER_INTERNAL_SCC_HPP 1
-#include <algorithm>
-#include <utility>
-#include <vector>
-namespace atcoder {
-namespace internal {
-template <class E> struct csr {
-    std::vector<int> start;
-    std::vector<E> elist;
-    csr(int n, const std::vector<std::pair<int, E>>& edges)
-        : start(n + 1), elist(edges.size()) {
-        for (auto e : edges) {
-            start[e.first + 1]++;
-        }
-        for (int i = 1; i <= n; i++) {
-            start[i] += start[i - 1];
-        }
-        auto counter = start;
-        for (auto e : edges) {
-            elist[counter[e.first]++] = e.second;
-        }
-    }
-};
-// Reference:
-// R. Tarjan,
-// Depth-First Search and Linear Graph Algorithms
-struct scc_graph {
-  public:
-    scc_graph(int n) : _n(n) {}
-    int num_vertices() { return _n; }
-    void add_edge(int from, int to) { edges.push_back({from, {to}}); }
-    // @return pair of (# of scc, scc id)
-    std::pair<int, std::vector<int>> scc_ids() {
-        auto g = csr<edge>(_n, edges);
-        int now_ord = 0, group_num = 0;
-        std::vector<int> visited, low(_n), ord(_n, -1), ids(_n);
-        visited.reserve(_n);
-        auto dfs = [&](auto self, int v) -> void {
-            low[v] = ord[v] = now_ord++;
-            visited.push_back(v);
-            for (int i = g.start[v]; i < g.start[v + 1]; i++) {
-                auto to = g.elist[i].to;
-                if (ord[to] == -1) {
-                    self(self, to);
-                    low[v] = std::min(low[v], low[to]);
-                } else {
-                    low[v] = std::min(low[v], ord[to]);
-                }
-            }
-            if (low[v] == ord[v]) {
-                while (true) {
-                    int u = visited.back();
-                    visited.pop_back();
-                    ord[u] = _n;
-                    ids[u] = group_num;
-                    if (u == v) break;
-                }
-                group_num++;
-            }
-        };
-        for (int i = 0; i < _n; i++) {
-            if (ord[i] == -1) dfs(dfs, i);
-        }
-        for (auto& x : ids) {
-            x = group_num - 1 - x;
-        }
-        return {group_num, ids};
-    }
-    std::vector<std::vector<int>> scc() {
-        auto ids = scc_ids();
-        int group_num = ids.first;
-        std::vector<int> counts(group_num);
-        for (auto x : ids.second) counts[x]++;
-        std::vector<std::vector<int>> groups(ids.first);
-        for (int i = 0; i < group_num; i++) {
-            groups[i].reserve(counts[i]);
-        }
-        for (int i = 0; i < _n; i++) {
-            groups[ids.second[i]].push_back(i);
-        }
-        return groups;
-    }
-  private:
-    int _n;
-    struct edge {
-        int to;
-    };
-    std::vector<std::pair<int, edge>> edges;
-};
-}  // namespace internal
-}  // namespace atcoder
-#endif  // ATCODER_INTERNAL_SCC_HPP
-#ifndef ATCODER_INTERNAL_TYPE_TRAITS_HPP
-#define ATCODER_INTERNAL_TYPE_TRAITS_HPP 1
 #include <cassert>
 #include <numeric>
 #include <type_traits>
@@ -376,15 +223,6 @@ using is_unsigned_int_t = std::enable_if_t<is_unsigned_int<T>::value>;
 template <class T> using to_unsigned_t = typename to_unsigned<T>::type;
 }  // namespace internal
 }  // namespace atcoder
-#endif  // ATCODER_INTERNAL_TYPE_TRAITS_HPP
-#ifndef ATCODER_MODINT_HPP
-#define ATCODER_MODINT_HPP 1
-#include <cassert>
-#include <numeric>
-#include <type_traits>
-#ifdef _MSC_VER
-#include <intrin.h>
-#endif
 namespace atcoder {
 namespace internal {
 struct modint_base {};
@@ -413,7 +251,6 @@ struct static_modint : internal::static_modint_base {
     static_modint(T v) {
         _v = (unsigned int)(v % umod());
     }
-    static_modint(bool v) { _v = ((unsigned int)(v) % umod()); }
     unsigned int val() const { return _v; }
     mint& operator++() {
         _v++;
@@ -521,7 +358,6 @@ template <int id> struct dynamic_modint : internal::modint_base {
     dynamic_modint(T v) {
         _v = (unsigned int)(v % mod());
     }
-    dynamic_modint(bool v) { _v = ((unsigned int)(v) % mod()); }
     unsigned int val() const { return _v; }
     mint& operator++() {
         _v++;
@@ -614,14 +450,6 @@ template <class T>
 using is_dynamic_modint_t = std::enable_if_t<is_dynamic_modint<T>::value>;
 }  // namespace internal
 }  // namespace atcoder
-#endif  // ATCODER_MODINT_HPP
-#ifndef ATCODER_CONVOLUTION_HPP
-#define ATCODER_CONVOLUTION_HPP 1
-#include <algorithm>
-#include <array>
-#include <cassert>
-#include <type_traits>
-#include <vector>
 namespace atcoder {
 namespace internal {
 template <class mint, internal::is_static_modint_t<mint>* = nullptr>
@@ -637,14 +465,13 @@ void butterfly(std::vector<mint>& a) {
         int cnt2 = bsf(mint::mod() - 1);
         mint e = mint(g).pow((mint::mod() - 1) >> cnt2), ie = e.inv();
         for (int i = cnt2; i >= 2; i--) {
-            // e^(2^i) == 1
             es[i - 2] = e;
             ies[i - 2] = ie;
             e *= e;
             ie *= ie;
         }
         mint now = 1;
-        for (int i = 0; i < cnt2 - 2; i++) {
+        for (int i = 0; i <= cnt2 - 2; i++) {
             sum_e[i] = es[i] * now;
             now *= ies[i];
         }
@@ -677,14 +504,13 @@ void butterfly_inv(std::vector<mint>& a) {
         int cnt2 = bsf(mint::mod() - 1);
         mint e = mint(g).pow((mint::mod() - 1) >> cnt2), ie = e.inv();
         for (int i = cnt2; i >= 2; i--) {
-            // e^(2^i) == 1
             es[i - 2] = e;
             ies[i - 2] = ie;
             e *= e;
             ie *= ie;
         }
         mint now = 1;
-        for (int i = 0; i < cnt2 - 2; i++) {
+        for (int i = 0; i <= cnt2 - 2; i++) {
             sum_ie[i] = ies[i] * now;
             now *= es[i];
         }
@@ -785,23 +611,6 @@ std::vector<long long> convolution_ll(const std::vector<long long>& a,
         x += (c1[i] * i1) % MOD1 * M2M3;
         x += (c2[i] * i2) % MOD2 * M1M3;
         x += (c3[i] * i3) % MOD3 * M1M2;
-        // B = 2^63, -B <= x, r(real value) < B
-        // (x, x - M, x - 2M, or x - 3M) = r (mod 2B)
-        // r = c1[i] (mod MOD1)
-        // focus on MOD1
-        // r = x, x - M', x - 2M', x - 3M' (M' = M % 2^64) (mod 2B)
-        // r = x,
-        //     x - M' + (0 or 2B),
-        //     x - 2M' + (0, 2B or 4B),
-        //     x - 3M' + (0, 2B, 4B or 6B) (without mod!)
-        // (r - x) = 0, (0)
-        //           - M' + (0 or 2B), (1)
-        //           -2M' + (0 or 2B or 4B), (2)
-        //           -3M' + (0 or 2B or 4B or 6B) (3) (mod MOD1)
-        // we checked that
-        //   ((1) mod MOD1) mod 5 = 2
-        //   ((2) mod MOD1) mod 5 = 3
-        //   ((3) mod MOD1) mod 5 = 4
         long long diff =
             c1[i] - internal::safe_mod((long long)(x), (long long)(MOD1));
         if (diff < 0) diff += MOD1;
@@ -813,23 +622,16 @@ std::vector<long long> convolution_ll(const std::vector<long long>& a,
     return c;
 }
 }  // namespace atcoder
-#endif  // ATCODER_CONVOLUTION_HPP
-#ifndef ATCODER_DSU_HPP
-#define ATCODER_DSU_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <vector>
 namespace atcoder {
-// Implement (union by size) + (path compression)
-// Reference:
-// Zvi Galil and Giuseppe F. Italiano,
-// Data structures and algorithms for disjoint set union problems
 struct dsu {
   public:
     dsu() : _n(0) {}
     dsu(int n) : _n(n), parent_or_size(n, -1) {}
     int merge(int a, int b) {
-        assert(0 <= a && a < _n);    
+        assert(0 <= a && a < _n);
         assert(0 <= b && b < _n);
         int x = leader(a), y = leader(b);
         if (x == y) return x;
@@ -873,18 +675,12 @@ struct dsu {
     }
   private:
     int _n;
-    // root node: -1 * component size
-    // otherwise: parent
     std::vector<int> parent_or_size;
 };
 }  // namespace atcoder
-#endif  // ATCODER_DSU_HPP
-#ifndef ATCODER_FENWICKTREE_HPP
-#define ATCODER_FENWICKTREE_HPP 1
 #include <cassert>
 #include <vector>
 namespace atcoder {
-// Reference: https://en.wikipedia.org/wiki/Fenwick_tree
 template <class T> struct fenwick_tree {
     using U = internal::to_unsigned_t<T>;
   public:
@@ -915,9 +711,6 @@ template <class T> struct fenwick_tree {
     }
 };
 }  // namespace atcoder
-#endif  // ATCODER_FENWICKTREE_HPP
-#ifndef ATCODER_LAZYSEGTREE_HPP
-#define ATCODER_LAZYSEGTREE_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <iostream>
@@ -1080,9 +873,6 @@ struct lazy_segtree {
     }
 };
 }  // namespace atcoder
-#endif  // ATCODER_LAZYSEGTREE_HPP
-#ifndef ATCODER_MATH_HPP
-#define ATCODER_MATH_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <tuple>
@@ -1106,12 +896,10 @@ long long inv_mod(long long x, long long m) {
     assert(z.first == 1);
     return z.second;
 }
-// (rem, mod)
 std::pair<long long, long long> crt(const std::vector<long long>& r,
                                     const std::vector<long long>& m) {
     assert(r.size() == m.size());
     int n = int(r.size());
-    // Contracts: 0 <= r0 < m0
     long long r0 = 0, m0 = 1;
     for (int i = 0; i < n; i++) {
         assert(1 <= m[i]);
@@ -1124,25 +912,11 @@ std::pair<long long, long long> crt(const std::vector<long long>& r,
             if (r0 % m1 != r1) return {0, 0};
             continue;
         }
-        // assume: m0 > m1, lcm(m0, m1) >= 2 * max(m0, m1)
-        // (r0, m0), (r1, m1) -> (r2, m2 = lcm(m0, m1));
-        // r2 % m0 = r0
-        // r2 % m1 = r1
-        // -> (r0 + x*m0) % m1 = r1
-        // -> x*u0*g % (u1*g) = (r1 - r0) (u0*g = m0, u1*g = m1)
-        // -> x = (r1 - r0) / g * inv(u0) (mod u1)
-        // im = inv(u0) (mod u1) (0 <= im < u1)
         long long g, im;
         std::tie(g, im) = internal::inv_gcd(m0, m1);
         long long u1 = (m1 / g);
-        // |r1 - r0| < (m0 + m1) <= lcm(m0, m1)
         if ((r1 - r0) % g) return {0, 0};
-        // u1 * u1 <= m1 * m1 / g / g <= m0 * m1 / g = lcm(m0, m1)
         long long x = (r1 - r0) / g % u1 * im % u1;
-        // |r0| + |m0 * x|
-        // < m0 + m0 * (u1 - 1)
-        // = m0 + m0 * m1 / g - m0
-        // = lcm(m0, m1)
         r0 += x * m0;
         m0 *= u1;  // -> lcm(m0, m1)
         if (r0 < 0) r0 += m0;
@@ -1150,7 +924,7 @@ std::pair<long long, long long> crt(const std::vector<long long>& r,
     return {r0, m0};
 }
 long long floor_sum(long long n, long long m, long long a, long long b) {
-    long long ans = 0;  
+    long long ans = 0;
     if (a >= m) {
         ans += (n - 1) * n * (a / m) / 2;
         a %= m;
@@ -1166,14 +940,30 @@ long long floor_sum(long long n, long long m, long long a, long long b) {
     return ans;
 }
 }  // namespace atcoder
-#endif  // ATCODER_MATH_HPP
-#ifndef ATCODER_MAXFLOW_HPP
-#define ATCODER_MAXFLOW_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <limits>
 #include <queue>
 #include <vector>
+#include <vector>
+namespace atcoder {
+namespace internal {
+template <class T> struct simple_queue {
+    std::vector<T> payload;
+    int pos = 0;
+    void reserve(int n) { payload.reserve(n); }
+    int size() const { return int(payload.size()) - pos; }
+    bool empty() const { return pos == int(payload.size()); }
+    void push(const T& t) { payload.push_back(t); }
+    T& front() { return payload[pos]; }
+    void clear() {
+        payload.clear();
+        pos = 0;
+    }
+    void pop() { pos++; }
+};
+}  // namespace internal
+}  // namespace atcoder
 namespace atcoder {
 template <class Cap> struct mf_graph {
   public:
@@ -1185,8 +975,11 @@ template <class Cap> struct mf_graph {
         assert(0 <= cap);
         int m = int(pos.size());
         pos.push_back({from, int(g[from].size())});
-        g[from].push_back(_edge{to, int(g[to].size()), cap});
-        g[to].push_back(_edge{from, int(g[from].size()) - 1, 0});
+        int from_id = int(g[from].size());
+        int to_id = int(g[to].size());
+        if (from == to) to_id++;
+        g[from].push_back(_edge{to, to_id, cap});
+        g[to].push_back(_edge{from, from_id, 0});
         return m;
     }
     struct edge {
@@ -1223,6 +1016,7 @@ template <class Cap> struct mf_graph {
     Cap flow(int s, int t, Cap flow_limit) {
         assert(0 <= s && s < _n);
         assert(0 <= t && t < _n);
+        assert(s != t);
         std::vector<int> level(_n), iter(_n);
         internal::simple_queue<int> que;
         auto bfs = [&]() {
@@ -1254,8 +1048,9 @@ template <class Cap> struct mf_graph {
                 g[v][i].cap += d;
                 g[e.to][e.rev].cap -= d;
                 res += d;
-                if (res == up) break;
+                if (res == up) return res;
             }
+            level[v] = _n;
             return res;
         };
         Cap flow = 0;
@@ -1263,11 +1058,9 @@ template <class Cap> struct mf_graph {
             bfs();
             if (level[t] == -1) break;
             std::fill(iter.begin(), iter.end(), 0);
-            while (flow < flow_limit) {
-                Cap f = dfs(dfs, t, flow_limit - flow);
-                if (!f) break;
-                flow += f;
-            }
+            Cap f = dfs(dfs, t, flow_limit - flow);
+            if (!f) break;
+            flow += f;
         }
         return flow;
     }
@@ -1298,26 +1091,47 @@ template <class Cap> struct mf_graph {
     std::vector<std::vector<_edge>> g;
 };
 }  // namespace atcoder
-#endif  // ATCODER_MAXFLOW_HPP
-#ifndef ATCODER_MINCOSTFLOW_HPP
-#define ATCODER_MINCOSTFLOW_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <limits>
 #include <queue>
 #include <vector>
+#include <algorithm>
+#include <utility>
+#include <vector>
+namespace atcoder {
+namespace internal {
+template <class E> struct csr {
+    std::vector<int> start;
+    std::vector<E> elist;
+    csr(int n, const std::vector<std::pair<int, E>>& edges)
+        : start(n + 1), elist(edges.size()) {
+        for (auto e : edges) {
+            start[e.first + 1]++;
+        }
+        for (int i = 1; i <= n; i++) {
+            start[i] += start[i - 1];
+        }
+        auto counter = start;
+        for (auto e : edges) {
+            elist[counter[e.first]++] = e.second;
+        }
+    }
+};
+}  // namespace internal
+}  // namespace atcoder
 namespace atcoder {
 template <class Cap, class Cost> struct mcf_graph {
   public:
     mcf_graph() {}
-    mcf_graph(int n) : _n(n), g(n) {}
+    mcf_graph(int n) : _n(n) {}
     int add_edge(int from, int to, Cap cap, Cost cost) {
         assert(0 <= from && from < _n);
         assert(0 <= to && to < _n);
-        int m = int(pos.size());
-        pos.push_back({from, int(g[from].size())});
-        g[from].push_back(_edge{to, int(g[to].size()), cap, cost});
-        g[to].push_back(_edge{from, int(g[from].size()) - 1, 0, -cost});
+        assert(0 <= cap);
+        assert(0 <= cost);
+        int m = int(_edges.size());
+        _edges.push_back({from, to, cap, 0, cost});
         return m;
     }
     struct edge {
@@ -1326,22 +1140,11 @@ template <class Cap, class Cost> struct mcf_graph {
         Cost cost;
     };
     edge get_edge(int i) {
-        int m = int(pos.size());
+        int m = int(_edges.size());
         assert(0 <= i && i < m);
-        auto _e = g[pos[i].first][pos[i].second];
-        auto _re = g[_e.to][_e.rev];
-        return edge{
-            pos[i].first, _e.to, _e.cap + _re.cap, _re.cap, _e.cost,
-        };
+        return _edges[i];
     }
-    std::vector<edge> edges() {
-        int m = int(pos.size());
-        std::vector<edge> result(m);
-        for (int i = 0; i < m; i++) {
-            result[i] = get_edge(i);
-        }
-        return result;
-    }
+    std::vector<edge> edges() { return _edges; }
     std::pair<Cap, Cost> flow(int s, int t) {
         return flow(s, t, std::numeric_limits<Cap>::max());
     }
@@ -1355,46 +1158,100 @@ template <class Cap, class Cost> struct mcf_graph {
         assert(0 <= s && s < _n);
         assert(0 <= t && t < _n);
         assert(s != t);
-        // variants (C = maxcost):
-        // -(n-1)C <= dual[s] <= dual[i] <= dual[t] = 0
-        // reduced cost (= e.cost + dual[e.from] - dual[e.to]) >= 0 for all edge
-        std::vector<Cost> dual(_n, 0), dist(_n);
-        std::vector<int> pv(_n), pe(_n);
+        int m = int(_edges.size());
+        std::vector<int> edge_idx(m);
+        auto g = [&]() {
+            std::vector<int> degree(_n), redge_idx(m);
+            std::vector<std::pair<int, _edge>> elist;
+            elist.reserve(2 * m);
+            for (int i = 0; i < m; i++) {
+                auto e = _edges[i];
+                edge_idx[i] = degree[e.from]++;
+                redge_idx[i] = degree[e.to]++;
+                elist.push_back({e.from, {e.to, -1, e.cap - e.flow, e.cost}});
+                elist.push_back({e.to, {e.from, -1, e.flow, -e.cost}});
+            }
+            auto _g = internal::csr<_edge>(_n, elist);
+            for (int i = 0; i < m; i++) {
+                auto e = _edges[i];
+                edge_idx[i] += _g.start[e.from];
+                redge_idx[i] += _g.start[e.to];
+                _g.elist[edge_idx[i]].rev = redge_idx[i];
+                _g.elist[redge_idx[i]].rev = edge_idx[i];
+            }
+            return _g;
+        }();
+        auto result = slope(g, s, t, flow_limit);
+        for (int i = 0; i < m; i++) {
+            auto e = g.elist[edge_idx[i]];
+            _edges[i].flow = _edges[i].cap - e.cap;
+        }
+        return result;
+    }
+  private:
+    int _n;
+    std::vector<edge> _edges;
+    struct _edge {
+        int to, rev;
+        Cap cap;
+        Cost cost;
+    };
+    std::vector<std::pair<Cap, Cost>> slope(internal::csr<_edge>& g,
+                                            int s,
+                                            int t,
+                                            Cap flow_limit) {
+        std::vector<std::pair<Cost, Cost>> dual_dist(_n);
+        std::vector<int> prev_e(_n);
         std::vector<bool> vis(_n);
+        struct Q {
+            Cost key;
+            int to;
+            bool operator<(Q r) const { return key > r.key; }
+        };
+        std::vector<int> que_min;
+        std::vector<Q> que;
         auto dual_ref = [&]() {
-            std::fill(dist.begin(), dist.end(),
-                      std::numeric_limits<Cost>::max());
-            std::fill(pv.begin(), pv.end(), -1);
-            std::fill(pe.begin(), pe.end(), -1);
+            for (int i = 0; i < _n; i++) {
+                dual_dist[i].second = std::numeric_limits<Cost>::max();
+            }
             std::fill(vis.begin(), vis.end(), false);
-            struct Q {
-                Cost key;
-                int to;
-                bool operator<(Q r) const { return key > r.key; }
-            };
-            std::priority_queue<Q> que;
-            dist[s] = 0;
-            que.push(Q{0, s});
-            while (!que.empty()) {
-                int v = que.top().to;
-                que.pop();
+            que_min.clear();
+            que.clear();
+            size_t heap_r = 0;
+            dual_dist[s].second = 0;
+            que_min.push_back(s);
+            while (!que_min.empty() || !que.empty()) {
+                int v;
+                if (!que_min.empty()) {
+                    v = que_min.back();
+                    que_min.pop_back();
+                } else {
+                    while (heap_r < que.size()) {
+                        heap_r++;
+                        std::push_heap(que.begin(), que.begin() + heap_r);
+                    }
+                    v = que.front().to;
+                    std::pop_heap(que.begin(), que.end());
+                    que.pop_back();
+                    heap_r--;
+                }
                 if (vis[v]) continue;
                 vis[v] = true;
                 if (v == t) break;
-                // dist[v] = shortest(s, v) + dual[s] - dual[v]
-                // dist[v] >= 0 (all reduced cost are positive)
-                // dist[v] <= (n-1)C
-                for (int i = 0; i < int(g[v].size()); i++) {
-                    auto e = g[v][i];
-                    if (vis[e.to] || !e.cap) continue;
-                    // |-dual[e.to] + dual[v]| <= (n-1)C
-                    // cost <= C - -(n-1)C + 0 = nC
-                    Cost cost = e.cost - dual[e.to] + dual[v];
-                    if (dist[e.to] - dist[v] > cost) {
-                        dist[e.to] = dist[v] + cost;
-                        pv[e.to] = v;
-                        pe[e.to] = i;
-                        que.push(Q{dist[e.to], e.to});
+                Cost dual_v = dual_dist[v].first, dist_v = dual_dist[v].second;
+                for (int i = g.start[v]; i < g.start[v + 1]; i++) {
+                    auto e = g.elist[i];
+                    if (!e.cap) continue;
+                    Cost cost = e.cost - dual_dist[e.to].first + dual_v;
+                    if (dual_dist[e.to].second - dist_v > cost) {
+                        Cost dist_to = dist_v + cost;
+                        dual_dist[e.to].second = dist_to;
+                        prev_e[e.to] = e.rev;
+                        if (dist_to == dist_v) {
+                            que_min.push_back(e.to);
+                        } else {
+                            que.push_back(Q{dist_to, e.to});
+                        }
                     }
                 }
             }
@@ -1403,57 +1260,109 @@ template <class Cap, class Cost> struct mcf_graph {
             }
             for (int v = 0; v < _n; v++) {
                 if (!vis[v]) continue;
-                // dual[v] = dual[v] - dist[t] + dist[v]
-                //         = dual[v] - (shortest(s, t) + dual[s] - dual[t]) + (shortest(s, v) + dual[s] - dual[v])
-                //         = - shortest(s, t) + dual[t] + shortest(s, v)
-                //         = shortest(s, v) - shortest(s, t) >= 0 - (n-1)C
-                dual[v] -= dist[t] - dist[v];
+                dual_dist[v].first -= dual_dist[t].second - dual_dist[v].second;
             }
             return true;
         };
         Cap flow = 0;
-        Cost cost = 0, prev_cost = -1;
-        std::vector<std::pair<Cap, Cost>> result;
-        result.push_back({flow, cost});
+        Cost cost = 0, prev_cost_per_flow = -1;
+        std::vector<std::pair<Cap, Cost>> result = {{Cap(0), Cost(0)}};
         while (flow < flow_limit) {
             if (!dual_ref()) break;
             Cap c = flow_limit - flow;
-            for (int v = t; v != s; v = pv[v]) {
-                c = std::min(c, g[pv[v]][pe[v]].cap);
+            for (int v = t; v != s; v = g.elist[prev_e[v]].to) {
+                c = std::min(c, g.elist[g.elist[prev_e[v]].rev].cap);
             }
-            for (int v = t; v != s; v = pv[v]) {
-                auto& e = g[pv[v]][pe[v]];
-                e.cap -= c;
-                g[v][e.rev].cap += c;
+            for (int v = t; v != s; v = g.elist[prev_e[v]].to) {
+                auto& e = g.elist[prev_e[v]];
+                e.cap += c;
+                g.elist[e.rev].cap -= c;
             }
-            Cost d = -dual[s];
+            Cost d = -dual_dist[s].first;
             flow += c;
             cost += c * d;
-            if (prev_cost == d) {
+            if (prev_cost_per_flow == d) {
                 result.pop_back();
             }
             result.push_back({flow, cost});
-            prev_cost = cost;
+            prev_cost_per_flow = d;
         }
         return result;
     }
-  private:
-    int _n;
-    struct _edge {
-        int to, rev;
-        Cap cap;
-        Cost cost;
-    };
-    std::vector<std::pair<int, int>> pos;
-    std::vector<std::vector<_edge>> g;
 };
 }  // namespace atcoder
-#endif  // ATCODER_MINCOSTFLOW_HPP
-#ifndef ATCODER_SCC_HPP
-#define ATCODER_SCC_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <vector>
+#include <algorithm>
+#include <utility>
+#include <vector>
+namespace atcoder {
+namespace internal {
+struct scc_graph {
+  public:
+    scc_graph(int n) : _n(n) {}
+    int num_vertices() { return _n; }
+    void add_edge(int from, int to) { edges.push_back({from, {to}}); }
+    std::pair<int, std::vector<int>> scc_ids() {
+        auto g = csr<edge>(_n, edges);
+        int now_ord = 0, group_num = 0;
+        std::vector<int> visited, low(_n), ord(_n, -1), ids(_n);
+        visited.reserve(_n);
+        auto dfs = [&](auto self, int v) -> void {
+            low[v] = ord[v] = now_ord++;
+            visited.push_back(v);
+            for (int i = g.start[v]; i < g.start[v + 1]; i++) {
+                auto to = g.elist[i].to;
+                if (ord[to] == -1) {
+                    self(self, to);
+                    low[v] = std::min(low[v], low[to]);
+                } else {
+                    low[v] = std::min(low[v], ord[to]);
+                }
+            }
+            if (low[v] == ord[v]) {
+                while (true) {
+                    int u = visited.back();
+                    visited.pop_back();
+                    ord[u] = _n;
+                    ids[u] = group_num;
+                    if (u == v) break;
+                }
+                group_num++;
+            }
+        };
+        for (int i = 0; i < _n; i++) {
+            if (ord[i] == -1) dfs(dfs, i);
+        }
+        for (auto& x : ids) {
+            x = group_num - 1 - x;
+        }
+        return {group_num, ids};
+    }
+    std::vector<std::vector<int>> scc() {
+        auto ids = scc_ids();
+        int group_num = ids.first;
+        std::vector<int> counts(group_num);
+        for (auto x : ids.second) counts[x]++;
+        std::vector<std::vector<int>> groups(ids.first);
+        for (int i = 0; i < group_num; i++) {
+            groups[i].reserve(counts[i]);
+        }
+        for (int i = 0; i < _n; i++) {
+            groups[ids.second[i]].push_back(i);
+        }
+        return groups;
+    }
+  private:
+    int _n;
+    struct edge {
+        int to;
+    };
+    std::vector<std::pair<int, edge>> edges;
+};
+}  // namespace internal
+}  // namespace atcoder
 namespace atcoder {
 struct scc_graph {
   public:
@@ -1470,9 +1379,6 @@ struct scc_graph {
     internal::scc_graph internal;
 };
 }  // namespace atcoder
-#endif  // ATCODER_SCC_HPP
-#ifndef ATCODER_SEGTREE_HPP
-#define ATCODER_SEGTREE_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -1572,9 +1478,6 @@ template <class S, S (*op)(S, S), S (*e)()> struct segtree {
     void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
 };
 }  // namespace atcoder
-#endif  // ATCODER_SEGTREE_HPP
-#ifndef ATCODER_STRING_HPP
-#define ATCODER_STRING_HPP 1
 #include <algorithm>
 #include <cassert>
 #include <numeric>
@@ -1617,10 +1520,6 @@ std::vector<int> sa_doubling(const std::vector<int>& s) {
     }
     return sa;
 }
-// SA-IS, linear-time suffix array construction
-// Reference:
-// G. Nong, S. Zhang, and W. H. Chan,
-// Two Efficient Algorithms for Linear Time Suffix Array Construction
 template <int THRESHOLD_NAIVE = 10, int THRESHOLD_DOUBLING = 40>
 std::vector<int> sa_is(const std::vector<int>& s, int upper) {
     int n = int(s.size());
@@ -1763,10 +1662,6 @@ std::vector<int> suffix_array(const std::string& s) {
     }
     return internal::sa_is(s2, 255);
 }
-// Reference:
-// T. Kasai, G. Lee, H. Arimura, S. Arikawa, and K. Park,
-// Linear-Time Longest-Common-Prefix Computation in Suffix Arrays and Its
-// Applications
 template <class T>
 std::vector<int> lcp_array(const std::vector<T>& s,
                            const std::vector<int>& sa) {
@@ -1797,10 +1692,6 @@ std::vector<int> lcp_array(const std::string& s, const std::vector<int>& sa) {
     }
     return lcp_array(s2, sa);
 }
-// Reference:
-// D. Gusfield,
-// Algorithms on Strings, Trees, and Sequences: Computer Science and
-// Computational Biology
 template <class T> std::vector<int> z_algorithm(const std::vector<T>& s) {
     int n = int(s.size());
     if (n == 0) return {};
@@ -1824,16 +1715,9 @@ std::vector<int> z_algorithm(const std::string& s) {
     return z_algorithm(s2);
 }
 }  // namespace atcoder
-#endif  // ATCODER_STRING_HPP
-#ifndef ATCODER_TWOSAT_HPP
-#define ATCODER_TWOSAT_HPP 1
 #include <cassert>
 #include <vector>
 namespace atcoder {
-// Reference:
-// B. Aspvall, M. Plass, and R. Tarjan,
-// A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean
-// Formulas
 struct two_sat {
   public:
     two_sat() : _n(0), scc(0) {}
@@ -1859,4 +1743,3 @@ struct two_sat {
     internal::scc_graph scc;
 };
 }  // namespace atcoder
-#endif  // ATCODER_TWOSAT_HPP
