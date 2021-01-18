@@ -20,6 +20,7 @@ using vvpll = vector<vector<pll>>;
 #define pb push_back
 #define tostr to_string
 #define ALL(A) A.begin(), A.end()
+#define elif else if
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr ll INF = 1e18;
 constexpr ll MOD = 1000000007;
@@ -32,6 +33,8 @@ const string ascii_letters = ascii_lowercase + ascii_uppercase;
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
 template<typename T> vector<vector<vector<vector<T>>>> list4d(int N, int M, int L, int O, T init) { return vector<vector<vector<vector<T>>>>(N, vector<vector<vector<T>>>(M, vector<vector<T>>(L, vector<T>(O, init)))); }
+
+vector<ll> LIST(ll N) { vector<ll> A(N); rep(i, 0, N) cin >> A[i]; return A; }
 
 void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
@@ -61,11 +64,12 @@ char tochar(int num) { return '0' + num; }
 int ord(char c) { return (int)c; }
 char chr(int a) { return (char)a; }
 
-ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 
 template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
