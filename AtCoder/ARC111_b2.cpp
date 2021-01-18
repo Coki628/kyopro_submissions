@@ -1,7 +1,6 @@
 /**
- * ・自力AC！
- * ・グラフに帰着、UnionFind
- * ・chokudai_s002kとほぼ同じ。この時グラフに帰着して綺麗に解けるのが印象的だったので思い出せた。
+ * ・UnionFind非再帰版
+ * ・試しにやってみたけど、速度変わらず。まあC++は再帰でも速いからな。。
  */
 
 // #pragma GCC target("avx2")
@@ -102,12 +101,15 @@ struct UnionFind {
 
     // 根の検索(グループ番号)
     int find(int x) {
-        if (par[x] == x) {
-            return x;
-        } else {
-            par[x] = find(par[x]);
-            return par[x];
+        vector<int> t;
+        while (par[x] != x) {
+            t.pb(x);
+            x = par[x];
         }
+        for (int i : t) {
+            par[i] = x;
+        }
+        return par[x];
     }
 
     // 併合
