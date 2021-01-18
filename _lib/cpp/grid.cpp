@@ -147,7 +147,7 @@ template<typename T>
 void transpose(vector<vector<T>> &grid) {
     int H = grid.size();
     int W = grid[0].size();
-    list2d(res, W, H, T, 0);
+    auto res = list2d(W, H, (T)0);
     rep(i, 0, H) {
         rep(j, 0, W) {
             res[j][i] = grid[i][j];

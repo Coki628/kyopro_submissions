@@ -145,134 +145,6 @@ pair<mli, mil> compress(vector<ll> A) {
 }
 
 
-// 素因数分解
-template<typename T> 
-map<T, int> factorize(T x) {
-    map<T, int> res;
-    for (T i = 2; i*i <= x; i++) {
-        while (x%i == 0) {
-            x /= i;
-            res[i]++;
-        }
-        if (x == 1) break;
-    }
-    if (x != 1) res[x]++;
-    return res;
-}
-
-
-// ModInt
-template<int mod>
-struct ModInt {
-    int x;
-
-    ModInt() : x(0) {}
-
-    ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
-
-    ModInt &operator+=(const ModInt &p) {
-        if((x += p.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    ModInt &operator-=(const ModInt &p) {
-        if((x += mod - p.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    ModInt &operator*=(const ModInt &p) {
-        x = (int) (1LL * x * p.x % mod);
-        return *this;
-    }
-
-    ModInt &operator/=(const ModInt &p) {
-        *this *= p.inverse();
-        return *this;
-    }
-
-    ModInt operator-() const { return ModInt(-x); }
-
-    ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
-
-    ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
-
-    ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
-
-    ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
-
-    bool operator==(const ModInt &p) const { return x == p.x; }
-
-    bool operator!=(const ModInt &p) const { return x != p.x; }
-
-    ModInt inverse() const {
-        int a = x, b = mod, u = 1, v = 0, t;
-        while(b > 0) {
-        t = a / b;
-        swap(a -= t * b, b);
-        swap(u -= t * v, v);
-        }
-        return ModInt(u);
-    }
-
-    ModInt pow(int64_t n) const {
-        ModInt ret(1), mul(x);
-        while(n > 0) {
-        if(n & 1) ret *= mul;
-        mul *= mul;
-        n >>= 1;
-        }
-        return ret;
-    }
-
-    friend ostream &operator<<(ostream &os, const ModInt &p) {
-        return os << p.x;
-    }
-
-    friend istream &operator>>(istream &is, ModInt &a) {
-        int64_t t;
-        is >> t;
-        a = ModInt< mod >(t);
-        return (is);
-    }
-
-    static int get_mod() { return mod; }
-};
-using mint = ModInt<MOD>;
-
-
-// Mod数え上げnCr
-struct ModTools {
-
-    int MAX;
-    const int MOD;
-    vector<mint> fact, inv;
-
-    ModTools(int MOD) : MOD(MOD) {};
-
-    void build(int mx) {
-        MAX = ++mx;
-        fact.resize(MAX);
-        inv.resize(MAX);
-        fact[0] = fact[1] = 1;
-        rep(i, 2, MAX) {
-            fact[i] = fact[i-1] * i;
-        }
-        inv[MAX-1] = fact[MAX-1].inverse();
-        rrep(i, MAX-2, -1) {
-            inv[i] = inv[i+1] * (i+1);
-        }
-    }
-
-    mint nCr(int n, int r) {
-        if (n < r) return 0;
-        r = min(r, n-r);
-        mint num = fact[n];
-        mint den = inv[r] * inv[n-r];
-        return num * den;
-    }
-};
-
-
 // なんかこれ速いhashmapらしい
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
@@ -295,13 +167,16 @@ struct custom_hash {
 
 
 // 行列累乗
+template<typename T>
 struct MatPow {
 
-    vvl mat_dot(vvl A, vvl B) {
-        ll n1 = A.size();
-        ll n2 = A[0].size();
-        ll m2 = B[0].size();
-        vvl res(n1, vector<ll>(m2, 0));
+    MatPow() {}
+
+    vector<vector<T>> mat_dot(vector<vector<T>> &A, vector<vector<T>> &B) {
+        int n1 = A.size();
+        int n2 = A[0].size();
+        int m2 = B[0].size();
+        auto res = list2d(n1, m2, (T)0);
         rep(i, 0, n1) {
             rep(j, 0, m2) {
                 rep(k, 0, n2) {
@@ -312,9 +187,9 @@ struct MatPow {
         return res;
     }
     
-    vvl mat_pow(vvl mat, ll k) {
-        ll n = mat.size();
-        vvl res(n, vector<ll>(n, 0));
+    vector<vector<T>> mat_pow(vector<vector<T>> mat, ll k) {
+        int n = mat.size();
+        auto res = list2d(n, n, (T)0);
         rep(i, 0, n) {
             res[i][i] = 1;
         }
@@ -328,15 +203,17 @@ struct MatPow {
         return res;
     }
 
-    vector<ll> solve(vvl mat, vvl init, ll K) {
+    vector<T> solve(vector<vector<T>> mat, vector<T> &_init, ll K) {
+        int n = mat.size();
+        auto init = list2d(n, 1, (T)0);
+        rep(i, 0, n) init[i][0] = _init[i];
         auto res = mat_pow(mat, K);
         res = mat_dot(res, init);
-        ll n = mat.size();
-        vector<ll> ret(n, 0);
+        vector<T> ret(n, 0);
         rep(i, 0, n) {
             ret[i] = res[i][0];
         }
-    return ret;
+        return ret;
     }
 };
 

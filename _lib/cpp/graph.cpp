@@ -122,11 +122,13 @@ struct UnionFind {
 
     int n, groupcnt;
     vector<int> par, rank, size;
+    vector<bool> tree;
 
     UnionFind(int n) : n(n) {
         par.resize(n);
         rank.resize(n);
         size.resize(n, 1);
+        tree.resize(n, 1);
         rep(i, 0, n) par[i] = i;
         groupcnt = n;
     }
@@ -149,14 +151,22 @@ struct UnionFind {
         } else {
             par[x] = find(par[x]);
             return par[x];
-        }            
+        }
     }
 
     // 併合
     void merge(int a, int b) {
         int x = find(a);
         int y = find(b);
-        if (x == y) return;
+
+        if (x == y) {
+            tree[x] = false;
+            return;
+        }
+        if (!tree[x] or !tree[y]) {
+            tree[x] = tree[y] = false;
+        }
+
         groupcnt--;
         if (rank[x] < rank[y]) {
             par[x] = y;
@@ -165,7 +175,7 @@ struct UnionFind {
             par[y] = x;
             size[x] += size[y];
             if (rank[x] == rank[y]) {
-                rank[x] += 1;
+                rank[x]++;
             }
         }
     }
@@ -184,9 +194,85 @@ struct UnionFind {
     int get_size() {
         return groupcnt;
     }
+
+    // 木かどうかの判定
+    bool is_tree(int x) {
+        return tree[find(x)];
+    }
+
+    // 全ての根を取得
+    set<int> get_roots() {
+        set<int> res;
+        rep(i, 0, n) {
+            res.insert(find(i));
+        }
+        return res;
+    }
 };
 
 
+// 重み付きUF
+template<typename T>
+struct WeightedUnionFind {
+
+    int n;
+    vector<int> par, rank;
+    vector<T> weight;
+    
+    WeightedUnionFind(int n) : n(n) {
+        par.resize(n);
+        rank.resize(n);
+        // 根への距離を管理
+        weight.resize(n);
+        rep(i, 0, n) par[i] = i;
+    }
+
+    // 検索
+    int find(int x) {
+        if (par[x] == x) {
+            return x;
+        } else {
+            int y = find(par[x]);
+            // 親への重みを追加しながら根まで走査
+            weight[x] += weight[par[x]];
+            par[x] = y;
+            return y;
+        }
+    }
+
+    // 併合
+    void merge(int x, int y, ll w) {
+        int rx = find(x);
+        int ry = find(y);
+        if (rx == ry) return;
+
+        // xの木の高さ < yの木の高さ
+        if (rank[rx] < rank[ry]) {
+            par[rx] = ry;
+            weight[rx] = w - weight[x] + weight[y];
+        } else {
+            par[ry] = rx;
+            weight[ry] = - w - weight[y] + weight[x];
+            // 木の高さが同じだった場合の処理
+            if (rank[rx] == rank[ry]) {
+                rank[rx]++;
+            }
+        }
+    }
+
+    // 同じ集合に属するか
+    bool is_same(int x, int y) {
+        return find(x) == find(y);
+    }
+
+    // xからyへのコスト
+    T diff(int x, int y) {
+        return weight[x] - weight[y];
+    }
+};
+
+
+// 部分永続UF
 struct PartiallyPersistentUnionFind {
 
     int n;
