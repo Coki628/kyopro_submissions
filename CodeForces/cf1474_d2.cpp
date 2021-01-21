@@ -3,6 +3,7 @@
  * ・前後から累積で前計算
  * ・方針見て、多分こういうことかなって実装したけどまだWA。。
  * ・テストケース見えないし、何が悪いか分からん。。
+ * ・ちょっと直したら通った。。
  */
 
 // #pragma GCC target("avx2")
@@ -127,17 +128,9 @@ void solve() {
             return;
         }
         swap(A[i], A[i+1]);
-        ll a, b;
-        if (A[i] > A[i+1]) {
-            a = A[i]-A[i+1];
-            b = 0;
-        } else {
-            a = 0;
-            b = A[i+1]-A[i];
-        }
         if (i == 0) {
             if (acc2[i+2] != -1) {
-                if (check({a, b, acc2[i+2]})) {
+                if (check({A[i], A[i+1], acc2[i+2]})) {
                     YES();
                     return;
                 }
@@ -145,7 +138,7 @@ void solve() {
             
         } elif (i == N-2) {
             if (acc1[i-1] != -1) {
-                if (check({acc1[i-1], a, b})) {
+                if (check({acc1[i-1], A[i], A[i+1]})) {
                     YES();
                     return;
                 }
@@ -153,7 +146,7 @@ void solve() {
             
         } else {
             if (acc1[i-1] != -1 and acc2[i+2] != -1) {
-                if (check({acc1[i-1], a, b, acc2[i+2]})) {
+                if (check({acc1[i-1], A[i], A[i+1], acc2[i+2]})) {
                     YES();
                     return;
                 }
