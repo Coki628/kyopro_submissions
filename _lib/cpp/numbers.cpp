@@ -68,11 +68,27 @@ template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(A
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 
 
+// 素数列挙(エラトステネスの篩) 
+vector<ll> eratosthenes_sieve(ll n) {
+    
+    vector<ll> table(n+1), prime_list;
+    rep(i, 2, n+1) {
+        if (table[i] == 0) {
+            prime_list.pb(i);
+            for (ll j=i+i; j<=n; j+=i) {
+                table[j] = 1;
+            }
+        }
+    }
+    return prime_list;
+}
+
+
 // 素因数分解
-template<typename T> 
-map<T, int> factorize(T x) {
-    map<T, int> res;
-    for (T i = 2; i*i <= x; i++) {
+map<ll, ll> factorize(ll x) {
+
+    map<ll, ll> res;
+    for (ll i=2; i*i<=x; i++) {
         while (x%i == 0) {
             x /= i;
             res[i]++;
@@ -81,6 +97,22 @@ map<T, int> factorize(T x) {
     }
     if (x != 1) res[x]++;
     return res;
+}
+
+
+// 約数列挙(未verify)
+set<ll> divisors(ll n) {
+
+    set<ll> se;
+    se.insert(1);
+    se.insert(n);
+    for (ll i=2; i*i<=n; i++) {
+        if (n % i == 0) {
+            se.insert(i);
+            se.insert(n/i);
+        }
+    }
+    return se;
 }
 
 
@@ -97,18 +129,33 @@ ll ntod(string S, ll n) {
 
 
 // 10進数をN進数文字列に(負数対応版)
-string dton(ll num, ll n) {
+// string dton(ll num, ll n) {
+//     string res;
+//     while (abs(num) > 0) {
+//         ll m = num % abs(n);
+//         num -= m;
+//         res += tochar(m);
+//         num /= n;
+//     }
+//     reverse(ALL(res));
+//     if (res != "") {
+//         return res;
+//     } else {
+//         return "0";
+//     }
+// }
+string dton(ll num, ll n, char base='0') {
     string res;
     while (abs(num) > 0) {
         ll m = num % abs(n);
         num -= m;
-        res += tochar(m);
+        res += base+m;
         num /= n;
     }
     reverse(ALL(res));
     if (res != "") {
         return res;
     } else {
-        return "0";
+        return res+base;
     }
 }

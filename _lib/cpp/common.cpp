@@ -129,6 +129,46 @@ ll bisearch_max(ll mn, ll mx, const F &func) {
 }
 
 
+// 条件を満たす最小値を見つける二分探索(小数用)
+template<typename F>
+ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
+
+    ld ok = mx;
+    ld ng = mn;
+    rep(_, 0, times) {
+        ld mid = (ok+ng) / 2;
+        if (func(mid)) {
+            // 下を探しに行く
+            ok = mid;
+        } else {
+            // 上を探しに行く
+            ng = mid;
+        }
+    }
+    return ok;
+}
+
+
+// 条件を満たす最大値を見つける二分探索(小数用) 
+template<typename F>
+ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
+
+    ld ok = mn;
+    ld ng = mx;
+    rep(_, 0, times) {
+        ld mid = (ok+ng) / 2;
+        if (func(mid)) {
+            // 上を探しに行く
+            ok = mid;
+        } else {
+            // 下を探しに行く
+            ng = mid;
+        }
+    }
+    return ok;
+}
+
+
 // 座標圧縮
 typedef unordered_map<ll, int> mli;
 typedef unordered_map<int, ll> mil;
@@ -210,9 +250,7 @@ struct MatPow {
         auto res = mat_pow(mat, K);
         res = mat_dot(res, init);
         vector<T> ret(n, 0);
-        rep(i, 0, n) {
-            ret[i] = res[i][0];
-        }
+        rep(i, 0, n) ret[i] = res[i][0];
         return ret;
     }
 };

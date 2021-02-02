@@ -127,6 +127,13 @@ struct SegTree {
         }
     }
 
+    void build(vector<Monoid> &A) {
+        int n = A.size();
+        resize(n);
+        rep(i, 0, n) set(i, A[i]);
+        build();
+    }
+
     void update(int k, const Monoid &x) {
         k += sz;
         seg[k] = x;
@@ -153,7 +160,7 @@ struct SegTree {
     }
 
     // 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_fore(ll l, ll r, ll x, const G &compare) {
+    template<typename G> ll bisearch_fore(ll l, ll r, Monoid x, const G &compare) {
         ll ok = r + 1;
         ll ng = l - 1;
         while (ng+1 < ok) {
@@ -172,7 +179,7 @@ struct SegTree {
     }
 
     // 区間[l,r]で右から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_back(ll l, ll r, ll x, const G &compare) {
+    template<typename G> ll bisearch_back(ll l, ll r, Monoid x, const G &compare) {
         ll ok = l - 1;
         ll ng = r + 1;
         while (ok+1 < ng) {
@@ -244,6 +251,13 @@ struct SegTreeIndex {
         }
     }
 
+    void build(vector<Monoid> &A) {
+        int n = A.size();
+        resize(n);
+        rep(i, 0, n) set(i, A[i]);
+        build();
+    }
+
     void update(int k, const Monoid &x) {
         k += sz;
         seg[k] = {x, k-sz};
@@ -276,20 +290,21 @@ struct SegTreeIndex {
 
 
 // スパーステーブル：構築にO(NlogN)、区間最小(最大)をO(1)で取得
+template<typename T>
 struct SparseTable {
 
-    const function<ll(ll, ll)> func;
-    vvl dat;
+    const function<ll(T, T)> func;
+    vector<vector<T>> dat;
     vector<ll> height;
 
-    SparseTable(function<ll(ll, ll)> func) : func(func) {
+    SparseTable(function<T(T, T)> func) : func(func) {
     }
 
-    SparseTable(vector<ll> A, function<ll(ll, ll)> func) : func(func) {
+    SparseTable(vector<T> A, function<T(T, T)> func) : func(func) {
         build(A);
     }
 
-    void build(vector<ll> A) {
+    void build(vector<T> A) {
         ll N = A.size();
 
         ll h = 0;
@@ -314,14 +329,14 @@ struct SparseTable {
     }
 
     // 区間[l,r)でのmin,maxを取得
-    ll query(ll l, ll r) {
-        if (l >= r) assert(1);
+    T query(ll l, ll r) {
+        if (l >= r) assert(0);
         ll a = height[r-l];
         return func(dat[a][l], dat[a][r-(1<<a)]);
     }
 
     // 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_fore(ll l, ll r, ll x, const G &compare) {
+    template<typename G> ll bisearch_fore(ll l, ll r, T x, const G &compare) {
         ll ok = r + 1;
         ll ng = l - 1;
         while (ng+1 < ok) {
@@ -340,7 +355,7 @@ struct SparseTable {
     }
 
     // 区間[l,r]で右から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_back(ll l, ll r, ll x, const G &compare) {
+    template<typename G> ll bisearch_back(ll l, ll r, T x, const G &compare) {
         ll ok = l - 1;
         ll ng = r + 1;
         while (ok+1 < ng) {
@@ -1339,4 +1354,32 @@ vector<T> slide_min(const F &func, vector<T> &A, ll k, ll w=1, ll v=0) {
         }
     }
     return res;
+}
+
+
+// マージソートによる転倒数取得
+// 座圧BITより速いけど、参照渡しやめるとバグるので、
+// 元の列もまだ使う場合はコピーしてからやる。
+ll get_inversion(vector<ll> &a) {
+    int n = a.size();
+    if (n <= 1) { return 0; }
+
+    ll cnt = 0;
+    vector<ll> b(a.begin(), a.begin()+n/2);
+    vector<ll> c(a.begin()+n/2, a.end());
+
+    cnt += get_inversion(b);
+    cnt += get_inversion(c);
+
+    int ai = 0, bi = 0, ci = 0;
+    // merge の処理
+    while (ai < n) {
+        if ( bi < b.size() && (ci == c.size() || b[bi] <= c[ci]) ) {
+            a[ai++] = b[bi++];
+        } else {
+            cnt += n / 2 - bi;
+            a[ai++] = c[ci++];
+        }
+    }
+    return cnt;
 }

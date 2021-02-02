@@ -1,4 +1,4 @@
-////////// Suffix Array, Zアルゴ //////////
+////////// Suffix Array //////////
 // --- ACL start --- //
 #include <algorithm>
 #include <cassert>
@@ -214,6 +214,12 @@ std::vector<int> lcp_array(const std::string& s, const std::vector<int>& sa) {
     }
     return lcp_array(s2, sa);
 }
+}  // namespace atcoder
+// --- ACL end --- //
+
+
+////////// Zアルゴ(未verify) //////////
+// --- ACL start --- //
 template <class T> std::vector<int> z_algorithm(const std::vector<T>& s) {
     int n = int(s.size());
     if (n == 0) return {};
@@ -236,7 +242,6 @@ std::vector<int> z_algorithm(const std::string& s) {
     }
     return z_algorithm(s2);
 }
-}  // namespace atcoder
 // --- ACL end --- //
 
 
@@ -870,6 +875,7 @@ std::vector<long long> convolution_ll(const std::vector<long long>& a,
 
 
 ////////// floor sum //////////
+// --- ACL start --- //
 long long floor_sum(long long n, long long m, long long a, long long b) {
     long long ans = 0;
     if (a >= m) {
@@ -886,9 +892,11 @@ long long floor_sum(long long n, long long m, long long a, long long b) {
     ans += floor_sum(y_max, a, m, (a - x_max % a) % a);
     return ans;
 }
+// --- ACL end --- //
 
 
 ////////// 2-SAT //////////
+// --- ACL start --- //
 #include <algorithm>
 #include <cassert>
 #include <limits>
@@ -1037,6 +1045,7 @@ struct two_sat {
 
 
 ////////// CRT(中国剰余定理) //////////
+// --- ACL start --- //
 #include <cassert>
 #include <numeric>
 #include <type_traits>
@@ -1213,9 +1222,11 @@ std::pair<long long, long long> crt(const std::vector<long long>& r,
     return {r0, m0};
 }
 }  // namespace atcoder
+// --- ACL end --- //
 
 
 ////////// 最大流 //////////
+// --- ACL start --- //
 #include <algorithm>
 #include <cassert>
 #include <limits>
@@ -1366,3 +1377,126 @@ template <class Cap> struct mf_graph {
     std::vector<std::vector<_edge>> g;
 };
 }  // namespace atcoder
+// --- ACL end --- //
+
+
+////////// SCC(強連結成分分解) //////////
+// --- ACL start --- //
+#include <algorithm>
+#include <cassert>
+#include <limits>
+#include <queue>
+#include <vector>
+#include <algorithm>
+#include <utility>
+#include <vector>
+namespace atcoder {
+namespace internal {
+template <class E> struct csr {
+    std::vector<int> start;
+    std::vector<E> elist;
+    csr(int n, const std::vector<std::pair<int, E>>& edges)
+        : start(n + 1), elist(edges.size()) {
+        for (auto e : edges) {
+            start[e.first + 1]++;
+        }
+        for (int i = 1; i <= n; i++) {
+            start[i] += start[i - 1];
+        }
+        auto counter = start;
+        for (auto e : edges) {
+            elist[counter[e.first]++] = e.second;
+        }
+    }
+};
+}  // namespace internal
+}  // namespace atcoder
+#include <algorithm>
+#include <cassert>
+#include <vector>
+#include <algorithm>
+#include <utility>
+#include <vector>
+namespace atcoder {
+namespace internal {
+struct scc_graph {
+  public:
+    scc_graph(int n) : _n(n) {}
+    int num_vertices() { return _n; }
+    void add_edge(int from, int to) { edges.push_back({from, {to}}); }
+    std::pair<int, std::vector<int>> scc_ids() {
+        auto g = csr<edge>(_n, edges);
+        int now_ord = 0, group_num = 0;
+        std::vector<int> visited, low(_n), ord(_n, -1), ids(_n);
+        visited.reserve(_n);
+        auto dfs = [&](auto self, int v) -> void {
+            low[v] = ord[v] = now_ord++;
+            visited.push_back(v);
+            for (int i = g.start[v]; i < g.start[v + 1]; i++) {
+                auto to = g.elist[i].to;
+                if (ord[to] == -1) {
+                    self(self, to);
+                    low[v] = std::min(low[v], low[to]);
+                } else {
+                    low[v] = std::min(low[v], ord[to]);
+                }
+            }
+            if (low[v] == ord[v]) {
+                while (true) {
+                    int u = visited.back();
+                    visited.pop_back();
+                    ord[u] = _n;
+                    ids[u] = group_num;
+                    if (u == v) break;
+                }
+                group_num++;
+            }
+        };
+        for (int i = 0; i < _n; i++) {
+            if (ord[i] == -1) dfs(dfs, i);
+        }
+        for (auto& x : ids) {
+            x = group_num - 1 - x;
+        }
+        return {group_num, ids};
+    }
+    std::vector<std::vector<int>> scc() {
+        auto ids = scc_ids();
+        int group_num = ids.first;
+        std::vector<int> counts(group_num);
+        for (auto x : ids.second) counts[x]++;
+        std::vector<std::vector<int>> groups(ids.first);
+        for (int i = 0; i < group_num; i++) {
+            groups[i].reserve(counts[i]);
+        }
+        for (int i = 0; i < _n; i++) {
+            groups[ids.second[i]].push_back(i);
+        }
+        return groups;
+    }
+  private:
+    int _n;
+    struct edge {
+        int to;
+    };
+    std::vector<std::pair<int, edge>> edges;
+};
+}  // namespace internal
+}  // namespace atcoder
+namespace atcoder {
+struct scc_graph {
+  public:
+    scc_graph() : internal(0) {}
+    scc_graph(int n) : internal(n) {}
+    void add_edge(int from, int to) {
+        int n = internal.num_vertices();
+        assert(0 <= from && from < n);
+        assert(0 <= to && to < n);
+        internal.add_edge(from, to);
+    }
+    std::vector<std::vector<int>> scc() { return internal.scc(); }
+  private:
+    internal::scc_graph internal;
+};
+}  // namespace atcoder
+// --- ACL end --- //
