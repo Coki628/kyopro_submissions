@@ -1,0 +1,60 @@
+不等号と整数除算の対応
+x > a/b  : x > floor(a, b) + 1
+x >= a/b : x >= ceil(a, b)
+x <= a/b : x <= floor(a, b)
+x < a/b  : x < ceil(a, b) - 1
+
+にぶたん境界のindex
+x未満で最大：left-1
+x以上で最小：left
+x以下で最大：right-1
+x超で最小：right
+
+不等号とEPSの対応
+a < b  : a < b - EPS
+a <= b : a < b + EPS
+
+ある配列の区間[l,r)の真ん中index
+偶数長で小さい方にする
+ceil(l+r, 2) - 1
+偶数長で大きい方にする
+(l+r) // 2
+
+余りの反対みたいなんだけど割り切れたら0にするたまに出るあれ
+(mod - N % mod) % mod
+pythonだと↓これでもOK
+-N % mod
+
+足りるならある値、足りないならめいっぱいまで使うあれ
+use = min(a // cur, cnt)
+cnt -= use
+a -= use * cur
+use = min(a, b)
+ans += use * 2
+a -= use
+b -= use
+use = min(a-x, cnt)
+a -= use
+cnt -= use
+※色々バリエーションあるのであくまでベースとして
+
+C++の高速化に関する情報
+https://qiita.com/ageprocpp/items/7bda728d109c953ece3c
+https://codeforces.com/blog/entry/66279
+
+累積和同時進行DPの実装
+ABC183e,cf1452dを参考に。初期化は自明な場所を埋めるとして、基本は、
+dp[今] += acc[DPにさせたい遷移]
+acc[今] = dp[今] + acc[累積和にさせたい遷移]
+みたいにすればよさそう。
+
+一番下のビットを取り出す
+N & -N
+多分BITの中とかで出てくるのこれだね。
+
+MOD Kの累積和をバグらせないために
+左端-1とかやめよう。左端-Kだよ。
+
+あるビットを消したい時
+bit &= ~(1<<i)
+bit & ~(1<<i)
