@@ -78,7 +78,7 @@ vector<string> build_grid(int H, int W, char intv, int offset=1) {
 
 
 // グリッドBFS
-vvl bfs(vector<vector<char>> &grid, vector<pii> src) {
+vvl bfs(vector<string> &grid, vector<pii> src) {
 
     int H = grid.size();
     int W = grid[0].size();
