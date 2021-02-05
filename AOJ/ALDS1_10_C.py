@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 """
-参考：https://atarimae.biz/archives/23930#lm_mn
-・連鎖行列積
-・行列同士の掛け算
-・ほぼ写経。この遷移を自分で書ける気はしない。
+・DP基礎
+・LCS
+・AOJだとpypy使えなくて1000^2*20クエリ=2000万がしんどかったからC++でAC
 """
 
 import sys
@@ -13,23 +12,28 @@ def input(): return sys.stdin.readline().strip()
 def INT(): return int(input())
 def MAP(): return map(int, input().split())
 def LIST(): return list(map(int, input().split()))
-INF=float('inf')
 
-N=INT()
-P=[0]*(N+1)
-for i in range(N):
-    r,c=MAP()
-    if i==0:
-        P[i]=r
-    P[i+1]=c
+def LCS(A, B):
+    N = len(A)
+    M = len(B)
+    dp = [[0] * (M+1) for i in range(N+1)]
+    for i in range(N+1):
+        for j in range(M+1):
+            # 下に送る
+            if i < N:
+                dp[i+1][j] = max(dp[i+1][j], dp[i][j])
+            # 右に送る
+            if j < M:
+                dp[i][j+1] = max(dp[i][j+1], dp[i][j])
+            # 今回増やす文字が一致するなら、LCSが1文字増える
+            if i < N and j < M and A[i] == B[j]:
+                # 右下に送る
+                dp[i+1][j+1] = max(dp[i+1][j+1], dp[i][j]+1)
+    return dp[N][M]
 
-dp=[[INF]*(N+1) for i in range(N+1)]
-for i in range(1, N+1):
-    dp[i][i]=0
+Q=INT()
 
-for l in range(2, N+1):
-    for i in range(1, N-l+2):
-        j=i+l-1
-        for k in range(i, j):
-            dp[i][j]=min(dp[i][j], dp[i][k]+dp[k+1][j]+P[i-1]*P[k]*P[j])
-print(dp[1][N])
+for _ in range(Q):
+    a=input()
+    b=input()
+    print(LCS(a, b))
