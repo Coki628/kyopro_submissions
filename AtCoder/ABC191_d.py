@@ -2,6 +2,7 @@
 参考：http://w3e.kanazawa-it.ac.jp/math/category/kansuu/iroiro-kansu/henkan-tex.cgi?target=/math/category/kansuu/iroiro-kansu/ennohouteisiki.html
 ・自力ならず。。
 ・円の方程式、式変形、誤差
+・(x-a)^2+(y-b)^2=r^2 を式変形した y=+-√(r^2-(x-a)^2)+b を使う。
 ・ぱっと見、方針が生えなくて飛ばした。解いてる人少なかったし。
 　でもTLの話聞いたあと冷静に見たらほぼ式変形するだけだった。。
 ・x位置を決め打てば、その円の上下のy位置も定まるので、その間を差分取って数える。
