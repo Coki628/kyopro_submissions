@@ -15,9 +15,13 @@ using pii = pair<int, int>;
 using vvl = vector<vector<ll>>;
 using vvi = vector<vector<int>>;
 using vvpll = vector<vector<pll>>;
-#define rep(i, a, b) for (ll i=(a); i<(b); i++)
-#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
+#define name4(i, a, b, c, d, e, ...) e
+#define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
+#define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
+#define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
+#define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
 #define pb push_back
+#define mkp make_pair
 #define ALL(A) A.begin(), A.end()
 #define elif else if
 constexpr ll INF = 1e18;

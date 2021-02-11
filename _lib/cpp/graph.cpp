@@ -46,13 +46,15 @@ ll gcd(ll a, ll b) { return __gcd(a, b); }
 
 
 // BFS
-vector<int> bfs(vvi &nodes, int src) {
+vector<int> bfs(vvi &nodes, vector<int> src) {
 
     int N = nodes.size();
     vector<int> res(N, -1);
     queue<int> que;
-    res[src] = 0;
-    que.push(src);
+    for (int s : src) {
+        res[s] = 0;
+        que.push(s);
+    }
 
     while(!que.empty()) {
         int u = que.front(); que.pop();
@@ -88,8 +90,8 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
         }
         for (auto p: nodes[u]) {
             tie(v, cost) = p;
-            if (dist + cost < res[v]) {
-                res[v] = dist + cost;
+            if (dist+cost < res[v]) {
+                res[v] = dist+cost;
                 que.push({dist+cost, v});
             }
         }

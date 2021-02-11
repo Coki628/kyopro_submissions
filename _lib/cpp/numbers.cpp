@@ -100,7 +100,7 @@ map<ll, ll> factorize(ll x) {
 }
 
 
-// 約数列挙(未verify)
+// 約数列挙
 set<ll> divisors(ll n) {
 
     set<ll> se;

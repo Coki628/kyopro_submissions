@@ -304,3 +304,23 @@ ll randrange(ll l, ll r) {
     uniform_int_distribution<ll> rand(l, r-1);
     return rand(mt);
 }
+
+
+// 最小増加部分列
+template<typename T>
+vector<T> LIS(vector<T> &A, bool equal=false) {
+
+    auto compare = (not equal) ? [](T a, T b) { return a > b; } : [](T a, T b) { return a >= b; };
+    auto bisect = (not equal) ? bisect_left<T> : bisect_right<T>;
+    vector<T> res;
+    res.pb(A[0]);
+    ll n = A.size();
+    rep(i, 1, n) {
+        if (compare(A[i], res.back())) {
+            res.pb(A[i]);
+        } else {
+            res[bisect(res, A[i])] = A[i];
+        }
+    }
+    return res;
+}

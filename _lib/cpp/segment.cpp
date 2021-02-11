@@ -670,7 +670,7 @@ struct LazySegTree {
         dat[k] = f(reflect((k<<1)|0), reflect((k<<1)|1));
     }
 
-    void update(int a,int b,E x){
+    void update(int a, int b, E x){
         if (a>=b) return;
         thrust(a+=n);
         thrust(b+=n-1);
@@ -722,6 +722,22 @@ struct LazySegTree {
     int find(int st, C &check){
         T acc = ti;
         return find(st, check, acc, 1, 0, n);
+    }
+
+    void update(int i, E x) {
+        update(i, i+1, x);
+    }
+
+    T operator[](int i) {
+        return query(i, i+1);
+    }
+
+    void print(int n) {
+        rep(i, 0, n) {
+            cout << query(i, i+1);
+            if (i == n-1) cout << endl;
+            else cout << ' ';
+        }
     }
 };
 
