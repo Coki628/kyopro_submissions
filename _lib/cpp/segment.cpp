@@ -67,28 +67,6 @@ template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(A
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 
 
-// 2つの区間seg1,seg2から、重複を除いた長さを返す
-ll distinct(pll seg1, pll seg2) {
-    auto& [l1, r1] = seg1;
-    auto& [l2, r2] = seg2;
-    if (l1 > l2) {
-        swap(l1, l2);
-        swap(r1, r2);
-    }
-    ll ln1 = r1-l1+1;
-    ll ln2 = r2-l2+1;
-    if (ln1 <= 0 and ln2 <= 0) {
-        return 0;
-    } elif (ln2 <= 0 or l2 <= r1 and r2 <= r1) {
-        return ln1;
-    } elif (l2 <= r1 and r2 > r1) {
-        return ln1 + ln2 - (r1-l2+1);
-    } else {
-        return ln1 + ln2;
-    }
-}
-
-
 template<typename Monoid>
 struct SegTree {
     using F = function<Monoid(Monoid, Monoid)>;
@@ -1399,3 +1377,135 @@ ll get_inversion(vector<ll> &a) {
     }
     return cnt;
 }
+
+
+// 2つの閉区間seg1,seg2から、重複を除いた長さを返す
+ll merge_segment(pll seg1, pll seg2) {
+    auto& [l1, r1] = seg1;
+    auto& [l2, r2] = seg2;
+    if (l1 > l2) {
+        swap(l1, l2);
+        swap(r1, r2);
+    }
+    ll ln1 = r1-l1+1;
+    ll ln2 = r2-l2+1;
+    if (ln1 <= 0 and ln2 <= 0) {
+        return 0;
+    } elif (ln2 <= 0 or l2 <= r1 and r2 <= r1) {
+        return ln1;
+    } elif (l2 <= r1 and r2 > r1) {
+        return ln1 + ln2 - (r1-l2+1);
+    } else {
+        return ln1 + ln2;
+    }
+}
+
+
+// 閉区間の範囲を管理
+template<typename T>
+struct RangeSet{
+    set<pair<T,T>> st;
+    T TINF;
+ 
+    RangeSet(){
+        TINF=numeric_limits<T>::max()/2;
+        st.emplace(TINF,TINF);
+        st.emplace(-TINF,-TINF);
+    }
+    // [l,r] covered?
+    bool covered(T l,T r){
+        assert(l<=r);
+        auto ite=prev(st.lower_bound({l+1,l+1}));
+        return ite->first<=l and r<=ite->second;
+    }
+    bool covered(T x){
+        return covered(x,x);
+    }
+    // [l, r]がカバーされているなら，その区間を返す. されていないなら[-TINF,-TINF]を返す
+    pair<T,T> covered_by(T l,T r){
+        assert(l<=r);
+        auto ite=prev(st.lower_bound({l+1,l+1}));
+        if(ite->first<=l and r<=ite->second) return *ite;
+        return make_pair(-TINF,-TINF);
+    }
+    pair<T,T> covered_by(T x){
+        return covered_by(x,x);
+    }
+    // insert[l,r], 増加量を返す
+    T insert(T l,T r){
+        assert(l<=r);
+        auto ite=prev(st.lower_bound({l+1,l+1}));
+        if(ite->first<=l and r<=ite->second) return T(0);
+        T sum_erased=T(0);
+        if(ite->first<=l and l<=ite->second+1){
+            l=ite->first;
+            sum_erased+=ite->second-ite->first+1;
+            ite=st.erase(ite);
+        }else ite=next(ite);
+        while(r>ite->second){
+            sum_erased+=ite->second-ite->first+1;
+            ite=st.erase(ite);
+        }
+        if(ite->first-1<=r and r<=ite->second){
+            sum_erased+=ite->second-ite->first+1;
+            r=ite->second;
+            st.erase(ite);
+        }
+        st.emplace(l,r);
+        return r-l+1-sum_erased;
+    }
+    T insert(T x){
+        return insert(x,x);
+    }
+    // erase [l,r], 減少量を返す
+    T erase(T l,T r){
+        assert(l<=r);
+        auto ite=prev(st.lower_bound({l+1,l+1}));
+        if(ite->first<=l and r<=ite->second){
+            // 完全に1つの区間に包含されている
+            if(ite->first<l)  st.emplace(ite->first,l-1);
+            if(r<ite->second) st.emplace(r+1,ite->second);
+            st.erase(ite);
+            return r-l+1;
+        }
+ 
+        T ret=T(0);
+        if(ite->first<=l and l<=ite->second){
+            ret+=ite->second-l+1;// 消えた
+            if(ite->first<l) st.emplace(ite->first,l-1);
+            ite=st.erase(ite);// 次へ
+        }else ite=next(ite);
+        while(ite->second<=r){
+            ret+=ite->second-ite->first+1;
+            ite=st.erase(ite);
+        }
+        // 右端が区間の間にあるか
+        if(ite->first<=r and r<=ite->second){
+            ret+=r-ite->first+1;
+            if(r<ite->second) st.emplace(r+1,ite->second);
+            st.erase(ite);
+        }
+        return ret;
+    }
+    T erase(T x){
+        return erase(x,x);
+    }
+    // number of range
+    int size(){
+        return (int)st.size()-2;
+    }
+    // mex [x,~)
+    int mex(T x=0){
+        auto ite=prev(st.lower_bound({x+1,x+1}));
+        if(ite->first<=x and x<=ite->second) return ite->second+1;
+        else return x;
+    }
+    void output(){
+        cout<<"RangeSet : ";
+        for(auto &p:st){
+            if(p.first==-TINF or p.second==TINF) continue;
+            cout<<"["<<p.first<<", "<<p.second<<"] ";
+        }
+        cout<<"\n";
+    }
+};

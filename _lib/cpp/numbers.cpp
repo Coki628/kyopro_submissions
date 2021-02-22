@@ -68,19 +68,47 @@ template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(A
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 
 
+// 素数判定 
+bool is_prime(ll num) {
+
+    if (num < 2) {
+        return false;
+    }
+    if (set<ll>({2, 3, 5}).count(num)) {
+        return true;
+    }
+    if (num%2 == 0 or num%3 == 0 or num%5 == 0) {
+        return false;
+    }
+    // 疑似素数(2でも3でも割り切れない数字)で次々に割っていく
+    ll prime = 7;
+    ll step = 4;
+    ll num_sqrt = sqrt(num);
+    while (prime <= num_sqrt) {
+        if (num%prime == 0) {
+            return false;
+        }
+        prime += step;
+        step = 6-step;
+    }
+    return true;
+}
+
+
 // 素数列挙(エラトステネスの篩) 
 vector<ll> eratosthenes_sieve(ll n) {
-    
-    vector<ll> table(n+1), prime_list;
+
+    vector<bool> table(n+1);
+    vector<ll> primes;
     rep(i, 2, n+1) {
         if (table[i] == 0) {
-            prime_list.pb(i);
+            primes.pb(i);
             for (ll j=i+i; j<=n; j+=i) {
                 table[j] = 1;
             }
         }
     }
-    return prime_list;
+    return primes;
 }
 
 
@@ -158,4 +186,32 @@ string dton(ll num, ll n, char base='0') {
     } else {
         return res+base;
     }
+}
+
+
+// 整数で正確にsqrtを返す
+ll isqrt(ll n, bool ceil=false) {
+    ll ok = 0;
+    ll ng = 3037000500;
+    while (ng - ok > 1) {
+        ll m = ok + (ng - ok) / 2;
+        if (m * m <= n) {
+            ok = m;
+        } else {
+            ng = m;
+        }
+    }
+    if (ceil and ok*ok != n) ok++;
+    return ok;
+}
+
+
+// ピタゴラス数(未整備。重複削除とかgcdで互いに素とか考えてない。)
+vector<ll> calc(ll m, ll n) {
+    ll a = abs(pow(m, 2) - pow(n, 2));
+    ll b = 2*m*n;
+    ll c = pow(m, 2) + pow(n, 2);
+    vector<ll> res = {a, b, c};
+    sort(ALL(res));
+    return res;
 }

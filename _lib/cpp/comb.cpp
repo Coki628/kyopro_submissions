@@ -12,14 +12,17 @@ using pii = pair<int, int>;
 using vvl = vector<vector<ll>>;
 using vvi = vector<vector<int>>;
 using vvpll = vector<vector<pll>>;
-#define rep(i, a, b) for (ll i=(a); i<(b); i++)
-#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
+#define name4(i, a, b, c, d, e, ...) e
+#define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
+#define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
+#define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
+#define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
 #define pb push_back
-#define tostr to_string
+#define mkp make_pair
 #define ALL(A) A.begin(), A.end()
 #define elif else if
-// constexpr ll INF = LONG_LONG_MAX;
 constexpr ll INF = 1e18;
+// constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
 
 const string digits = "0123456789";
@@ -33,6 +36,7 @@ template<typename T> vector<vector<vector<vector<T>>>> list4d(int N, int M, int 
 
 vector<ll> LIST(ll N) { vector<ll> A(N); rep(i, 0, N) cin >> A[i]; return A; }
 
+void print() { cout << '\n'; }
 void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
@@ -51,9 +55,9 @@ pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
 template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
 template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
 
-template<typename T> T sum(vector<T> A) { T res = 0; for (T a: A) res += a; return res; }
-template<typename T> T max(vector<T> A) { return *max_element(ALL(A)); }
-template<typename T> T min(vector<T> A) { return *min_element(ALL(A)); }
+template<typename T> T sum(vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T max(vector<T> &A) { return *max_element(ALL(A)); }
+template<typename T> T min(vector<T> &A) { return *min_element(ALL(A)); }
 
 ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
 int toint(char num) { return num - '0'; }
@@ -61,6 +65,9 @@ char tochar(int num) { return '0' + num; }
 int ord(char c) { return (int)c; }
 char chr(int a) { return (char)a; }
 
+ll pow(int x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
@@ -70,6 +77,10 @@ ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 
 template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
+template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
+template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
+template<typename T> unordered_map<T, ll> Counter(vector<T> &A) { unordered_map<T, ll> res; for (T a : A) res[a]++; return res; }
+unordered_map<char, ll> Counter(string &S) { unordered_map<char, ll> res; for (char c : S) res[c]++; return res; }
 
 
 // ModInt
@@ -161,6 +172,7 @@ struct ModTools {
     ModTools(int MOD) : MOD(MOD) {};
 
     void build(int mx) {
+        // nCrならn、nHrならn+rまで作る
         MAX = ++mx;
         fact.resize(MAX);
         inv.resize(MAX);
@@ -169,7 +181,7 @@ struct ModTools {
             fact[i] = fact[i-1] * i;
         }
         inv[MAX-1] = fact[MAX-1].inverse();
-        rrep(i, MAX-2, -1) {
+        rep(i, MAX-2, -1, -1) {
             inv[i] = inv[i+1] * (i+1);
         }
     }
@@ -180,6 +192,10 @@ struct ModTools {
         mint num = fact[n];
         mint den = inv[r] * inv[n-r];
         return num * den;
+    }
+
+    mint nHr(int n, int r) {
+        return nCr(r+n-1, r);
     }
 };
 

@@ -20,6 +20,7 @@ using vvpll = vector<vector<pll>>;
 #define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
 #define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
 #define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
+#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
 #define mkp make_pair
 #define ALL(A) A.begin(), A.end()
@@ -37,7 +38,7 @@ template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vec
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
 template<typename T> vector<vector<vector<vector<T>>>> list4d(int N, int M, int L, int O, T init) { return vector<vector<vector<vector<T>>>>(N, vector<vector<vector<T>>>(M, vector<vector<T>>(L, vector<T>(O, init)))); }
 
-vector<ll> LIST(ll N) { vector<ll> A(N); rep(i, 0, N) cin >> A[i]; return A; }
+template<typename T=ll> vector<T> LIST(ll N) { vector<T> A(N); rep(i, 0, N) cin >> A[i]; return A; }
 
 void print() { cout << '\n'; }
 void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
@@ -45,6 +46,7 @@ void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
 template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
 template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
+template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
 template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
 
 void Yes() { print("Yes"); }
@@ -54,7 +56,7 @@ void NO() { print("NO"); }
 
 ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
 ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
-pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
+template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
 template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
 template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
 
