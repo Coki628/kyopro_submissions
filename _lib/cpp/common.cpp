@@ -193,8 +193,8 @@ pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
 
 
 // 座標圧縮
-typedef unordered_map<ll, int> mli;
-typedef unordered_map<int, ll> mil;
+using mli = unordered_map<ll, int>;
+using mil = unordered_map<int, ll>;
 pair<mli, mil> compress(vector<ll> A) {
     mli zipped;
     mil unzipped;

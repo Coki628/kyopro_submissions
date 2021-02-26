@@ -215,3 +215,14 @@ vector<ll> calc(ll m, ll n) {
     sort(ALL(res));
     return res;
 }
+
+
+// 桁和：O(logN)
+ll digit_sum(ll n) {
+    ll res = 0;
+    while (n > 0) {
+        res += n % 10;
+        n /= 10;
+    }
+    return res;
+}

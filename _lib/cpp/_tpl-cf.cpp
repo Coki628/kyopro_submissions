@@ -28,6 +28,7 @@ using vvpll = vector<vector<pll>>;
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
+constexpr ld EPS = 1e-10;
 
 const string digits = "0123456789";
 const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";

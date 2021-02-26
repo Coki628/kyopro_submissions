@@ -190,7 +190,7 @@ struct SegTreeIndex {
     const F f;
     const Monoid M1;
 
-    pair<Monoid, int> compare(pair<Monoid, int> a, pair<Monoid, int> b) {
+    pair<Monoid, int> compare(const pair<Monoid, int> &a, const pair<Monoid, int> &b) {
         if (a.first == b.first) {
             // 同値はindexが小さい方優先
             if (a.second <= b.second) {
