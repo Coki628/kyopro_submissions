@@ -1,0 +1,5 @@
+{
+    "python.linting.pylintEnabled": true,
+    // change python path accordingly for new env
+    "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python"
+}
