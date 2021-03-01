@@ -1,0 +1,10 @@
+参考：https://ferin-tech.hatenablog.com/entry/2017/02/22/223141
+　　　http://itohjam.hatenablog.com/entry/2014/05/03/155329
+　　　https://qiita.com/tac0x2a/items/5ab73f09d5f2bec4cdf8
+
+Greedってやつ入れた。これのがめっちゃいい。
+参考：https://kkt89.hatenablog.com/entry/2020/04/23/Topcoder%E3%81%AE%E5%85%A5%E9%96%80%E8%A8%98%E4%BA%8B%E3%82%92%E7%9B%AE%E6%8C%87%E3%81%97%E3%81%9F%E3%82%82%E3%81%AE
+　　　https://imulan.hatenablog.jp/entry/2016/01/21/154640
+
+Topcoderの注意点
+・C++古い。構造化束縛は不可。
