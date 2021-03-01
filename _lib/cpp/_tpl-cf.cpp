@@ -119,9 +119,13 @@ int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
 
+    // single test case
+    // solve();
+
+    // multi test cases
     int T;
     cin >> T;
-    while(T--) solve();
+    while (T--) solve();
 
     return 0;
 }
