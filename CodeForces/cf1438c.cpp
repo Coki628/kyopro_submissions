@@ -10,6 +10,9 @@
  * ・さて、無事ACしたはいいが、みんなの話聞いたらこれもギャグだったそう。
  * 　市松模様に偶奇で分ければどこも被らない。言われたら確かにーーー、ってなる。
  * 　今日BもCもそんなんだったな。。
+ * ・2-SATの条件の書き方について追記。
+ * 　AかB、どっちでもいいけどどっちかはtrueでどっちかはfalse、みたいな時は、
+ * 　A&!B or !A&B -> A|B and !A|!B とできる。
  */
 
 #include <bits/stdc++.h>
@@ -212,6 +215,7 @@ void solve() {
             if (h != N-1) {
                 j = gridtoid(h+1, w, M);
                 if (grid[h][w] == grid[h+1][w]) {
+                    // A&!B or !A&B -> A|B and !A|!B
                     ts.add_clause(i, true, j, true);
                     ts.add_clause(i, false, j, false);
                 }
