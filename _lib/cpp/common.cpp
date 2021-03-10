@@ -243,7 +243,7 @@ struct MatPow {
         rep(i, 0, n1) {
             rep(j, 0, m2) {
                 rep(k, 0, n2) {
-                    res[i][j] = (res[i][j] + (A[i][k] * B[k][j]) % MOD) % MOD;
+                    res[i][j] += A[i][k]*B[k][j];
                 }
             }
         }

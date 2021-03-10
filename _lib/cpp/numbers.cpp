@@ -128,19 +128,48 @@ map<ll, ll> factorize(ll x) {
 }
 
 
-// 約数列挙
-set<ll> divisors(ll n) {
+// 高速素因数分解(osa_k法)、前計算
+vector<ll> eratosthenes_sieve(ll n) {
 
-    set<ll> se;
-    se.insert(1);
-    se.insert(n);
-    for (ll i=2; i*i<=n; i++) {
-        if (n % i == 0) {
-            se.insert(i);
-            se.insert(n/i);
+    vector<ll> table(n+1);
+    table[1] = 1;
+    rep(i, 2, n+1) {
+        if (table[i] == 0) {
+            for (ll j=i; j<=n; j+=i) {
+                table[j] = i;
+            }
         }
     }
-    return se;
+    return table;
+}
+
+// 高速素因数分解(osa_k法)
+map<ll, ll> factorize(vector<ll> &table, ll x) {
+
+    map<ll, ll> res;
+    while (x != table[x]) {
+        res[table[x]]++;
+        x /= table[x];
+    }
+    if (x != 1) {
+        res[x]++;
+    }
+    return res;
+}
+
+
+// 約数列挙
+vector<ll> divisors(ll n) {
+
+    vector<ll> res;
+    for (ll i=1; i*i<=n; i++) {
+        if (n%i == 0) {
+            res.pb(i);
+            if (n/i != i) res.pb(n/i);
+        }
+    }
+    sort(ALL(res));
+    return res;
 }
 
 

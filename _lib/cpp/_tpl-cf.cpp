@@ -28,6 +28,7 @@ using vvpll = vector<vector<pll>>;
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
+// constexpr int MOD = 998244353;
 constexpr ld EPS = 1e-10;
 
 const string digits = "0123456789";
@@ -108,6 +109,7 @@ template<int mod> struct ModInt {
     friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
     friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
     static int get_mod() { return mod; }
+    // operator int() const { return x; }
 };
 using mint = ModInt<MOD>;
 
