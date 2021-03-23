@@ -402,7 +402,7 @@ struct ReRooting {
 // 　　乗せたセグ木の演算にマージ方向がある場合などは注意して処理する。
 struct HeavyLightDecomposition {
 public:
-    vvl &g;
+    vvi &g;
     vector< int > sz, in, out, head, rev, par, dep;
 
     void build() {
@@ -484,7 +484,7 @@ public:
         return es;
     }
 
-    explicit HeavyLightDecomposition(vvl &g) : g(g) {}
+    explicit HeavyLightDecomposition(vvi &g) : g(g) {}
 
     private:
     void dfs_sz(int idx, int p, int d) {

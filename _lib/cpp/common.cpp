@@ -1,3 +1,7 @@
+// #pragma GCC target("avx2")
+// #pragma GCC optimize("O3")
+// #pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -8,43 +12,103 @@ using pii = pair<int, int>;
 using vvl = vector<vector<ll>>;
 using vvi = vector<vector<int>>;
 using vvpll = vector<vector<pll>>;
-#define rep(i, a, b) for (ll i=(a); i<(b); i++)
+#define name4(i, a, b, c, d, e, ...) e
+#define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
+#define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
+#define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
+#define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
 #define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
-#define tostr to_string
-constexpr ll INF = LONG_LONG_MAX;
+#define mkp make_pair
+#define ALL(A) A.begin(), A.end()
+#define elif else if
+constexpr ll INF = 1e18;
+// constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
+// constexpr int MOD = 998244353;
+constexpr ld EPS = 1e-10;
 
-template<typename T> vector<vector<T>> list2d(int N, int M, T init) { vector<vector<T>> res(N, vector<T>(M, init)); return res; }
-template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { vector<vector<vector<T>>> res(N, vector<vector<T>>(M, vector<T>(L, init))); return res; }
+const string digits = "0123456789";
+const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string ascii_letters = ascii_lowercase + ascii_uppercase;
 
+template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
+template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
+template<typename T> vector<vector<vector<vector<T>>>> list4d(int N, int M, int L, int O, T init) { return vector<vector<vector<vector<T>>>>(N, vector<vector<vector<T>>>(M, vector<vector<T>>(L, vector<T>(O, init)))); }
+
+template<typename T=ll> vector<T> LIST(ll N) { vector<T> A(N); rep(i, 0, N) cin >> A[i]; return A; }
+
+void print() { cout << '\n'; }
 void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
 template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
 template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
+template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
 template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
 
-template<typename T> inline bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
-template<typename T> inline bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+void Yes() { print("Yes"); }
+void No() { print("No"); }
+void YES() { print("YES"); }
+void NO() { print("NO"); }
 
-ll sum(vector<ll> A) { ll res = 0; for (ll a: A) res += a; return res; }
-ll max(vector<ll> A) { ll res = -INF; for (ll a: A) chmax(res, a); return res; }
-ll min(vector<ll> A) { ll res = INF; for (ll a: A) chmin(res, a); return res; }
+ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
+ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
+template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
+template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+
+template<typename T> T sum(vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T max(vector<T> &A) { return *max_element(ALL(A)); }
+template<typename T> T min(vector<T> &A) { return *min_element(ALL(A)); }
 
 ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
 int toint(char num) { return num - '0'; }
 char tochar(int num) { return '0' + num; }
+int ord(char c) { return (int)c; }
+char chr(int a) { return (char)a; }
 
-inline ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
-inline ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
-
-inline ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
-inline ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
-pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
+ll pow(int x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
+
+template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
+template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
+template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
+template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
+template<typename T> unordered_map<T, ll> Counter(vector<T> &A) { unordered_map<T, ll> res; for (T a : A) res[a]++; return res; }
+unordered_map<char, ll> Counter(string &S) { unordered_map<char, ll> res; for (char c : S) res[c]++; return res; }
+
+template<int mod> struct ModInt {
+    int x;
+    ModInt() : x(0) {}
+    ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+    ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; }
+    ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; }
+    ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; }
+    ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; }
+    ModInt operator-() const { return ModInt(-x); }
+    ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+    ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+    ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+    ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+    bool operator==(const ModInt &p) const { return x == p.x; }
+    bool operator!=(const ModInt &p) const { return x != p.x; }
+    ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
+    ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
+    friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
+    friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); }
+    static int get_mod() { return mod; }
+    // operator int() const { return x; }
+};
+using mint = ModInt<MOD>;
 
 
 template<typename T>
@@ -64,29 +128,6 @@ unordered_map<char, ll> Counter(string &S) {
     }
     return res;
 }
-
-
-template<typename T>
-vector<T> accumulate(vector<T> &A) {
-    int N = A.size();
-    if (!N) return {};
-    vector<T> res(N);
-    res[0] = A[0];
-    rep(i, 1, N) res[i] = res[i-1] + A[i];
-    return res;
-}
-
-
-template<typename T, typename F>
-vector<T> accumulate(vector<T> &A, const F &func) {
-    int N = A.size();
-    if (!N) return {};
-    vector<T> res(N);
-    res[0] = A[0];
-    rep(i, 1, N) res[i] = func(res[i-1], A[i]);
-    return res;
-}
-// accumulate<ll>(A, [](ll a, ll b) { return min(a, b); });
 
 
 // 条件を満たす最小値を見つける二分探索
@@ -279,6 +320,58 @@ struct MatPow {
 };
 
 
+// ガウス・ジョルダン法(連立方程式の解) ※未verify
+template<typename T>
+vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
+    int N = A.size();
+    auto B = list2d(N, N+1, 0);
+    rep(i, 0, N) {
+        rep(j, 0, N) {
+            B[i][j] = A[i][j];
+        }
+    }
+    // 行列Aの後ろにbを並べ同時に処理する
+    rep(i, 0, N) {
+        B[i][N] = b[i];
+    }
+
+    rep(i, 0, N) {
+        // 注目している変数の係数の絶対値が大きい式をi番目に持ってくる
+        int pivot = i;
+        rep(j, i, N) {
+            if (abs(B[j][i]) > abs(B[pivot][i])) {
+                pivot = j;
+            }
+        }
+        B[i], B[pivot] = B[pivot], B[i];
+
+        // 解がないか、一意でない
+        if (abs(B[i][i]) < EPS) {
+            return vector<T>();
+        }
+        // 注目している変数の係数を1にする
+        rep(j, i+1, N+1) {
+            B[i][j] /= B[i][i];
+        }
+        rep(j, 0, N) {
+            if (i != j) {
+                // j番目の式からi番目の変数を消去
+                rep(k, i+1, N+1) {
+                    B[j][k] -= B[j][i] * B[i][k];
+                }
+            }
+        }
+    }
+
+    vector<T> res(N);
+    // 後ろに並べたbが解になる
+    rep(i, 0, N) {
+        res[i] = B[i][N];
+    }
+    return res;
+}
+
+
 // ダブリング
 vvl doubling(int MXLOG, vector<ll> &A) {
 
@@ -337,4 +430,16 @@ ll ask(ll i) {
 
 void answer(ll i) {
     cout << "! " << i+1 << endl;
+}
+
+
+template<typename T1, typename T2>
+pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) {
+    ll N = A.size();
+    pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)};
+    rep(i, N) {
+        res.first[i] = A[i].first;
+        res.second[i] = A[i].second;
+    }
+    return res;
 }

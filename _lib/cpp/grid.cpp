@@ -83,7 +83,7 @@ vvl bfs(vector<string> &grid, vector<pii> src) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(H, W, INF);
-    const vector<pii> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     queue<pii> que;
     for (auto [h, w] : src) {
         que.push({h, w});
@@ -114,7 +114,7 @@ vvl dijkstra(vvl &grid, pii src) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(H, W, INF);
-    const vector<pii> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
     priority_queue<P, vector<P>, greater<P>> que;
     auto [sh, sw] = src;
     que.push({0, sh, sw});
