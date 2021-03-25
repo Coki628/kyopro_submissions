@@ -35,6 +35,8 @@
  * 　まあ50万に座圧と遅延セグのlogはかなり重そうだけど、それでももう少し速くなりそうだよなー。
  * ・あと座圧ね、0を追加して、半開区間っぽくするために、
  * 　「その値のところは含まない、その手前まで」みたいにしてある。
+ * ・セグ木の初期化をちょっといじったらTLEするようになってしまった。
+ * 　そこはボトルネックじゃない気がするんだけど、どうして…。
  */
 
 // #pragma GCC target("avx2")
@@ -335,12 +337,11 @@ void solve() {
     rep(i, 0, M-1) {
         B[i] = unzp[i+1]-unzp[i];
     }
-    vector<pmm> B2(M);
-    //  値と圧縮した区間長をペアで持つ
-    rep(i, M) B2[i] = {0, B[i]};
-
     LazySegTree<pmm, Func> seg(f, g, h, {0, 0}, {0, 0, 0});
-    seg.build(B2);
+    seg.build(M);
+    // 値と圧縮した区間長をペアで持つ
+    rep(i, M) seg.set_val(i, {0, B[i]});
+
     seg.update(0, zp[A[1]], {1, 0, 0});
     rep(i, 2, N+1) {
         mint sm = seg.query(0, M).first;
