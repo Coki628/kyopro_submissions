@@ -1,6 +1,5 @@
-/**
- * ・C++でのGoogle提出確認。今年はちゃんとGCJ予選出るぞー。
- */
+/*
+*/
 
 // #pragma GCC target("avx2")
 // #pragma GCC optimize("O3")
@@ -26,6 +25,7 @@ using vvpll = vector<vector<pll>>;
 #define mkp make_pair
 #define ALL(A) A.begin(), A.end()
 #define elif else if
+#define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
@@ -118,18 +118,7 @@ template<int mod> struct ModInt {
 using mint = ModInt<MOD>;
 
 void solve() {
-    ll N, K;
-    cin >> N >> K;
-    string S;
-    cin >> S;
-
-    ll cnt = 0;
-    rep(i, N/2) {
-        ll j = N-i-1;
-        if (S[i] != S[j]) cnt++;
-    }
-    ll ans = abs(K-cnt);
-    print(ans);
+    
 }
 
 int main() {
@@ -143,7 +132,7 @@ int main() {
     int T;
     cin >> T;
     rep(i, 1, T+1) {
-        cout << "Case #" + to_string(i) + ": ";
+        cout << "Case #" + tostr(i) + ": ";
         solve();
     }
     return 0;

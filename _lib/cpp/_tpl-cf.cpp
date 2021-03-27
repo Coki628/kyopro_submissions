@@ -1,5 +1,5 @@
-/**
- */
+/*
+*/
 
 // #pragma GCC target("avx2")
 // #pragma GCC optimize("O3")
@@ -25,6 +25,7 @@ using vvpll = vector<vector<pll>>;
 #define mkp make_pair
 #define ALL(A) A.begin(), A.end()
 #define elif else if
+#define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr ll MOD = 1000000007;
@@ -79,6 +80,9 @@ ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
+int bit_length(ll x) { return floor(log2(x))+1; }
+string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0'; x >>= 1; } reverse(ALL(res)); if(res == "") res += '0'; return res; }
+
 ll gcd(ll a, ll b) { return __gcd(a, b); }
 ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 
