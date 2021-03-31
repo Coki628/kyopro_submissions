@@ -168,7 +168,7 @@ vector<ll> divisors(ll n) {
             if (n/i != i) res.pb(n/i);
         }
     }
-    sort(ALL(res));
+    // sort(ALL(res));
     return res;
 }
 

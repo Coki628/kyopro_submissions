@@ -443,3 +443,19 @@ pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) {
     }
     return res;
 }
+
+
+string bin(ll x) {
+    string res;
+    while (x) {
+        if (x & 1) {
+            res += '1';
+        } else {
+            res += '0';
+        }
+        x >>= 1;
+    }
+    reverse(ALL(res));
+    if (res == "") res += '0';
+    return res;
+}

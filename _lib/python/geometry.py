@@ -237,3 +237,14 @@ def dim2formula(a, b, c):
     # 解なしはNoneを返却
     except ValueError:
         return None, None
+
+# 回転行列で座標s,tを回転
+def rotate(s, t, dig):
+    from math import sin, cos, radians
+
+    x1, y1 = s
+    x2, y2 = t
+    # sを軸としてtを左回りにdig度回転させた座標(x3,y3)
+    x3 = x1 + (x2-x1) * cos(radians(dig)) - (y2-y1) * sin(radians(dig))
+    y3 = y1 + (x2-x1) * sin(radians(dig)) + (y2-y1) * cos(radians(dig))
+    return (x3, y3)
