@@ -5,6 +5,7 @@
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
 
+#define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -31,6 +32,7 @@ constexpr ll INF = 1e18;
 constexpr ll MOD = 1000000007;
 // constexpr int MOD = 998244353;
 constexpr ld EPS = 1e-10;
+constexpr ld PI = M_PI;
 
 const string digits = "0123456789";
 const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
@@ -108,6 +110,7 @@ template<int mod> struct ModInt {
     ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
     bool operator==(const ModInt &p) const { return x == p.x; }
     bool operator!=(const ModInt &p) const { return x != p.x; }
+    bool operator<(const ModInt &p) const { return x < p.x; }
     ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
     ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
     friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }
@@ -124,6 +127,7 @@ void solve() {
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
+    // cout << fixed << setprecision(15);
 
     // single test case
     // solve();
