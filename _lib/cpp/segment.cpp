@@ -1,3 +1,7 @@
+/*
+・ライブラリ：区間
+*/
+
 // #pragma GCC target("avx2")
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
@@ -758,7 +762,7 @@ struct LazySegTree {
     }
 
     template<typename C>
-    int find(int st, C &check, T &acc, int k, int l, int r){
+    int find(int st, const C &check, T &acc, int k, int l, int r){
         if (l+1==r) {
             acc = f(acc, reflect(k));
             return check(acc)?k-n:-1;
@@ -776,7 +780,7 @@ struct LazySegTree {
     }
 
     template<typename C>
-    int find(int st, C &check){
+    int find(int st, const C &check){
         T acc = ti;
         return find(st, check, acc, 1, 0, n);
     }
@@ -1343,7 +1347,7 @@ public:
         }
         return v;
     }
-    inline T get_sum(int a, int b, int k=1) {
+    inline T get_sum(int a, int b, int k = 1) {
         down.push(1);
         long long v = 0;
         while(down.size()) {

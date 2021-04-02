@@ -1,5 +1,6 @@
-/**
- */
+/*
+・ライブラリ：文字列
+*/
 
 // #pragma GCC target("avx2")
 // #pragma GCC optimize("O3")

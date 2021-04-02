@@ -1,3 +1,7 @@
+/*
+・ライブラリ：グリッド
+*/
+
 #include <bits/stdc++.h>
 using namespace std;
 
