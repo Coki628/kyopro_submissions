@@ -88,12 +88,25 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 ll gcd(ll a, ll b) { return __gcd(a, b); }
 ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 
+ld degrees(ld radians) { return radians * 180.0 / PI; }
+ld radians(ld degrees) { return degrees * PI / 180.0; }
+
 template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
 template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
+
 template<typename T> unordered_map<T, ll> Counter(vector<T> &A) { unordered_map<T, ll> res; for (T a : A) res[a]++; return res; }
 unordered_map<char, ll> Counter(string &S) { unordered_map<char, ll> res; for (char c : S) res[c]++; return res; }
+template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
+
+template<typename T> struct Accumulate {
+    vector<T> acc; int N;
+    Accumulate(vector<T> &A) { N = A.size(); acc = A; rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
+    T query(int l, int r) { assert(0 <= l and l <= N and 0 <= r and r <= N); return acc[r]-acc[l]; }
+    T get(int i) { return query(i, i+1); }
+    T operator[](int i) { return get(i); }
+};
 
 template<int mod> struct ModInt {
     int x;
@@ -121,7 +134,7 @@ template<int mod> struct ModInt {
 using mint = ModInt<MOD>;
 
 void solve() {
-    
+
 }
 
 int main() {
