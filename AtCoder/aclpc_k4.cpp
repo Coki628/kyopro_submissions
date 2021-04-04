@@ -192,7 +192,7 @@ auto h = [](Func f1, Func f2) -> Func {
 // 合成関数
 // h(h(x))
 // c*h(x) + d
-// c*(ax+b) + d5
+// c*(ax+b) + d
 // c*ax + c*b + d
 // {c*a, c*b + d}
 
