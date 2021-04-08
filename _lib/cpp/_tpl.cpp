@@ -134,7 +134,7 @@ template<int mod> struct ModInt {
 using mint = ModInt<MOD>;
 
 void solve() {
-
+    
 }
 
 int main() {

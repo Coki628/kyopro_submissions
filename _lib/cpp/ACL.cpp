@@ -216,6 +216,15 @@ std::vector<int> lcp_array(const std::string& s, const std::vector<int>& sa) {
 }
 }  // namespace atcoder
 // --- ACL end --- //
+////////// floor sum //////////
+
+
+
+
+
+
+
+
 
 
 ////////// Zアルゴ(未verify) //////////
@@ -243,6 +252,15 @@ std::vector<int> z_algorithm(const std::string& s) {
     return z_algorithm(s2);
 }
 // --- ACL end --- //
+////////// Zアルゴ(未verify) //////////
+
+
+
+
+
+
+
+
 
 
 ////////// FFT, MODのFFT //////////
@@ -872,6 +890,15 @@ std::vector<long long> convolution_ll(const std::vector<long long>& a,
 }
 }  // namespace atcoder
 // --- ACL end --- //
+////////// FFT, MODのFFT //////////
+
+
+
+
+
+
+
+
 
 
 ////////// floor sum //////////
@@ -893,6 +920,15 @@ long long floor_sum(long long n, long long m, long long a, long long b) {
     return ans;
 }
 // --- ACL end --- //
+////////// floor sum //////////
+
+
+
+
+
+
+
+
 
 
 ////////// 2-SAT //////////
@@ -1042,6 +1078,16 @@ struct two_sat {
     internal::scc_graph scc;
 };
 }  // namespace atcoder
+// --- ACL end --- //
+////////// 2-SAT //////////
+
+
+
+
+
+
+
+
 
 
 ////////// CRT(中国剰余定理) //////////
@@ -1223,6 +1269,15 @@ std::pair<long long, long long> crt(const std::vector<long long>& r,
 }
 }  // namespace atcoder
 // --- ACL end --- //
+////////// CRT(中国剰余定理) //////////
+
+
+
+
+
+
+
+
 
 
 ////////// 最大流 //////////
@@ -1378,6 +1433,15 @@ template <class Cap> struct mf_graph {
 };
 }  // namespace atcoder
 // --- ACL end --- //
+////////// 最大流 //////////
+
+
+
+
+
+
+
+
 
 
 ////////// 最小費用流 //////////
@@ -1583,6 +1647,15 @@ template <class Cap, class Cost> struct mcf_graph {
 };
 }  // namespace atcoder
 // --- ACL end --- //
+////////// 最小費用流 //////////
+
+
+
+
+
+
+
+
 
 
 ////////// SCC(強連結成分分解) //////////
@@ -1705,3 +1778,4 @@ struct scc_graph {
 };
 }  // namespace atcoder
 // --- ACL end --- //
+////////// SCC(強連結成分分解) //////////
