@@ -40,23 +40,22 @@ template<typename T> struct Accumulate {
 };
 
 
-template<typename Monoid>
-struct SegTree {
-    using F = function<Monoid(Monoid, Monoid)>;
-    
+template<typename Monoid, typename F>
+struct SegmentTree {
+
     int sz;
     vector<Monoid> seg;
-    
+
     const F f;
     const Monoid M1;
-    
-    SegTree(int n, const F f, const Monoid &M1) : f(f), M1(M1) {
+
+    SegmentTree(int n, const F f, const Monoid &M1) : f(f), M1(M1) {
         sz = 1;
         while(sz < n) sz <<= 1;
         seg.assign(2 * sz, M1);
     }
 
-    SegTree(const F f, const Monoid &M1) : f(f), M1(M1) {}
+    SegmentTree(const F f, const Monoid &M1) : f(f), M1(M1) {}
 
     void resize(int n) {
         sz = 1;
@@ -67,11 +66,11 @@ struct SegTree {
     void clear() {
         seg.clear();
     }
-    
+
     void set(int k, const Monoid &x) {
         seg[k+sz] = x;
     }
-    
+
     void build() {
         for(int k = sz - 1; k > 0; k--) {
             seg[k] = f(seg[2*k], seg[2*k+1]);
@@ -92,7 +91,7 @@ struct SegTree {
             seg[k] = f(seg[2*k], seg[2*k+1]);
         }
     }
- 
+
     Monoid query(int a, int b) {
         Monoid L = M1, R = M1;
         for(a += sz, b += sz; a < b; a >>= 1, b >>= 1) {
@@ -110,52 +109,119 @@ struct SegTree {
         return seg[1];
     }
 
-    // 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_fore(ll l, ll r, Monoid x, const G &compare) {
-        ll ok = r + 1;
-        ll ng = l - 1;
-        while (ng+1 < ok) {
-            ll mid = (ok+ng) / 2;
-            if (compare(query(l, mid+1), x)) {
-                ok = mid;
-            } else {
-                ng = mid;
-            }
-        }
-        if (ok != r + 1) {
-            return ok;
-        } else {
-            return -1;
+    void print(int n) {
+        rep(i, n) {
+            cout << query(i, i+1);
+            if (i == n-1) cout << endl;
+            else cout << ' ';
         }
     }
 
-    // 区間[l,r]で右から最初にxに対して比較の条件を満たすような値が出現する位置
-    template<typename G> ll bisearch_back(ll l, ll r, Monoid x, const G &compare) {
-        ll ok = l - 1;
-        ll ng = r + 1;
-        while (ok+1 < ng) {
-            ll mid = (ok+ng) / 2;
-            if (compare(query(mid, r+1), x)) {
-                ok = mid;
-            } else {
-                ng = mid;
-            }
+    template<typename C>
+    int find_subtree(int a, const C &check, Monoid &M, bool type) {
+        while(a < sz) {
+            Monoid nxt = type ? f(seg[2 * a + type], M) : f(M, seg[2 * a + type]);
+            if(check(nxt)) a = 2 * a + type;
+            else M = nxt, a = 2 * a + 1 - type;
         }
-        if (ok != l - 1) {
-            return ok;
-        } else {
+        return a - sz;
+    }
+
+    // 区間[a,N)でcheckの条件を満たすような最小位置を返す(なければ-1)
+    template<typename C>
+    int find_first(int a, const C &check) {
+        Monoid L = M1;
+        if(a <= 0) {
+            if(check(f(L, seg[1]))) return find_subtree(1, check, L, false);
             return -1;
         }
+        int b = sz;
+        for(a += sz, b += sz; a < b; a >>= 1, b >>= 1) {
+            if(a & 1) {
+                Monoid nxt = f(L, seg[a]);
+                if(check(nxt)) return find_subtree(a, check, L, false);
+                L = nxt;
+                ++a;
+            }
+        }
+        return -1;
+    }
+
+    // 区間[0,b)でcheckの条件を満たすような最大位置を返す(なければ-1)
+    template<typename C>
+    int find_last(int b, const C &check) {
+        Monoid R = M1;
+        if(b >= sz) {
+            if(check(f(seg[1], R))) return find_subtree(1, check, R, true);
+            return -1;
+        }
+        int a = sz;
+        for(b += sz; a < b; a >>= 1, b >>= 1) {
+            if(b & 1) {
+                Monoid nxt = f(seg[--b], R);
+                if(check(nxt)) return find_subtree(b, check, R, true);
+                R = nxt;
+            }
+        }
+        return -1;
     }
 };
+
+template<typename Monoid, typename F>
+SegmentTree<Monoid, F> get_segment_tree(int N, const F& f, const Monoid& M1) {
+    return {N, f, M1};
+}
+
+template<typename Monoid, typename F>
+SegmentTree<Monoid, F> get_segment_tree(const F& f, const Monoid& M1) {
+    return {f, M1};
+}
+
+// // 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置
+// template<typename G> ll bisearch_fore(ll l, ll r, Monoid x, const G &compare) {
+//     ll ok = r + 1;
+//     ll ng = l - 1;
+//     while (ng+1 < ok) {
+//         ll mid = (ok+ng) / 2;
+//         if (compare(query(l, mid+1), x)) {
+//             ok = mid;
+//         } else {
+//             ng = mid;
+//         }
+//     }
+//     if (ok != r + 1) {
+//         return ok;
+//     } else {
+//         return -1;
+//     }
+// }
+
+// // 区間[l,r]で右から最初にxに対して比較の条件を満たすような値が出現する位置
+// template<typename G> ll bisearch_back(ll l, ll r, Monoid x, const G &compare) {
+//     ll ok = l - 1;
+//     ll ng = r + 1;
+//     while (ok+1 < ng) {
+//         ll mid = (ok+ng) / 2;
+//         if (compare(query(mid, r+1), x)) {
+//             ok = mid;
+//         } else {
+//             ng = mid;
+//         }
+//     }
+//     if (ok != l - 1) {
+//         return ok;
+//     } else {
+//         return -1;
+//     }
+// }
+
 // 使用例
-// SegTree<ll> seg([](ll a, ll b) { return max(a, b); }, -INF);
+// SegmentTree<ll> seg([](ll a, ll b) { return max(a, b); }, -INF);
 // stmx.bisearch_back(l, r, x, greater<ll>());
 
 
-template<typename Monoid>
-struct SegTreeIndex {
-    using F = function<Monoid(Monoid, Monoid)>;
+template<typename Monoid, typename F>
+struct SegmentTreeIndex {
 
     int sz;
     vector<pair<Monoid, int>> seg;
@@ -178,13 +244,13 @@ struct SegTreeIndex {
         }
     }
 
-    SegTreeIndex(int n, const F f, const Monoid &M1) : f(f), M1(M1) {
+    SegmentTreeIndex(int n, const F f, const Monoid &M1) : f(f), M1(M1) {
         sz = 1;
         while(sz < n) sz <<= 1;
         seg.assign(2 * sz, {M1, -1});
     }
 
-    SegTreeIndex(const F f, const Monoid &M1) : f(f), M1(M1) {}
+    SegmentTreeIndex(const F f, const Monoid &M1) : f(f), M1(M1) {}
 
     void resize(int n) {
         sz = 1;
@@ -237,25 +303,42 @@ struct SegTreeIndex {
     pair<Monoid, int> all() {
         return seg[1];
     }
+
+    void print(int n) {
+        rep(i, n) {
+            cout << query(i, i+1).first;
+            if (i == n-1) cout << endl;
+            else cout << ' ';
+        }
+    }
 };
+
+template<typename Monoid, typename F>
+SegmentTreeIndex<Monoid, F> get_segment_tree_index(int N, const F& f, const Monoid& M1) {
+    return {N, f, M1};
+}
+
+template<typename Monoid, typename F>
+SegmentTreeIndex<Monoid, F> get_segment_tree_index(const F& f, const Monoid& M1) {
+    return {f, M1};
+}
 
 
 // スパーステーブル：構築にO(NlogN)、区間最小(最大)をO(1)で取得
-template<typename T>
+template<typename T, typename F>
 struct SparseTable {
 
-    const function<ll(T, T)> func;
+    const F f;
     vector<vector<T>> dat;
     vector<ll> height;
 
-    SparseTable(function<T(T, T)> func) : func(func) {
-    }
+    SparseTable(const F f) : f(f) {}
 
-    SparseTable(vector<T> A, function<T(T, T)> func) : func(func) {
+    SparseTable(vector<T> &A, const F f) : f(f) {
         build(A);
     }
 
-    void build(vector<T> A) {
+    void build(vector<T> &A) {
         ll N = A.size();
 
         ll h = 0;
@@ -274,16 +357,16 @@ struct SparseTable {
         }
         rep(i, 1, h) {
             rep(j, 0, N) {
-                dat[i][j] = func(dat[i-1][j], dat[i-1][min(j+(1<<(i-1)), N-1)]);
+                dat[i][j] = f(dat[i-1][j], dat[i-1][min(j+(1<<(i-1)), N-1)]);
             }
         }
     }
 
     // 区間[l,r)でのmin,maxを取得
     T query(ll l, ll r) {
-        if (l >= r) assert(0);
+        assert(l < r);
         ll a = height[r-l];
-        return func(dat[a][l], dat[a][r-(1<<a)]);
+        return f(dat[a][l], dat[a][r-(1<<a)]);
     }
 
     // 区間[l,r]で左から最初にxに対して比較の条件を満たすような値が出現する位置
@@ -326,6 +409,11 @@ struct SparseTable {
     // 使用例
     // stmx.bisearch_back(l, r, x, greater<ll>());
 };
+
+template<typename T, typename F>
+SparseTable<T, F> get_sparse_table(vector<T> &A, const F& f) {
+    return {A, f};
+}
 
 
 template<typename T>
@@ -493,83 +581,80 @@ struct BIT2 {
 };
 
 
-// 遅延評価セグメント木(旧)
-template<typename T, typename E>
-struct LazySegTree {
-    typedef function<T(T, T)> F;
-    typedef function<T(T, E)> G;
-    typedef function<E(E, E)> H;
-    typedef function<E(E, int)> P;
-    int n;
-    F f;
-    G g;
-    H h;
-    P p;
-    T d1;
-    E d0;
-    vector<T> dat;
-    vector<E> laz;
-    LazySegTree(int n_, F f, G g, H h, T d1, E d0,
-            vector<T> v=vector<T>(), P p=[](E a, int b){ return a; }):
-            f(f), g(g), h(h), d1(d1), d0(d0), p(p) {
-        init(n_);
-        if (n_==(int)v.size()) build(n_, v);
-    }
-    void init(int n_) {
-        n = 1;
-        while (n<n_) n *= 2;
-        dat.clear();
-        dat.resize(2*n-1, d1);
-        laz.clear();
-        laz.resize(2*n-1, d0);
-    }
-    void build(int n_, vector<T> v) {
-        for (int i=0;i<n_;i++) dat[i+n-1] = v[i];
-        for (int i=n-2;i>=0;i--)
-            dat[i] = f(dat[i*2+1], dat[i*2+2]);
-    }
-    inline void eval(int len, int k) {
-        if (laz[k]==d0) return;
-        if (k*2+1<n*2-1) {
-            laz[k*2+1] = h(laz[k*2+1], laz[k]);
-            laz[k*2+2] = h(laz[k*2+2], laz[k]);
-        }
-        dat[k] = g(dat[k], p(laz[k], len));
-        laz[k] = d0;
-    }
-    T update(int a, int b, E x, int k, int l, int r) {
-        eval(r-l, k);
-        if (r<=a||b<=l) return dat[k];
-        if (a<=l&&r<=b) {
-            laz[k] = h(laz[k], x);
-            return g(dat[k], p(laz[k], r-l));
-        }
-        return dat[k] = f(update(a, b, x, k*2+1, l, (l+r)/2),
-                          update(a, b, x, k*2+2, (l+r)/2, r));
-    }
-    T update(int a, int b, E x) {
-        return update(a, b, x, 0, 0, n);
-    }
-    T query(int a, int b, int k, int l, int r) {
-        eval(r-l, k);
-        if(r<=a||b<=l) return d1;
-        if(a<=l&&r<=b) return dat[k];
-        T vl = query(a, b, k*2+1, l, (l+r)/2);
-        T vr = query(a, b, k*2+2, (l+r)/2, r);
-        return f(vl, vr);
-    }
-    T query(int a, int b) {
-        return query(a, b, 0, 0, n);
-    }
-};
+// // 遅延評価セグメント木(旧)
+// template<typename T, typename E>
+// struct LazySegmentTree {
+//     typedef function<T(T, T)> F;
+//     typedef function<T(T, E)> G;
+//     typedef function<E(E, E)> H;
+//     typedef function<E(E, int)> P;
+//     int n;
+//     F f;
+//     G g;
+//     H h;
+//     P p;
+//     T d1;
+//     E d0;
+//     vector<T> dat;
+//     vector<E> laz;
+//     LazySegmentTree(int n_, F f, G g, H h, T d1, E d0,
+//             vector<T> v=vector<T>(), P p=[](E a, int b){ return a; }):
+//             f(f), g(g), h(h), d1(d1), d0(d0), p(p) {
+//         init(n_);
+//         if (n_==(int)v.size()) build(n_, v);
+//     }
+//     void init(int n_) {
+//         n = 1;
+//         while (n<n_) n *= 2;
+//         dat.clear();
+//         dat.resize(2*n-1, d1);
+//         laz.clear();
+//         laz.resize(2*n-1, d0);
+//     }
+//     void build(int n_, vector<T> v) {
+//         for (int i=0;i<n_;i++) dat[i+n-1] = v[i];
+//         for (int i=n-2;i>=0;i--)
+//             dat[i] = f(dat[i*2+1], dat[i*2+2]);
+//     }
+//     inline void eval(int len, int k) {
+//         if (laz[k]==d0) return;
+//         if (k*2+1<n*2-1) {
+//             laz[k*2+1] = h(laz[k*2+1], laz[k]);
+//             laz[k*2+2] = h(laz[k*2+2], laz[k]);
+//         }
+//         dat[k] = g(dat[k], p(laz[k], len));
+//         laz[k] = d0;
+//     }
+//     T update(int a, int b, E x, int k, int l, int r) {
+//         eval(r-l, k);
+//         if (r<=a||b<=l) return dat[k];
+//         if (a<=l&&r<=b) {
+//             laz[k] = h(laz[k], x);
+//             return g(dat[k], p(laz[k], r-l));
+//         }
+//         return dat[k] = f(update(a, b, x, k*2+1, l, (l+r)/2),
+//                           update(a, b, x, k*2+2, (l+r)/2, r));
+//     }
+//     T update(int a, int b, E x) {
+//         return update(a, b, x, 0, 0, n);
+//     }
+//     T query(int a, int b, int k, int l, int r) {
+//         eval(r-l, k);
+//         if(r<=a||b<=l) return d1;
+//         if(a<=l&&r<=b) return dat[k];
+//         T vl = query(a, b, k*2+1, l, (l+r)/2);
+//         T vr = query(a, b, k*2+2, (l+r)/2, r);
+//         return f(vl, vr);
+//     }
+//     T query(int a, int b) {
+//         return query(a, b, 0, 0, n);
+//     }
+// };
 
 
 // 遅延評価セグメント木(非再帰)
-template<typename T, typename E>
-struct LazySegTree {
-    using F = function<T(T, T)>;
-    using G = function<T(T, E)>;
-    using H = function<E(E, E)>;
+template<typename F, typename G, typename H, typename T, typename E>
+struct LazySegmentTree {
     int n, height;
     F f;
     G g;
@@ -578,7 +663,7 @@ struct LazySegTree {
     E ei;
     vector<T> dat;
     vector<E> laz;
-    LazySegTree(F f, G g, H h, T ti, E ei):
+    LazySegmentTree(F f, G g, H h, T ti, E ei):
         f(f), g(g), h(h), ti(ti), ei(ei) {}
 
     void init(int n_){
@@ -691,6 +776,11 @@ struct LazySegTree {
         }
     }
 };
+
+template<typename F, typename G, typename H, typename T, typename E>
+LazySegmentTree<F, G, H, T, E> get_Lazy_segment_tree(const F& f, const G& g, const H& h, const T& ti, const E& ei) {
+    return {f, g, h, ti, ei};
+}
 
 
 // Li Chao Tree
@@ -1002,7 +1092,7 @@ struct WaveletMatrix {
 
 
 // Segment Tree Beats
-template<class T> class SegTreeBeats {
+template<class T> class SegmentTreeBeats {
     T inf;
     size_t length;
     vector<T>
@@ -1112,11 +1202,11 @@ template<class T> class SegTreeBeats {
         down.push(2*k+1);
     }
 public:
-    SegTreeBeats(const int num,const T inf = (1LL<<60)) {
+    SegmentTreeBeats(const int num,const T inf = (1LL<<60)) {
         vector<T> a(num,0);
-        *this = SegTreeBeats(a,inf);
+        *this = SegmentTreeBeats(a,inf);
     }
-    SegTreeBeats(const vector<T>& a,const T inf = (1LL<<60)) : inf(inf){
+    SegmentTreeBeats(const vector<T>& a,const T inf = (1LL<<60)) : inf(inf){
         int num = a.size();
         for (length = 1; length <= num; length *= 2);
         node_max_first.resize(2*length);

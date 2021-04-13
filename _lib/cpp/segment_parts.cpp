@@ -144,10 +144,14 @@ const ll T = INF;
 const ll E = -1;
 
 // 区間和取得・区間加算
-auto f = [](pll a, pll b) -> pll { return { a.first+b.first, a.second+b.second }; };
-auto g = [](pll a, ll b) -> pll { return { a.first + a.second*b, a.second }; };
+struct Node {
+    ll val, sz;
+    operator ll() const { return val; }
+};
+auto f = [](Node a, Node b) -> Node { return { a.val+b.val, a.sz+b.sz }; };
+auto g = [](Node a, ll b) -> Node { return { a.val+a.sz*b, a.sz }; };
 auto h = [](ll a, ll b) -> ll { return a + b; };
-const pll T = {0, 0};
+const Node T = {0, 0};
 const ll E = 0;
 
 // 区間最小値取得・区間加算
@@ -158,15 +162,23 @@ const ll T = INF;
 const ll E = 0;
 
 // 区間和取得・区間更新
-auto f = [](pll a, pll b) -> pll { return { a.first+b.first, a.second+b.second }; };
-auto g = [](pll a, ll b) -> pll { return { a.second*b, a.second }; };
+struct Node {
+    ll val, sz;
+    operator ll() const { return val; }
+};
+auto f = [](Node a, Node b) -> Node { return { a.val+b.val, a.sz+b.sz }; };
+auto g = [](Node a, ll b) -> Node { return { a.sz*b, a.sz }; };
 auto h = [](ll a, ll b) -> ll { return b; };
-const pll T = {0, 0};
+const Node T = {0, 0};
 // 要素が取りうる範囲外の値にする
 const ll E = INF;
 
 // 区間和取得・区間加算・区間更新
-// 参考：nikkei2019final_d
+// 参考：nikkei2019final_d, ARC115_e
+struct Node {
+    ll val, sz;
+    operator ll() const { return val; }
+};
 struct Func {
     ll add, assign;
     bool update;
@@ -174,15 +186,15 @@ struct Func {
         return add == f.add and assign == f.assign and update == f.update;
     }
 };
-auto f = [](pll a, pll b) -> pll { return { a.first+b.first, a.second+b.second }; };
-auto g = [](pll a, Func b) -> pll {
+auto f = [](Node a, Node b) -> Node { return { a.val+b.val, a.sz+b.sz }; };
+auto g = [](Node a, Func b) -> Node {
     if (b.update) {
-        return { a.second*(b.add+b.assign), a.second };
+        return { a.sz*(b.add+b.assign), a.sz };
     } else {
-        return { a.first+a.second*b.add, a.second };
+        return { a.val+a.sz*b.add, a.sz };
     }
 };
-auto h = [](Func a, Func b) -> Func { 
+auto h = [](Func a, Func b) -> Func {
     if (not b.update) {
         a.add += b.add;
     } else {
@@ -192,7 +204,7 @@ auto h = [](Func a, Func b) -> Func {
     }
     return a;
 };
-const pll T = {0, 0};
+const Node T = {0, 0};
 const Func E = {0, 0, 0};
 
 // 区間最大値取得・区間加算・区間更新
@@ -211,7 +223,7 @@ auto g = [](ll a, Func b) -> ll {
         return a+b.add;
     }
 };
-auto h = [](Func a, Func b) -> Func { 
+auto h = [](Func a, Func b) -> Func {
     if (not b.update) {
         a.add += b.add;
     } else {
@@ -304,3 +316,29 @@ const bool E = false;
 // 区間加算・区間GCD取得
 // 参考：ARC017_d, cf1459_c
 // ※遅延セグ木は使えない。詳しくは該当の問題にて。
+
+// 区間和取得・区間加算・区間乗算を作ろうとしたんだけど失敗。
+// なんか掛け算がちゃんと機能しない。。
+struct Node {
+    ll val, sz;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll add, mul;
+    bool operator==(const Func &f) const {
+        return add == f.add and mul == f.mul;
+    }
+};
+auto f = [](Node a, Node b) -> Node { return { a.val+b.val, a.sz+b.sz }; };
+auto g = [](Node a, Func b) -> Node {
+    a.val *= b.mul;
+    a.val += a.sz*b.add;
+    return a;
+};
+auto h = [](Func a, Func b) -> Func {
+    a.add += b.add;
+    a.mul *= b.mul;
+    return a;
+};
+const Node T = {0, 0};
+const Func E = {0, 1};
