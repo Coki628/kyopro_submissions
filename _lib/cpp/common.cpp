@@ -179,6 +179,49 @@ struct Compress {
 };
 
 
+// ランレングス圧縮
+template<typename T>
+vector<pair<T, ll>> RLE(vector<T> &A) {
+    if (A.empty()) return {};
+    ll N = A.size();
+    vector<pair<T, ll>> res;
+    T cur = A[0];
+    ll cnt = 1;
+    rep(i, 1, N) {
+        if (A[i] == A[i-1]) {
+            cnt++;
+        } else {
+            res.pb({cur, cnt});
+            cnt = 1;
+            cur = A[i];
+        }
+    }
+    res.pb({cur, cnt});
+    return res;
+}
+
+
+// ランレングス圧縮(文字列)
+vector<pair<char, ll>> RLE(string &S) {
+    if (S.empty()) return {};
+    ll N = S.size();
+    vector<pair<char, ll>> res;
+    char cur = S[0];
+    ll cnt = 1;
+    rep(i, 1, N) {
+        if (S[i] == S[i-1]) {
+            cnt++;
+        } else {
+            res.pb({cur, cnt});
+            cnt = 1;
+            cur = S[i];
+        }
+    }
+    res.pb({cur, cnt});
+    return res;
+}
+
+
 // なんかこれ速いhashmapらしい
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;

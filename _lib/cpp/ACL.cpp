@@ -216,7 +216,7 @@ std::vector<int> lcp_array(const std::string& s, const std::vector<int>& sa) {
 }
 }  // namespace atcoder
 // --- ACL end --- //
-////////// floor sum //////////
+////////// Suffix Array //////////
 
 
 

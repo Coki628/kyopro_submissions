@@ -39,17 +39,12 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
     res[src] = 0;
     que.push({0, src});
 
-    pair<T, ll> p;
-    T dist, cost;
-    int u, v;
     while(!que.empty()) {
-        p = que.top(); que.pop();
-        tie(dist, u) = p;
+        auto [dist, u] = que.top(); que.pop();
         if (res[u] < dist) {
             continue;
         }
-        for (auto p: nodes[u]) {
-            tie(v, cost) = p;
+        for (auto [v, cost] : nodes[u]) {
             if (dist+cost < res[v]) {
                 res[v] = dist+cost;
                 que.push({dist+cost, v});
