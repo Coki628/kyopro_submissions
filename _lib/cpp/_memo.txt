@@ -10,6 +10,12 @@ x以上で最小：left
 x以下で最大：right-1
 x超で最小：right
 
+にぶたん境界の個数
+x未満の数：left
+x以下の数：right
+x以上の数：全体-left
+x超の数：全体-right
+
 不等号とEPSの対応
 a < b  : a < b - EPS
 a <= b : a < b + EPS

@@ -92,5 +92,9 @@ int main() {
     // char -> str
     cout << string({'a'}) << endl;
 
+    // これでカウントできる。(vectorもOK)
+    // string s;
+    // count(ALL(s), '1');
+
     return 0;
 }
