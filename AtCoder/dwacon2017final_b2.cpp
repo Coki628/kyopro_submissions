@@ -8,6 +8,7 @@
  * 　・mo内で割り算する時の逆元を前計算しておく
  * 　あたりが効いた。素因数分解の高速化は却って遅くなったりした。。
  * ・通してる人のを見ると、素因数分解パートでもっとうまいことまとめてるっぽいんだけどね。。
+ * ・通った！素因数分解をvectorベースのやつにしたら速くなった。AC1.72秒(制約2.5秒)
  */
 
 // #pragma GCC target("avx2")
@@ -60,17 +61,19 @@ pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
 
-vector<ll> factorize(ll x) {
-    vector<ll> res;
-    for (ll i = 2; i*i <= x; i++) {
-        while (x%i == 0) {
-            x /= i;
-            res.pb(i);
+template<typename T>
+vector<pair<T, int>> factorize(T n) {
+    vector<pair<T, int>> ret;
+    for(T i=2; i*i<=n; i++) {
+        int cnt = 0;
+        while(n % i == 0) {
+            n /= i;
+            cnt++;
         }
-        if (x == 1) break;
+        if(cnt) ret.emplace_back(i, cnt);
     }
-    if (x != 1) res.pb(x);
-    return res;
+    if(n > 1) ret.emplace_back(n, 1);
+    return ret;
 }
 
 template<int mod>
@@ -205,7 +208,7 @@ int main() {
         mo.add(l, r);
     }
 
-    vvl fact(N);
+    vector<vector<pair<ll, int>>> fact(N);
     rep(i, 0, N) {
         fact[i] = factorize(A[i]);
     }
@@ -219,16 +222,16 @@ int main() {
     vector<ll> C(max(A)+1);
     mint cnt = 1;
     auto add = [&](int idx) {
-        for (auto k : fact[idx]) {
+        for (auto [k, v] : fact[idx]) {
             cnt *= inv[C[k]+1];
-            C[k]++;
+            C[k] += v;
             cnt *= C[k]+1;
         }
     };
     auto erase = [&](int idx) {
-        for (auto k : fact[idx]) {
+        for (auto [k, v] : fact[idx]) {
             cnt *= inv[C[k]+1];
-            C[k]--;
+            C[k] -= v;
             cnt *= C[k]+1;
         }
     };

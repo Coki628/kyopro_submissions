@@ -8,6 +8,9 @@
  * 　・mo内で割り算する時の逆元を前計算しておく
  * 　あたりが効いた。素因数分解の高速化は却って遅くなったりした。。
  * ・通してる人のを見ると、素因数分解パートでもっとうまいことまとめてるっぽいんだけどね。。
+ * ・通った！素因数分解をvectorベースのやつにしたら速くなった。AC1.72秒(制約2.5秒)
+ * ・osa_k法の方もvectorベースのやつ作ってみたけど、あんま変化なかった。
+ * 　ここでのボトルネックはmoのパートなんかなー。
  */
 
 // #pragma GCC target("avx2")
@@ -59,19 +62,6 @@ pll divmod(ll a, ll b) { ll d = a / b; ll m = a % b; return {d, m}; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
-
-vector<ll> factorize(ll x) {
-    vector<ll> res;
-    for (ll i = 2; i*i <= x; i++) {
-        while (x%i == 0) {
-            x /= i;
-            res.pb(i);
-        }
-        if (x == 1) break;
-    }
-    if (x != 1) res.pb(x);
-    return res;
-}
 
 template<int mod>
 struct ModInt {
@@ -188,6 +178,57 @@ struct Mo {
     }
 };
 
+// ランレングス圧縮
+template<typename T>
+vector<pair<T, int>> RLE(vector<T> &A) {
+    if (A.empty()) return {};
+    int N = A.size();
+    vector<pair<T, int>> res;
+    T cur = A[0];
+    int cnt = 1;
+    rep(i, 1, N) {
+        if (A[i] == A[i-1]) {
+            cnt++;
+        } else {
+            res.pb({cur, cnt});
+            cnt = 1;
+            cur = A[i];
+        }
+    }
+    res.pb({cur, cnt});
+    return res;
+}
+
+// 高速素因数分解(osa_k法)、前計算
+vector<ll> eratosthenes_sieve(ll n) {
+
+    vector<ll> table(n+1);
+    table[1] = 1;
+    rep(i, 2, n+1) {
+        if (table[i] == 0) {
+            for (ll j=i; j<=n; j+=i) {
+                table[j] = i;
+            }
+        }
+    }
+    return table;
+}
+
+// 高速素因数分解(osa_k法)
+vector<pair<ll, int>> factorize(vector<ll> &table, ll x) {
+
+    vector<ll> V;
+    while (x != table[x]) {
+        V.emplace_back(table[x]);
+        x /= table[x];
+    }
+    if (x != 1) {
+        V.emplace_back(x);
+    }
+    auto res = RLE(V);
+    return res;
+}
+
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
@@ -205,9 +246,10 @@ int main() {
         mo.add(l, r);
     }
 
-    vvl fact(N);
+    auto table = eratosthenes_sieve(max(A));
+    vector<vector<pair<ll, int>>> fact(N);
     rep(i, 0, N) {
-        fact[i] = factorize(A[i]);
+        fact[i] = factorize(table, A[i]);
     }
 
     // 逆元の前計算
@@ -219,16 +261,16 @@ int main() {
     vector<ll> C(max(A)+1);
     mint cnt = 1;
     auto add = [&](int idx) {
-        for (auto k : fact[idx]) {
+        for (auto [k, v] : fact[idx]) {
             cnt *= inv[C[k]+1];
-            C[k]++;
+            C[k] += v;
             cnt *= C[k]+1;
         }
     };
     auto erase = [&](int idx) {
-        for (auto k : fact[idx]) {
+        for (auto [k, v] : fact[idx]) {
             cnt *= inv[C[k]+1];
-            C[k]--;
+            C[k] -= v;
             cnt *= C[k]+1;
         }
     };
