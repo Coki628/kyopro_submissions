@@ -6,8 +6,8 @@
 
 
 template<typename T>
-unordered_map<T, ll> Counter(vector<T> &A) {
-    unordered_map<T, ll> res;
+map<T, ll> Counter(vector<T> &A) {
+    map<T, ll> res;
     for (T a : A) {
         res[a]++;
     }
@@ -15,8 +15,8 @@ unordered_map<T, ll> Counter(vector<T> &A) {
 }
 
 
-unordered_map<char, ll> Counter(string &S) {
-    unordered_map<char, ll> res;
+map<char, ll> Counter(string &S) {
+    map<char, ll> res;
     for (char c : S) {
         res[c]++;
     }
@@ -181,12 +181,12 @@ struct Compress {
 
 // ランレングス圧縮
 template<typename T>
-vector<pair<T, ll>> RLE(vector<T> &A) {
+vector<pair<T, int>> RLE(vector<T> &A) {
     if (A.empty()) return {};
-    ll N = A.size();
-    vector<pair<T, ll>> res;
+    int N = A.size();
+    vector<pair<T, int>> res;
     T cur = A[0];
-    ll cnt = 1;
+    int cnt = 1;
     rep(i, 1, N) {
         if (A[i] == A[i-1]) {
             cnt++;
@@ -365,8 +365,8 @@ vvl doubling(int MXLOG, vector<ll> &A) {
 
 
 // [l,r)の範囲で乱数生成
+mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
 ll randrange(ll l, ll r) {
-    mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
     uniform_int_distribution<ll> rand(l, r-1);
     return rand(mt);
 }

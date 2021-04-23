@@ -27,9 +27,10 @@ using vvpll = vector<vector<pll>>;
 #define ALL(A) A.begin(), A.end()
 #define elif else if
 #define tostr to_string
+#define debug(x) (cout << #x << ": " << x << endl)
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-constexpr ll MOD = 1000000007;
+constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
 constexpr ld EPS = 1e-10;
 constexpr ld PI = M_PI;
@@ -50,8 +51,8 @@ void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
 template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
-template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
-template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
+template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
+template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
 template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
 
 void Yes() { print("Yes"); }
@@ -82,7 +83,7 @@ ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
-int bit_length(ll x) { return floor(log2(x))+1; }
+int bit_length(ll x) { return x != 0 ? floor(log2(x))+1 : 0; }
 string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0'; x >>= 1; } reverse(ALL(res)); if(res == "") res += '0'; return res; }
 
 ll gcd(ll a, ll b) { return __gcd(a, b); }
@@ -96,8 +97,8 @@ template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(
 template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 
-template<typename T> unordered_map<T, ll> Counter(vector<T> &A) { unordered_map<T, ll> res; for (T a : A) res[a]++; return res; }
-unordered_map<char, ll> Counter(string &S) { unordered_map<char, ll> res; for (char c : S) res[c]++; return res; }
+template<typename T> map<T, ll> Counter(vector<T> &A) { map<T, ll> res; for (T a : A) res[a]++; return res; }
+map<char, ll> Counter(string &S) { map<char, ll> res; for (char c : S) res[c]++; return res; }
 template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
 
 template<typename T> struct Accumulate {
@@ -105,7 +106,7 @@ template<typename T> struct Accumulate {
     Accumulate(vector<T> &A) { N = A.size(); acc = A; rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
     T query(int l, int r) { assert(0 <= l and l <= N and 0 <= r and r <= N); return acc[r]-acc[l]; }
     T get(int i) { return query(i, i+1); }
-    T operator[](int i) { return get(i); }
+    T operator[](int i) { return query(i, i+1); }
 };
 
 template<int mod> struct ModInt {

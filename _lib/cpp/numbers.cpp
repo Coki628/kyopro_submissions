@@ -65,6 +65,23 @@ map<ll, ll> factorize(ll x) {
 }
 
 
+// 素因数分解(vectorベースなのでmapより速い)
+template<typename T>
+vector<pair<T, int>> factorize(T n) {
+    vector<pair<T, int>> ret;
+    for(T i=2; i*i<=n; i++) {
+        int cnt = 0;
+        while(n % i == 0) {
+            n /= i;
+            cnt++;
+        }
+        if(cnt) ret.emplace_back(i, cnt);
+    }
+    if(n > 1) ret.emplace_back(n, 1);
+    return ret;
+}
+
+
 // 高速素因数分解(osa_k法)、前計算
 vector<ll> eratosthenes_sieve(ll n) {
 
@@ -91,6 +108,21 @@ map<ll, ll> factorize(vector<ll> &table, ll x) {
     if (x != 1) {
         res[x]++;
     }
+    return res;
+}
+
+// 高速素因数分解(osa_k法)(vectorベースなのでmapより速い)
+vector<pair<ll, int>> factorize(vector<ll> &table, ll x) {
+
+    vector<ll> V;
+    while (x != table[x]) {
+        V.pb(table[x]);
+        x /= table[x];
+    }
+    if (x != 1) {
+        V.pb(x);
+    }
+    auto res = RLE(V);
     return res;
 }
 
@@ -191,4 +223,27 @@ ll digit_sum(ll n) {
         n /= 10;
     }
     return res;
+}
+
+
+// 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
+template<typename T>
+T extgcd(T a, T b, T& x, T& y) {
+    T d = a;
+    if(b != 0){
+        d = extgcd(b, a%b, y, x);
+        y -= (a/b) * x;
+    }else{
+        x = 1; y = 0;
+    }
+    return d;
+}
+
+
+// MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
+template<typename T>
+T inv_mod(T a, T mod) {
+    T x, y;
+    extgcd(a, mod, x, y);
+    return (mod + x%mod) % mod;
 }

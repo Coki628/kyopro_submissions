@@ -35,7 +35,7 @@ template<typename T> struct Accumulate {
     }
 
     T operator[](int i) {
-        return get(i);
+        return query(i, i+1);
     }
 };
 
@@ -465,7 +465,7 @@ struct BIT {
     }
 
     T operator[](int i) {
-        return get(i);
+        return query(i, i+1);
     }
 
     // 区間[l, r]を左から右に向かってx番目の値がある位置
@@ -576,7 +576,7 @@ struct BIT2 {
     }
 
     T operator[](int i) {
-        return get(i);
+        return query(i, i+1);
     }
 };
 
@@ -1202,10 +1202,10 @@ struct WaveletMatrix {
         int cnt = range_freq(l, r, lower);
         return cnt == r - l ? T(-1) : kth_smallest(l, r, cnt);
     }
-    };
+};
 
-    template< typename T, int MAXLOG >
-    struct CompressedWaveletMatrix {
+template< typename T, int MAXLOG >
+struct CompressedWaveletMatrix {
     WaveletMatrix< int, MAXLOG > mat;
     vector< T > ys;
 

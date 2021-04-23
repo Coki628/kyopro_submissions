@@ -123,6 +123,12 @@ struct RollingHash {
         return query(table, l, r);
     }
 
+    template<typename T>
+    uint64_t get_hash(const vector<T> &s, int l, int r) {
+        auto table = build(s);
+        return query(table, l, r);
+    }
+
     // 長さlenの文字列のhashのx文字目(0-indexed)をaからbに変える
     uint64_t update(uint64_t hash, int len, int x, char a, char b) {
         if (b >= a) return add(hash, mul(b-a, power[len-x-1]));

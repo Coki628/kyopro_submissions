@@ -96,5 +96,12 @@ int main() {
     // string s;
     // count(ALL(s), '1');
 
+    // C++でスペース区切らないで1行取得
+    // getline(cin, S);
+
+    // メモリ開放
+    // A.clear();
+    // A.shrink_to_fit();
+
     return 0;
 }
