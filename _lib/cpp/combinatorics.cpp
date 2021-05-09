@@ -120,7 +120,7 @@ struct AnyModTools {
 };
 
 
-// 順列列挙
+// 順列全列挙
 template<typename T>
 vector<vector<T>> permutations(vector<T> &A, int N=-1) {
 
@@ -145,6 +145,50 @@ vector<vector<T>> permutations(vector<T> &A, int N=-1) {
             res.pb(perm);
         } while (next_permutation(ALL(perm)));
     }
+    return res;
+}
+
+
+// 組み合わせ全列挙
+template<typename T>
+vector<vector<T>> combinations(vector<T> &A, int N) {
+    int M = A.size();
+    vector<vector<T>> res;
+    auto rec = [&](auto&& f, vector<T> &cur, ll x, ll n) -> void {
+        if (n == N) {
+            res.pb(cur);
+            return;
+        }
+        rep(i, x, M) {
+            cur.pb(A[i]);
+            f(f, cur, i+1, n+1);
+            cur.pop_back();
+        }
+    };
+    vector<T> cur;
+    rec(rec, cur, 0, 0);
+    return res;
+}
+
+
+// 重複組み合わせ全列挙
+template<typename T>
+vector<vector<T>> combinations_with_replacement(vector<T> &A, int N) {
+    int M = A.size();
+    vector<vector<T>> res;
+    auto rec = [&](auto&& f, vector<T> &cur, ll x, ll n) -> void {
+        if (n == N) {
+            res.pb(cur);
+            return;
+        }
+        rep(i, x, M) {
+            cur.pb(A[i]);
+            f(f, cur, i, n+1);
+            cur.pop_back();
+        }
+    };
+    vector<T> cur;
+    rec(rec, cur, 0, 0);
     return res;
 }
 
