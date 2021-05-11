@@ -19,6 +19,7 @@ x超の数：全体-right
 不等号とEPSの対応
 a < b  : a < b - EPS
 a <= b : a < b + EPS
+floor(a) : floor(a+EPS)
 
 ある配列の区間[l,r)の真ん中index
 偶数長で小さい方にする

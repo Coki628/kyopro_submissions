@@ -32,7 +32,7 @@ bool is_prime(ll num) {
 }
 
 
-// 素数列挙(エラトステネスの篩) 
+// 素数列挙(エラトステネスの篩)
 vector<ll> eratosthenes_sieve(ll n) {
 
     vector<bool> table(n+1);

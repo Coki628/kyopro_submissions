@@ -41,9 +41,7 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
 
     while(!que.empty()) {
         auto [dist, u] = que.top(); que.pop();
-        if (res[u] < dist) {
-            continue;
-        }
+        if (res[u] < dist) continue;
         for (auto [v, cost] : nodes[u]) {
             if (dist+cost < res[v]) {
                 res[v] = dist+cost;
@@ -111,14 +109,14 @@ struct UnionFind {
         }
     }
 
-    // 併合
-    void merge(int a, int b) {
+    // 併合(マージ後の集合の根を返す)
+    int merge(int a, int b) {
         int x = find(a);
         int y = find(b);
 
         if (x == y) {
             tree[x] = false;
-            return;
+            return x;
         }
         if (!tree[x] or !tree[y]) {
             tree[x] = tree[y] = false;
@@ -128,12 +126,14 @@ struct UnionFind {
         if (rank[x] < rank[y]) {
             par[x] = y;
             size[y] += size[x];
+            return y;
         } else {
             par[y] = x;
             size[x] += size[y];
             if (rank[x] == rank[y]) {
                 rank[x]++;
             }
+            return x;
         }
     }
 

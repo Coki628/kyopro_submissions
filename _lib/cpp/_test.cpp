@@ -51,8 +51,8 @@ void print(ld out) { cout << fixed << setprecision(15) << out << '\n'; }
 void print(double out) { cout << fixed << setprecision(15) << out << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
 template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
-template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
-template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; cout << (i == A.size()-1 ? '\n' : ' '); } }
+template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
+template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
 template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
 
 void Yes() { print("Yes"); }
@@ -153,16 +153,44 @@ vector<T> accumulate(vector<T> &A, bool indexed=0) {
 //     return res;
 // }
 
+// ダメだった。戻り値で参照返すから、initを更新してしまう。。
+// 代入で呼ばれた時と参照で呼ばれた時で処理を出し分けたりできればいいんだけど、
+// そういうのはできなそう。。
+// template<typename Key, typename Val>
+// struct defaultdict : public map<Key, Val> {
+
+//     Val init;
+
+//     defaultdict() : init(Val()) {};
+
+//     defaultdict(Val init) : init(init) {}
+
+//     Val& operator[](Key k) {
+//         if (map<Key, Val>::count(k)) return map<Key, Val>::operator[](k);
+//         else {
+//             return init;
+//         }
+//     }
+// };
+
+#define debug(x) (cout << #x << ": " << x << endl)
+
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    ll N = 5;
-    vector<ll> A = {1, 3, 2, 4, 5};
-    auto acc1 = accumulate(A);
+    // ll N = 5;
+    // vector<ll> A = {1, 3, 2, 4, 5};
+    // auto acc1 = accumulate(A);
     // auto acc2 = accumulate(A, 1);
-    print(acc1);
+    // print(acc1);
     // print(acc2);
+
+    // なぜかclampは手元環境で動かない。stdに入ってないって言われる。
+    // print(clamp(5, 2, 3));
+    // print(clamp(-9, 2, 3));
+    // print(clamp(INF, 2LL, 3LL));
+    // print(clamp(0, 2, 3));
 
     return 0;
 }

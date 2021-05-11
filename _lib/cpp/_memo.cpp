@@ -103,5 +103,17 @@ int main() {
     // A.clear();
     // A.shrink_to_fit();
 
+    // 2秒直前で打ち切り(単位はミリ秒じゃなくてマイクロ秒みたい)
+    // clock_t start = clock();
+    // clock_t cur = clock();
+    // if (cur-start > 1900000) {
+    //     // do something and exit
+    //     exit(0);
+    // }
+
+    // 配列シャッフル
+    // mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+    // shuffle(ALL(A), mt);
+
     return 0;
 }

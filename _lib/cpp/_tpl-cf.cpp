@@ -27,7 +27,6 @@ using vvpll = vector<vector<pll>>;
 #define ALL(A) A.begin(), A.end()
 #define elif else if
 #define tostr to_string
-#define debug(x) (cout << #x << ": " << x << endl)
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 constexpr int MOD = 1000000007;
@@ -54,6 +53,7 @@ template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.fi
 template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
 template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
 template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
+#define debug(x) (cout << #x << ": ", print(x));
 
 void Yes() { print("Yes"); }
 void No() { print("No"); }

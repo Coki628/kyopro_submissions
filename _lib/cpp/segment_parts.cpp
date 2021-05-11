@@ -143,6 +143,14 @@ const ll T = INF;
 // 要素が取りうる範囲外の値にする
 const ll E = -1;
 
+// 区間最大値取得・区間更新
+auto f = [](ll a, ll b) -> ll { return max(a, b); };
+auto g = [](ll a, ll b) -> ll { return b; };
+auto h = [](ll a, ll b) -> ll { return b; };
+const ll T = 0;
+// 要素が取りうる範囲外の値にする
+const ll E = INF;
+
 // 区間和取得・区間加算
 struct Node {
     ll val, sz;

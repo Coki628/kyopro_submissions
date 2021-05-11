@@ -51,3 +51,17 @@ ld get_degree(Point a, Point b, Point c) {
 ld cos_formula(ld a, ld b, ld deg) {
     return sqrt(a*a+b*b-2*a*b*cos(radians(deg)));
 }
+
+// 2点を通る直線の式の係数a,b
+pair<ld, ld> get_a_and_b(Point p1, Point p2) {
+    // x座標が同じだと0除算
+    assert(p2.x-p1.x != 0);
+    ld a = (p2.y-p1.y)/(p2.x-p1.x);
+    ld b = -(p1.x*p2.y/(p2.x-p1.x))+p1.x*p1.y/(p2.x-p1.x)+p1.y;
+    return {a, b};
+}
+
+// 3次元での2点間距離√((x1-x2)^2+(y1-y2)^2+(z1-z2)^2)
+ld dist(tuple<ld, ld, ld> a, tuple<ld, ld, ld> b) {
+    return sqrt((get<0>(a)-get<0>(b))*(get<0>(a)-get<0>(b))+(get<1>(a)-get<1>(b))*(get<1>(a)-get<1>(b))+(get<2>(a)-get<2>(b))*(get<2>(a)-get<2>(b)));
+}

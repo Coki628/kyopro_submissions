@@ -74,18 +74,14 @@ vvl dijkstra(vvl &grid, pii src) {
 
     while (!que.empty()) {
         auto [dist, h, w] = que.top(); que.pop();
-        if (res[h][w] < dist) {
-            continue;
-        }
+        if (res[h][w] < dist) continue;
         for (auto [dh, dw] : directions) {
-            int nh = h + dh;
-            int nw = w + dw;
-            if (grid[nh][nw] == -1) {
-                continue;
-            }
+            int nh = h+dh;
+            int nw = w+dw;
+            if (grid[nh][nw] == -1) continue;
             ll cost = grid[nh][nw];
-            if (dist + cost < res[nh][nw]) {
-                res[nh][nw] = dist + cost;
+            if (dist+cost < res[nh][nw]) {
+                res[nh][nw] = dist+cost;
                 que.push({dist+cost, nh, nw});
             }
         }
