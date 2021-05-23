@@ -10,6 +10,7 @@
 using namespace std;
 
 using ll = long long;
+using ull = unsigned long long;
 using ld = long double;
 using pll = pair<ll, ll>;
 using pii = pair<int, int>;

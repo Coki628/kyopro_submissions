@@ -113,3 +113,24 @@ rep(l, N) {
         if (C[A[l]] == 0) C.erase(A[l]);
     }
 }
+
+
+// なるべく短く動かすタイプ(DSL_3_B)
+ll r = 0, ans = INF;
+map<ll, ll> mp;
+rep(l, N) {
+    bool ok = 0;
+    while (r < N and mp.size() < K) {
+        if (A[r] <= K) {
+            mp[A[r]]++;
+        }
+        r++;
+    }
+    if (mp.size() == K) {
+        chmin(ans, r-l);
+    }
+    if (A[l] <= K) {
+        mp[A[l]]--;
+        if (mp[A[l]] == 0) mp.erase(A[l]);
+    }
+}

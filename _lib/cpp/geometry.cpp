@@ -15,6 +15,7 @@ struct Point {
     Point operator/(ld k) { return {x/k, y/k}; }
     ld norm(const Point &p) { return p.x*p.x + p.y*p.y; }
     ld abs(const Point &p) { return hypot(x-p.x, y-p.y); }
+    ld manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
 };
 struct Segment { Point p1, p2; };
 using Line = Segment;

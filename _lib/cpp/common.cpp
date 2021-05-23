@@ -140,7 +140,7 @@ pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
 }
 
 
-// 座標圧縮(にぶたんベース)
+// 座標圧縮(二分探索ベース)
 template<typename T>
 struct Compress {
 
