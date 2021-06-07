@@ -310,16 +310,18 @@ struct PartiallyPersistentUnionFind {
 
 
 // 全方位木DP
-template<typename sum_t, typename key_t>
+// ・主な使用方法
+// 　・f1は集合同士のマージ、f2はある集合に新しく辺を取り込む時のマージに使う。
+// 　　例えば普通の木DPの遷移が dp[u] += dp[v]+1 だったら、
+// 　　f1が dp[u]+dp[v] で、f2が dp[v]+1 に相当する感じ。
+// 全方位木DP
+template<typename sum_t, typename key_t, typename F1, typename F2>
 struct ReRooting {
     struct Edge {
         int to;
         key_t data;
         sum_t dp, ndp;
     };
-
-    using F1 = function<sum_t(sum_t, sum_t)>;
-    using F2 = function<sum_t(sum_t, key_t)>;
 
     vector<vector<Edge>> g;
     vector<sum_t> subdp, dp;
@@ -372,6 +374,11 @@ struct ReRooting {
         return dp;
     }
 };
+
+template<typename sum_t, typename key_t, typename F1, typename F2>
+ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2, const sum_t& M1, const key_t& M2) {
+    return {N, f1, f2, M1};
+}
 
 
 // HD分解
