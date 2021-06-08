@@ -381,7 +381,7 @@ ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2,
 }
 
 
-// HD分解
+// HL分解
 // ・主な使用方法など列挙
 // 　・初期化後、忘れずにbuildを呼ぶこと。
 // 　・パスクエリはadd,queryで処理

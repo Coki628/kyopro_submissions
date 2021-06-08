@@ -142,7 +142,7 @@ template<int mod> struct ModInt {
 };
 using mint = ModInt<MOD>;
 
-// HD分解
+// HL分解
 struct HeavyLightDecomposition {
 public:
     vvi &g;

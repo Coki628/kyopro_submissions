@@ -78,7 +78,7 @@ ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (re
 int popcount(ll S) { return __builtin_popcountll(S); }
 ll gcd(ll a, ll b) { return __gcd(a, b); }
 
-// HD分解
+// HL分解
 struct HeavyLightDecomposition {
 public:
     vvl &g;
