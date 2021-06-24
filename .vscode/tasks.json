@@ -8,13 +8,11 @@
             "args": [
                 "-g3",
                 "-O0",
-                "-D_FORTIFY_SOURCE=2",
                 "-D_GLIBCXX_DEBUG",
-                "-ftrapv",
-                "-fstack-protector-all",
-                "-fno-omit-frame-pointer",
-                "-fsanitize=address",
+                "-Wall",
+                "-fsanitize=undefined",
                 "${fileDirname}/${fileBasename}",
+                "-std=c++17",
                 "-o",
                 "${fileDirname}/cpp.exe"
             ],
@@ -27,3 +25,13 @@
 }
 // 参考：http://koturn.hatenablog.com/entry/2018/07/29/180000
 // g++ -g3 -O0 -D_FORTIFY_SOURCE=2 -D_GLIBCXX_DEBUG -ftrapv -fstack-protector-all -fno-omit-frame-pointer -fsanitize=address main.cpp -o
+// 参考：https://twitter.com/ngtkana/status/1402204870250168321
+// g++ src/main.cpp\
+// -D_GLIBCXX_DEBUG_PEDANTIC\
+// -o target/main.out\
+// -std=c++17\
+// -Wall -Wextra -Wpedantic\
+// -fsanitize=address\
+// -Og\
+// -Werror
+// 参考：https://kimiyuki.net/blog/2020/11/11/modern-environments-for-competitive-programming/
