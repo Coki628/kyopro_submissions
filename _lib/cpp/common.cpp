@@ -127,6 +127,36 @@ pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
 }
 
 
+// 三分探索(整数)
+template<typename F>
+pll trisearch_min(ll lo, ll hi, const F &func, ll offset=0) {
+    
+    ll m1 = lo, l = lo;
+    ll m2 = hi, r = hi;
+    while (lo+2 < hi) {
+        m1 = (lo*2+hi) / 3;
+        m2 = (lo+hi*2) / 3;
+        ll res1 = func(m1);
+        ll res2 = func(m2);
+        if (res1 <= res2) {
+            hi = m2;
+        } else {
+            lo = m1;
+        }
+    }
+    ll mn = INF;
+    pll res;
+    rep(i, max(m1-offset, l), min(m2+offset, r)) {
+        ll val = func(i);
+        if (val < mn) {
+            mn = val;
+            res = {i, val};
+        }
+    }
+    return res;
+}
+
+
 // 座標圧縮
 template<typename T>
 pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
@@ -263,7 +293,7 @@ struct MatPow {
         }
         return res;
     }
-    
+
     vector<vector<T>> mat_pow(vector<vector<T>> mat, ll k) {
         int n = mat.size();
         auto res = list2d(n, n, (T)0);
@@ -293,11 +323,11 @@ struct MatPow {
 };
 
 
-// ガウス・ジョルダン法(連立方程式の解) ※未verify
+// 連立方程式の解(ガウス・ジョルダン法) ※未verify
 template<typename T>
 vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
     int N = A.size();
-    auto B = list2d(N, N+1, 0);
+    auto B = list2d<T>(N, N+1, 0);
     rep(i, 0, N) {
         rep(j, 0, N) {
             B[i][j] = A[i][j];
@@ -316,7 +346,7 @@ vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
                 pivot = j;
             }
         }
-        B[i], B[pivot] = B[pivot], B[i];
+        swap(B[i], B[pivot]);
 
         // 解がないか、一意でない
         if (abs(B[i][i]) < EPS) {
@@ -342,6 +372,44 @@ vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
         res[i] = B[i][N];
     }
     return res;
+}
+
+
+// 連立方程式の解(ガウス・ジョルダン法)(2値用)
+template<int BITLEN>
+pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, vector<bitset<BITLEN>> &A, bool extended=true) {
+    assert(N == A.size());
+    auto res = A;
+    int rank = 0;
+    rep(col, M) {
+        if (extended and col == M-1) {
+            break;
+        }
+        int pivot = -1;
+        rep(row, rank, N) {
+            if (res[row][col]) {
+                pivot = row;
+                break;
+            }
+        }
+        if (pivot == -1) {
+            continue;
+        }
+        swap(res[rank], res[pivot]);
+        rep(row, N) {
+            if (row != rank and res[row][col]) {
+                res[row] ^= res[rank];
+            }
+        }
+        rank++;
+    }
+    // 解があるか確認
+    rep(row, rank, N) {
+        if (res[row][M-1]) {
+            return {-1, vector<bitset<BITLEN>>()};
+        }
+    }
+    return {rank, res};
 }
 
 

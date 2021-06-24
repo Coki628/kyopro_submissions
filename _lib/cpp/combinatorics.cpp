@@ -200,3 +200,17 @@ T factorial(T x) {
     for (T i=1; i<=x; i++) res *= i;
     return res;
 }
+
+
+// nCr(modなし)
+ll nCr(int n, int r) {
+    auto dp = list2d(n+1, r+1, 0LL);
+    dp[0][0] = 1;
+    rep(i, 1, n+1) {
+        dp[i][0] = 1;
+        rep(j, 1, r+1) {
+            dp[i][j] = (dp[i-1][j-1] + dp[i-1][j]);
+        }
+    }
+    return dp[n][r];
+}

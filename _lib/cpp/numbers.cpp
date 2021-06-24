@@ -49,7 +49,7 @@ vector<ll> eratosthenes_sieve(ll n) {
 }
 
 
-// 素因数分解
+// 素因数分解(mapベース)
 map<ll, ll> factorize(ll x) {
 
     map<ll, ll> res;
@@ -65,7 +65,7 @@ map<ll, ll> factorize(ll x) {
 }
 
 
-// 素因数分解(vectorベースなのでmapより速い)
+// 素因数分解(vectorベース)
 template<typename T>
 vector<pair<T, int>> factorize(T n) {
     vector<pair<T, int>> ret;
@@ -97,7 +97,7 @@ vector<ll> eratosthenes_sieve(ll n) {
     return table;
 }
 
-// 高速素因数分解(osa_k法)
+// 高速素因数分解(osa_k法)(mapベース)
 map<ll, ll> factorize(vector<ll> &table, ll x) {
 
     map<ll, ll> res;
@@ -111,7 +111,7 @@ map<ll, ll> factorize(vector<ll> &table, ll x) {
     return res;
 }
 
-// 高速素因数分解(osa_k法)(vectorベースなのでmapより速い)
+// 高速素因数分解(osa_k法)(vectorベース)
 vector<pair<ll, int>> factorize(vector<ll> &table, ll x) {
 
     vector<ll> V;

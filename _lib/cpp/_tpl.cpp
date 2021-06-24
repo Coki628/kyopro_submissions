@@ -104,7 +104,10 @@ template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<
 
 template<typename T> struct Accumulate {
     vector<T> acc; int N;
-    Accumulate(vector<T> &A) { N = A.size(); acc = A; rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
+    Accumulate(int N) : N(N) { acc.resize(N); }
+    Accumulate(vector<T> &A) { N = A.size(); acc = A; build(); }
+    void set(int i, T a) { acc[i] = a; }
+    void build() { rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
     T query(int l, int r) { assert(0 <= l and l <= N and 0 <= r and r <= N); return acc[r]-acc[l]; }
     T get(int i) { return query(i, i+1); }
     T operator[](int i) { return query(i, i+1); }
