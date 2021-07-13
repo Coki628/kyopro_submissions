@@ -82,6 +82,33 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
 }
 
 
+// ダイクストラ(O(V^2)版) ※未verify
+template<typename T>
+vector<T> dijkstra(vector<vector<T>> &G, int src) {
+    int N = G.size();
+    vector<T> dist(N, INF);
+    vector<bool> used(N);
+
+    dist[src] = 0;
+    while (1) {
+        int v = -1;
+        rep(u, 0, N) {
+            if (!used[u] and (v == -1 or dist[u] < dist[v])) {
+                v = u;
+            }
+        }
+        if (v == -1) {
+            break;
+        }
+        used[v] = true;
+        rep(u, 0, N) {
+            dist[u] = min(dist[u], dist[v] + G[v][u]);
+        }
+    }
+    return dist;
+}
+
+
 template<typename T>
 vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
     ll N = G.size();

@@ -21,7 +21,7 @@ using vvpll = vector<vector<pll>>;
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
 #define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
 #define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
-#define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
+#define rep3(i, a, b, c) for(ll i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
 #define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
 #define mkp make_pair

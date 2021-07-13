@@ -214,3 +214,67 @@ ll nCr(int n, int r) {
     }
     return dp[n][r];
 }
+
+
+// スターリング数(玉区別あり、箱区別なし、1個以上) ※未Verify
+ll stirling(int N, int K) {
+    auto dp = list2d(N+1, K+1, 0LL);
+    dp[0][0] = 1;
+    rep(i, 1, N+1) {
+        rep(k, 1, K+1) {
+            dp[i][k] = dp[i-1][k-1] + k*dp[i-1][k];
+        }
+    }
+    return dp[N][K];
+}
+
+
+// ベル数(玉区別あり、箱区別なし、制限なし) ※未Verify
+ll bell(int N, int K) {
+    ll ans = 0;
+    rep(i, K+1) {
+        ans += stirling(N, i);
+    }
+    return ans;
+}
+
+
+// ベル数(玉区別あり、箱区別なし、制限なし) ※未Verify
+mint bell(int N, int K) {
+
+    ModTools mt(MOD, max(N, K));
+
+    // 前計算しておく
+    vector<mint> prev(K+1);
+    rep(i, 0, K+1) {
+        prev[i] = (mint)1/mt.fact[i];
+    }
+    // 累積和
+    rep(i, 1, K+1) {
+        prev[i] += prev[i-1];
+    }
+
+    mint ans = 0;
+    rep(i, 0, K+1) {
+        ans += (mint)pow(i, N, MOD)/mt.fact[i]*prev[K-i];
+    }
+    return ans;
+}
+
+
+// 分割数(玉区別なし、箱区別なし、制限なし) ※未Verify
+ll partition(int N, int K) {
+    // dp[i][j] := jのi分割の総数
+    auto dp = list2d(K+1, N+1, 0LL);
+    dp[0][0] = 1;
+    rep(i, 1, K+1) {
+        rep(j, 0, N+1) {
+            dp[i][j] += dp[i-1][j];
+            if (j - i >= 0) {
+                dp[i][j] += dp[i][j-i];
+            }
+            dp[i][j] %= MOD;
+        }
+    }
+    return dp[K][N];
+}

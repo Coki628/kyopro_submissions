@@ -155,21 +155,6 @@ ll ntod(string S, ll n) {
 
 
 // 10進数をN進数文字列に(負数対応版)
-// string dton(ll num, ll n) {
-//     string res;
-//     while (abs(num) > 0) {
-//         ll m = num % abs(n);
-//         num -= m;
-//         res += tochar(m);
-//         num /= n;
-//     }
-//     reverse(ALL(res));
-//     if (res != "") {
-//         return res;
-//     } else {
-//         return "0";
-//     }
-// }
 string dton(ll num, ll n, char base='0') {
     string res;
     while (abs(num) > 0) {
@@ -185,6 +170,21 @@ string dton(ll num, ll n, char base='0') {
         return res+base;
     }
 }
+// 旧版
+// string dton(ll num, ll n) {
+//     string res;
+//     ll m;
+//     while (num > 0) {
+//         tie(num, m) = divmod(num, n);
+//         res += tochar(m);
+//     }
+//     reverse(ALL(res));
+//     if (res != "") {
+//         return res;
+//     } else {
+//         return "0";
+//     }
+// }
 
 
 // 整数で正確にsqrtを返す
@@ -246,4 +246,56 @@ T inv_mod(T a, T mod) {
     T x, y;
     extgcd(a, mod, x, y);
     return (mod + x%mod) % mod;
+}
+
+
+// 等差数列の和：(初項l, 末項r, 項数n) 
+mint get_sum(mint l, mint r, mint n) {
+    return (l+r)*n/2;
+}
+
+
+// 等差数列の和：(初項a, 公差d, 項数n)
+mint get_sum(mint a, mint d, mint n) {
+    return (a*2+(n-1)*d)*n/2;
+}
+
+
+// 添字GCD畳み込み(計算量：O(NloglogN))
+template<typename T>
+vector<T> gcd_convolution(vector<T> F, vector<T> G) {
+    int N = max(F.size(), G.size());
+
+    // 高速ゼータ変換
+    auto fast_zeta = [&](vector<T> &a) {
+        int n = a.size();
+        vector<bool> sieve(n, false);
+        for (int p = 2; p < n; ++p) {
+            if (sieve[p]) continue;
+            for (int k=(n-1)/p; k>=0; k--) sieve[k*p]=true, a[k]+=a[k*p];
+        }
+    };
+    // 高速メビウス変換
+    auto fast_mobius = [&](vector<T> &a) {
+        int n = a.size();
+        vector<bool> sieve(n, false);
+        for (int p = 2; p < n; ++p) {
+            if (sieve[p]) continue;
+            else {
+                for (int k=0; k*p<n; k++) sieve[k*p]=true, a[k]-=a[k*p];
+            }
+        }
+    };
+
+    fast_zeta(F);
+    fast_zeta(G);
+
+    vector<T> H(N);
+    rep(i, min(F.size(), G.size())) {
+        H[i] = F[i]*G[i];
+    }
+
+    fast_mobius(H);
+
+    return H;
 }

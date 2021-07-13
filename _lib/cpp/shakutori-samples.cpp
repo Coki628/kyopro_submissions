@@ -134,3 +134,26 @@ rep(l, N) {
         if (mp[A[l]] == 0) mp.erase(A[l]);
     }
 }
+
+// 右端固定で左端を動かすタイプ(typical90_089)
+BIT<mint> dp(N+1);
+dp.add(0, 1);
+ll inv = 0, l = 0;
+bit.add(A[0], 1);
+rep(r, 1, N+1) {
+    // 条件を満たさない間、左端を縮める
+    while (l < N and inv > K) {
+        inv -= bit.query(0, A[l]);
+        bit.add(A[l], -1);
+        l++;
+    }
+    dp.add(r, dp.query(l, r));
+    // rep(k, l, r) {
+    //     dp[r] += dp[k];
+    // }
+    if (r < N) {
+        inv += bit.query(A[r]+1, M);
+        bit.add(A[r], 1);
+    }
+}
+mint ans = dp[N];

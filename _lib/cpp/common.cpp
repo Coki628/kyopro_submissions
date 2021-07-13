@@ -500,3 +500,11 @@ string bin(ll x) {
     if (res == "") res += '0';
     return res;
 }
+
+
+// 参考：https://rsk0315.hatenablog.com/entry/2021/02/23/163040
+// 乗算のオーバーフロー検知
+ll mul_overflow(ll x, ll y) {
+    ll z;
+    return __builtin_mul_overflow(x, y, &z);
+}

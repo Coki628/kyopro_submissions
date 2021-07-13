@@ -230,12 +230,13 @@ def calc(p1, p2):
 
 # 2次方程式の解の公式
 def dim2formula(a, b, c):
-    from math import sqrt
+    from decimal import Decimal, InvalidOperation
 
     try:
-        return (-b+sqrt(pow(b, 2)-4*a*c))/(2*a), (-b-sqrt(pow(b, 2)-4*a*c))/(2*a)
+        d = Decimal(pow(b, 2)-4*a*c).sqrt()
+        return (-b+d)/(2*a), (-b-d)/(2*a)
     # 解なしはNoneを返却
-    except ValueError:
+    except InvalidOperation:
         return None, None
 
 # 回転行列で座標s,tを回転

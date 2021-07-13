@@ -14,6 +14,17 @@ pll idtogrid(ll id, ll W) {
 }
 
 
+// グリッド斜めのループ(いつもぱっと出ないでもたつくので。。)
+// rep(k, -N, N) {
+//     rep(i, N) {
+//         if (0 <= i+k and i+k < N) {
+//             // do something
+//             // grid[i][i+k];
+//         }
+//     }
+// }
+
+
 // 余白付きグリッドを構築
 vector<string> build_grid(int H, int W, char intv, int offset=1) {
 

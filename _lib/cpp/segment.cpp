@@ -1650,8 +1650,12 @@ vector<T> slide_min(const F &func, vector<T> &A, ll k, ll w=1, ll v=0) {
 
 
 // マージソートによる転倒数取得
-// 座圧BITより速いけど、参照渡しやめるとバグるので、
-// 元の列もまだ使う場合はコピーしてからやる。
+// ・座圧BITより速いけど、参照渡しやめるとバグるので、
+// 　元の列もまだ使う場合はコピーしてからやること。
+// ・座圧を二分探索ベースにしてからまだ速度比較してないので、
+// 　もしかしたらそっちの座圧版だったら大差ないかも。
+
+// 転倒数取得
 ll get_inversion(vector<ll> &a) {
     int n = a.size();
     if (n <= 1) { return 0; }
@@ -1664,7 +1668,7 @@ ll get_inversion(vector<ll> &a) {
     cnt += get_inversion(c);
 
     int ai = 0, bi = 0, ci = 0;
-    // merge の処理
+    // mergeの処理
     while (ai < n) {
         if ( bi < b.size() && (ci == c.size() || b[bi] <= c[ci]) ) {
             a[ai++] = b[bi++];
@@ -1677,7 +1681,7 @@ ll get_inversion(vector<ll> &a) {
 }
 
 
-// 2つの閉区間seg1,seg2から、重複を除いた長さを返す
+// 2つの閉区間seg1[l,r],seg2[l,r]から、重複を除いた長さを返す
 ll merge_segment(pll seg1, pll seg2) {
     auto& [l1, r1] = seg1;
     auto& [l2, r2] = seg2;

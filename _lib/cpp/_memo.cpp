@@ -115,5 +115,22 @@ int main() {
     // mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
     // shuffle(ALL(A), mt);
 
+    // マルチテストケースで再帰の即returnさせたい時のtry/catch使用例
+    // ll N;
+    // cin >> N;
+    // try {
+    //     auto rec = [&](auto&& f, ll x) {
+    //         if (N >= 11) {
+    //             throw -1;
+    //         }
+    //         if (x == N) return;
+    //         f(f, x+1);
+    //     };
+    //     rec(rec, 0);
+    // } catch (int e) {
+    //     print(e);
+    //     return;
+    // }
+
     return 0;
 }
