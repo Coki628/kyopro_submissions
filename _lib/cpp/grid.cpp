@@ -5,6 +5,13 @@
 #include "_tpl.cpp"
 
 
+// 4方向
+const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+// 8方向
+const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+
+
 ll gridtoid(ll i, ll j, ll W) {
     return i*W+j;
 }
@@ -107,6 +114,17 @@ void transpose(vector<vector<T>> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(W, H, (T)0);
+    rep(i, 0, H) {
+        rep(j, 0, W) {
+            res[j][i] = grid[i][j];
+        }
+    }
+    swap(res, grid);
+}
+void transpose(vector<string> &grid) {
+    int H = grid.size();
+    int W = grid[0].size();
+    vector<string> res(W, string(H, '*'));
     rep(i, 0, H) {
         rep(j, 0, W) {
             res[j][i] = grid[i][j];
