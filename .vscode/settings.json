@@ -1,5 +1,7 @@
 {
     "python.linting.pylintEnabled": true,
-    // change python path accordingly for new env
-    "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python"
+    // for ubuntu
+    // "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
+    // for windows
+    "python.defaultInterpreterPath": "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\python.exe",
 }
