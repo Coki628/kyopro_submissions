@@ -157,3 +157,15 @@ rep(r, 1, N+1) {
     }
 }
 mint ans = dp[N];
+
+// ソートして縦を尺取り、横を遅延セグ木で管理みたいなやつ(cf1555_e)
+ll j = 0, ans = INF;
+rep(i, N) {
+    while (j < N and seg.query(0, M) == 0) {
+        seg.update(L[j], R[j], 1);
+        j++;
+    }
+    if (seg.query(0, M) > 0) chmin(ans, W[j-1]-W[i]);
+    seg.update(L[i], R[i], -1);
+}
+print(ans);

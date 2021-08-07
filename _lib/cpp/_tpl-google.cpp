@@ -104,6 +104,7 @@ template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<
 
 template<typename T> struct Accumulate {
     vector<T> acc; int N;
+    Accumulate() {}
     Accumulate(int N) : N(N) { acc.resize(N); }
     Accumulate(vector<T> &A) { N = A.size(); acc = A; build(); }
     void set(int i, T a) { acc[i] = a; }

@@ -64,9 +64,8 @@ vvl bfs(vector<string> &grid, vector<pii> src) {
         for (auto [dh, dw] : directions) {
             int nh = h + dh;
             int nw = w + dw;
-            if (grid[nh][nw] == '#') {
-                continue;
-            }
+            if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;
+            if (grid[nh][nw] == '#') continue;
             if (res[nh][nw] == INF) {
                 res[nh][nw] = res[h][w] + 1;
                 que.push({nh, nw});
@@ -96,6 +95,7 @@ vvl dijkstra(vvl &grid, pii src) {
         for (auto [dh, dw] : directions) {
             int nh = h+dh;
             int nw = w+dw;
+            if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;
             if (grid[nh][nw] == -1) continue;
             ll cost = grid[nh][nw];
             if (dist+cost < res[nh][nw]) {

@@ -921,7 +921,7 @@ struct LazySegmentTree {
         return query(k, k + 1);
     }
 
-    void update(int i, OperatorMonoid &x) {
+    void update(int i, const OperatorMonoid &x) {
         update(i, i+1, x);
     }
 
