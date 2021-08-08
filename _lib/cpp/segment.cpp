@@ -1310,272 +1310,571 @@ struct CompressedWaveletMatrix {
 };
 
 
+// // Segment Tree Beats (旧)
+// template<class T> class SegmentTreeBeats {
+//     T inf;
+//     size_t length;
+//     vector<T>
+//     node_max_first,node_max_second,count_max_first,
+//     node_min_first,node_min_second,count_min_first,
+//     node_sum,lazy_add,lazy_update;
+//     vector<pair<int,int>> range;
+//     stack<int> down,up;
+//     inline void internal_chmax(int k, long long x) {
+//         node_sum[k] += (x - node_max_first[k]) * count_max_first[k];
+//         if(node_max_first[k] == node_min_first[k]) node_max_first[k] = node_min_first[k] = x;
+//         else if(node_max_first[k] == node_min_second[k]) node_max_first[k] = node_min_second[k] = x;
+//         else node_max_first[k] = x;
+//         if(lazy_update[k] != inf && x < lazy_update[k]) lazy_update[k] = x;
+//     }
+//     inline void internal_chmin(int k, long long x) {
+//         node_sum[k] += (x - node_min_first[k]) * count_min_first[k];
+//         if(node_max_first[k] == node_min_first[k]) node_max_first[k] = node_min_first[k] = x;
+//         else if(node_max_second[k] == node_min_first[k]) node_min_first[k] = node_max_second[k] = x;
+//         else node_min_first[k] = x;
+//         if(lazy_update[k] != inf && lazy_update[k] < x) lazy_update[k] = x;
+//     }
+//     inline void internal_add(int k, long long x) {
+//         node_max_first[k] += x;
+//         if(node_max_second[k] != -inf) node_max_second[k] += x;
+//         node_min_first[k] += x;
+//         if(node_min_second[k] != inf) node_min_second[k] += x;
+//         node_sum[k] += x * (range[k].second - range[k].first);
+//         (lazy_update[k] != inf ? lazy_update[k]:lazy_add[k]) += x;
+//     }
+//     inline void internal_update(int k, long long x) {
+//         node_max_first[k] = x; node_max_second[k] = -inf;
+//         node_min_first[k] = x; node_min_second[k] = inf;
+//         count_max_first[k] = count_min_first[k] = (range[k].second - range[k].first);
+//         node_sum[k] = x * (range[k].second - range[k].first);
+//         lazy_update[k] = x;
+//         lazy_add[k] = 0;
+//     }
+//     inline void propagate(int k) {
+//         if(length-1 <= k) return;
+//         if(lazy_update[k] != inf) {
+//             internal_update(2*k+0, lazy_update[k]);
+//             internal_update(2*k+1, lazy_update[k]);
+//             lazy_update[k] = inf;
+//             return;
+//         }
+//         if(lazy_add[k] != 0) {
+//             internal_add(2*k+0, lazy_add[k]);
+//             internal_add(2*k+1, lazy_add[k]);
+//             lazy_add[k] = 0;
+//         }
+//         if(node_max_first[k] < node_max_first[2*k+0]) {
+//             internal_chmax(2*k+0, node_max_first[k]);
+//         }
+//         if(node_min_first[2*k+0] < node_min_first[k]) {
+//             internal_chmin(2*k+0, node_min_first[k]);
+//         }
+//         if(node_max_first[k] < node_max_first[2*k+1]) {
+//             internal_chmax(2*k+1, node_max_first[k]);
+//         }
+//         if(node_min_first[2*k+1] < node_min_first[k]) {
+//             internal_chmin(2*k+1, node_min_first[k]);
+//         }
+//     }
+//     inline void merge(int k) {
+//         node_sum[k] = node_sum[2*k+0] + node_sum[2*k+1];
+//         if(node_max_first[2*k+0] < node_max_first[2*k+1]) {
+//             node_max_first[k] = node_max_first[2*k+1];
+//             count_max_first[k] = count_max_first[2*k+1];
+//             node_max_second[k] = max(node_max_first[2*k+0], node_max_second[2*k+1]);
+//         }
+//         else if(node_max_first[2*k+0] > node_max_first[2*k+1]) {
+//             node_max_first[k] = node_max_first[2*k+0];
+//             count_max_first[k] = count_max_first[2*k+0];
+//             node_max_second[k] = max(node_max_second[2*k+0], node_max_first[2*k+1]);
+//         }
+//         else {
+//             node_max_first[k] = node_max_first[2*k+0];
+//             count_max_first[k] = count_max_first[2*k+0] + count_max_first[2*k+1];
+//             node_max_second[k] = max(node_max_second[2*k+0], node_max_second[2*k+1]);
+//         }
+//         if(node_min_first[2*k+0] < node_min_first[2*k+1]) {
+//             node_min_first[k] = node_min_first[2*k+0];
+//             count_min_first[k] = count_min_first[2*k+0];
+//             node_min_second[k] = min(node_min_second[2*k+0], node_min_first[2*k+1]);
+//         }
+//         else if(node_min_first[2*k+0] > node_min_first[2*k+1]) {
+//             node_min_first[k] = node_min_first[2*k+1];
+//             count_min_first[k] = count_min_first[2*k+1];
+//             node_min_second[k] = min(node_min_first[2*k+0], node_min_second[2*k+1]);
+//         }
+//         else {
+//             node_min_first[k] = node_min_first[2*k+0];
+//             count_min_first[k] = count_min_first[2*k+0] + count_min_first[2*k+1];
+//             node_min_second[k] = min(node_min_second[2*k+0], node_min_second[2*k+1]);
+//         }
+//     }
+//     inline void up_merge(void){
+//         while(up.size()) {
+//             merge(up.top());
+//             up.pop();
+//         }
+//     }
+//     inline void down_propagate(const int& k) {
+//         propagate(k);
+//         down.push(2*k+0);
+//         down.push(2*k+1);
+//     }
+// public:
+//     SegmentTreeBeats(const int num,const T inf = (1LL<<60)) {
+//         vector<T> a(num,0);
+//         *this = SegmentTreeBeats(a,inf);
+//     }
+//     SegmentTreeBeats(const vector<T>& a,const T inf = (1LL<<60)) : inf(inf){
+//         int num = a.size();
+//         for (length = 1; length <= num; length *= 2);
+//         node_max_first.resize(2*length);
+//         node_max_second.resize(2*length);
+//         count_max_first.resize(2*length);
+//         node_min_first.resize(2*length);
+//         node_min_second.resize(2*length);
+//         count_min_first.resize(2*length);
+//         node_sum.resize(2*length);
+//         range.resize(2*length);
+//         lazy_add.resize(2*length);
+//         lazy_update.resize(2*length);
+
+//         for(int i=0; i<2*length; ++i) lazy_add[i] = 0, lazy_update[i] = inf;
+//         for(int i = 0; i < length; ++i) range[i+length] = make_pair(i,i+1);
+//         for(int i = length - 1; i >= 0; --i) range[i] = make_pair(range[(i<<1)+0].first,range[(i<<1)+1].second);
+
+//         for(int i=0; i<num; ++i) {
+//             node_max_first[length+i] = node_min_first[length+i] = node_sum[length+i] = a[i];
+//             node_max_second[length+i] = -inf;
+//             node_min_second[length+i] = inf;
+//             count_max_first[length+i] = count_min_first[length+i] = 1;
+//         }
+//         for(int i=num; i<length; ++i) {
+//             node_max_first[length+i] = node_max_second[length+i] = -inf;
+//             node_min_first[length+i] = node_min_second[length+i] = inf;
+//             count_max_first[length+i] = count_min_first[length+i] = 0;
+//         }
+//         for(int i=length-1; i; --i) merge(i);
+//     }
+//     inline void range_chmin(int a, int b, long long x) {
+//         down.push(1);
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a || node_max_first[k] <= x) continue;
+//             if(a <= range[k].first && range[k].second <= b && node_max_second[k] < x) {
+//                 internal_chmax(k, x);
+//                 continue;
+//             }
+//             down_propagate(k);
+//             up.push(k);
+//         }
+//         up_merge();
+//     }
+//     inline void range_chmax(int a, int b, long long x,int k = 1) {
+//         down.push(1);
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a || x <= node_min_first[k]) continue;
+//             if(a <= range[k].first && range[k].second <= b && x < node_min_second[k]) {
+//                 internal_chmin(k, x);
+//                 continue;
+//             }
+//             down_propagate(k);
+//             up.push(k);
+//         }
+//         up_merge();
+//     }
+//     inline void range_add(int a, int b, long long x,int k = 1) {
+//         down.push(1);
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a) continue;
+//             if(a <= range[k].first && range[k].second <= b) {
+//                 internal_add(k, x);
+//                 continue;
+//             }
+//             down_propagate(k);
+//             up.push(k);
+//         }
+//         up_merge();
+//     }
+//     inline void range_update(int a, int b, long long x,int k = 1) {
+//         down.push(1);
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a) continue;
+//             if(a <= range[k].first && range[k].second <= b) {
+//                 internal_update(k, x);
+//                 continue;
+//             }
+//             down_propagate(k);
+//             up.push(k);
+//         }
+//         up_merge();
+//     }
+//     inline T get_max(int a, int b, int k = 1) {
+//         down.push(1);
+//         long long v = inf;
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a) continue;
+//             if(a <= range[k].first && range[k].second <= b) {
+//                 v = max(v,node_max_first[k]);
+//                 continue;
+//             }
+//             down_propagate(k);
+//         }
+//         return v;
+//     }
+//     inline T get_min(int a, int b, int k = 1) {
+//         down.push(1);
+//         long long v = inf;
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a) continue;
+//             if(a <= range[k].first && range[k].second <= b) {
+//                 v = min(v,node_min_first[k]);
+//                 continue;
+//             }
+//             down_propagate(k);
+//         }
+//         return v;
+//     }
+//     inline T get_sum(int a, int b, int k = 1) {
+//         down.push(1);
+//         long long v = 0;
+//         while(down.size()) {
+//             int k = down.top();
+//             down.pop();
+//             if(b <= range[k].first || range[k].second <= a) continue;
+//             if(a <= range[k].first && range[k].second <= b) {
+//                 v += node_sum[k];
+//                 continue;
+//             }
+//             down_propagate(k);
+//         }
+//         return v;
+//     }
+
+//     T get(int i) {
+//         return get_sum(i, i+1);
+//     }
+
+//     T operator[](int i) {
+//         return get(i);
+//     }
+
+//     void update(int i, T x) {
+//         range_update(i, i+1, x);
+//     }
+
+//     void add(int i, T x) {
+//         range_add(i, i+1, x);
+//     }
+// };
+
+
 // Segment Tree Beats
-template<class T> class SegmentTreeBeats {
-    T inf;
-    size_t length;
-    vector<T>
-    node_max_first,node_max_second,count_max_first,
-    node_min_first,node_min_second,count_min_first,
-    node_sum,lazy_add,lazy_update;
-    vector<pair<int,int>> range;
-    stack<int> down,up;
-    inline void internal_chmax(int k, long long x) {
-        node_sum[k] += (x - node_max_first[k]) * count_max_first[k];
-        if(node_max_first[k] == node_min_first[k]) node_max_first[k] = node_min_first[k] = x;
-        else if(node_max_first[k] == node_min_second[k]) node_max_first[k] = node_min_second[k] = x;
-        else node_max_first[k] = x;
-        if(lazy_update[k] != inf && x < lazy_update[k]) lazy_update[k] = x;
-    }
-    inline void internal_chmin(int k, long long x) {
-        node_sum[k] += (x - node_min_first[k]) * count_min_first[k];
-        if(node_max_first[k] == node_min_first[k]) node_max_first[k] = node_min_first[k] = x;
-        else if(node_max_second[k] == node_min_first[k]) node_min_first[k] = node_max_second[k] = x;
-        else node_min_first[k] = x;
-        if(lazy_update[k] != inf && lazy_update[k] < x) lazy_update[k] = x;
-    }
-    inline void internal_add(int k, long long x) {
-        node_max_first[k] += x;
-        if(node_max_second[k] != -inf) node_max_second[k] += x;
-        node_min_first[k] += x;
-        if(node_min_second[k] != inf) node_min_second[k] += x;
-        node_sum[k] += x * (range[k].second - range[k].first);
-        (lazy_update[k] != inf ? lazy_update[k]:lazy_add[k]) += x;
-    }
-    inline void internal_update(int k, long long x) {
-        node_max_first[k] = x; node_max_second[k] = -inf;
-        node_min_first[k] = x; node_min_second[k] = inf;
-        count_max_first[k] = count_min_first[k] = (range[k].second - range[k].first);
-        node_sum[k] = x * (range[k].second - range[k].first);
-        lazy_update[k] = x;
-        lazy_add[k] = 0;
-    }
-    inline void propagate(int k) {
-        if(length-1 <= k) return;
-        if(lazy_update[k] != inf) {
-            internal_update(2*k+0, lazy_update[k]);
-            internal_update(2*k+1, lazy_update[k]);
-            lazy_update[k] = inf;
+class SegmentTreeBeats {
+    static const ll inf = 1e18;
+    struct Node {
+        Node *left, *right;
+        ll max_v, smax_v, max_c;
+        ll min_v, smin_v, min_c;
+        ll sum;
+        ll len, ladd, lval;
+ 
+        Node() : left(0), right(0), ladd(0), lval(inf) {}
+ 
+        void init(ll x) {
+            max_v = min_v = sum = x;
+            smax_v = -inf;
+            smin_v = inf;
+            max_c = min_c = 1;
+        }
+ 
+        void init_empty() {
+            max_v = smax_v = -inf;
+            min_v = smin_v = inf;
+            max_c = min_c = 0;
+        }
+ 
+        void update_max(ll x) {
+            sum += (x - max_v) * max_c;
+ 
+            if (max_v == min_v) {
+                max_v = min_v = x;
+            } else if (max_v == smin_v) {
+                max_v = smin_v = x;
+            } else {
+                max_v = x;
+            }
+ 
+            if (lval != inf && x < lval) {
+                lval = x;
+            }
+        }
+ 
+        void update_min(ll x) {
+            sum += (x - min_v) * min_c;
+ 
+            if (max_v == min_v) {
+                max_v = min_v = x;
+            } else if (max_v == smin_v) {
+                min_v = smax_v = x;
+            } else {
+                min_v = x;
+            }
+ 
+            if (lval != inf && lval < x) {
+                lval = x;
+            }
+        }
+ 
+        void addall(ll x) {
+            max_v += x;
+            if (smax_v != -inf) smax_v += x;
+            min_v += x;
+            if (smin_v != inf) smin_v += x;
+ 
+            sum += len * x;
+            if (lval != inf) {
+                lval += x;
+            } else {
+                ladd += x;
+            }
+        }
+ 
+        void updateall(ll x) {
+            max_v = min_v = x;
+            smax_v = -inf;
+            smin_v = inf;
+            max_c = min_c = len;
+ 
+            sum = len * x;
+            lval = x;
+            ladd = 0;
+        }
+ 
+        void push() {
+            if (lval != inf) {
+                left->updateall(lval);
+                right->updateall(lval);
+                lval = inf;
+                return;
+            }
+ 
+            if (ladd != 0) {
+                left->addall(ladd);
+                right->addall(ladd);
+                ladd = 0;
+            }
+ 
+            if (max_v < left->max_v) {
+                left->update_max(max_v);
+            }
+            if (left->min_v < min_v) {
+                left->update_min(min_v);
+            }
+ 
+            if (max_v < right->max_v) {
+                right->update_max(max_v);
+            }
+            if (right->min_v < min_v) {
+                right->update_min(min_v);
+            }
+        }
+ 
+        void update() {
+            sum = left->sum + right->sum;
+ 
+            if (left->max_v < right->max_v) {
+                max_v = right->max_v;
+                max_c = right->max_c;
+                smax_v = max(left->max_v, right->smax_v);
+            } else if (left->max_v > right->max_v) {
+                max_v = left->max_v;
+                max_c = left->max_c;
+                smax_v = max(left->smax_v, right->max_v);
+            } else {
+                max_v = left->max_v;
+                max_c = left->max_c + right->max_c;
+                smax_v = max(left->smax_v, right->smax_v);
+            }
+ 
+            if (left->min_v < right->min_v) {
+                min_v = left->min_v;
+                min_c = left->min_c;
+                smin_v = min(left->smin_v, right->min_v);
+            } else if (left->min_v > right->min_v) {
+                min_v = right->min_v;
+                min_c = right->min_c;
+                smin_v = min(left->min_v, right->smin_v);
+            } else {
+                min_v = left->min_v;
+                min_c = left->min_c + right->min_c;
+                smin_v = min(left->smin_v, right->smin_v);
+            }
+        }
+    };
+ 
+    int n, n0;
+    Node *root;
+ 
+    void _update_min(ll x, int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a || nd->max_v <= x) {
             return;
         }
-        if(lazy_add[k] != 0) {
-            internal_add(2*k+0, lazy_add[k]);
-            internal_add(2*k+1, lazy_add[k]);
-            lazy_add[k] = 0;
+        if (a <= l && r <= b && nd->smax_v < x) {
+            nd->update_max(x);
+            return;
         }
-        if(node_max_first[k] < node_max_first[2*k+0]) {
-            internal_chmax(2*k+0, node_max_first[k]);
-        }
-        if(node_min_first[2*k+0] < node_min_first[k]) {
-            internal_chmin(2*k+0, node_min_first[k]);
-        }
-        if(node_max_first[k] < node_max_first[2*k+1]) {
-            internal_chmax(2*k+1, node_max_first[k]);
-        }
-        if(node_min_first[2*k+1] < node_min_first[k]) {
-            internal_chmin(2*k+1, node_min_first[k]);
-        }
+ 
+        nd->push();
+        _update_min(x, a, b, nd->left, l, (l + r) / 2);
+        _update_min(x, a, b, nd->right, (l + r) / 2, r);
+        nd->update();
     }
-    inline void merge(int k) {
-        node_sum[k] = node_sum[2*k+0] + node_sum[2*k+1];
-        if(node_max_first[2*k+0] < node_max_first[2*k+1]) {
-            node_max_first[k] = node_max_first[2*k+1];
-            count_max_first[k] = count_max_first[2*k+1];
-            node_max_second[k] = max(node_max_first[2*k+0], node_max_second[2*k+1]);
+ 
+    void _update_max(ll x, int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a || x <= nd->min_v) {
+            return;
         }
-        else if(node_max_first[2*k+0] > node_max_first[2*k+1]) {
-            node_max_first[k] = node_max_first[2*k+0];
-            count_max_first[k] = count_max_first[2*k+0];
-            node_max_second[k] = max(node_max_second[2*k+0], node_max_first[2*k+1]);
+        if (a <= l && r <= b && x < nd->smin_v) {
+            nd->update_min(x);
+            return;
         }
-        else {
-            node_max_first[k] = node_max_first[2*k+0];
-            count_max_first[k] = count_max_first[2*k+0] + count_max_first[2*k+1];
-            node_max_second[k] = max(node_max_second[2*k+0], node_max_second[2*k+1]);
-        }
-        if(node_min_first[2*k+0] < node_min_first[2*k+1]) {
-            node_min_first[k] = node_min_first[2*k+0];
-            count_min_first[k] = count_min_first[2*k+0];
-            node_min_second[k] = min(node_min_second[2*k+0], node_min_first[2*k+1]);
-        }
-        else if(node_min_first[2*k+0] > node_min_first[2*k+1]) {
-            node_min_first[k] = node_min_first[2*k+1];
-            count_min_first[k] = count_min_first[2*k+1];
-            node_min_second[k] = min(node_min_first[2*k+0], node_min_second[2*k+1]);
-        }
-        else {
-            node_min_first[k] = node_min_first[2*k+0];
-            count_min_first[k] = count_min_first[2*k+0] + count_min_first[2*k+1];
-            node_min_second[k] = min(node_min_second[2*k+0], node_min_second[2*k+1]);
-        }
+ 
+        nd->push();
+        _update_max(x, a, b, nd->left, l, (l + r) / 2);
+        _update_max(x, a, b, nd->right, (l + r) / 2, r);
+        nd->update();
     }
-    inline void up_merge(void){
-        while(up.size()) {
-            merge(up.top());
-            up.pop();
+ 
+    void _add_val(ll x, int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a) {
+            return;
         }
+        if (a <= l && r <= b) {
+            nd->addall(x);
+            return;
+        }
+ 
+        nd->push();
+        _add_val(x, a, b, nd->left, l, (l + r) / 2);
+        _add_val(x, a, b, nd->right, (l + r) / 2, r);
+        nd->update();
     }
-    inline void down_propagate(const int& k) {
-        propagate(k);
-        down.push(2*k+0);
-        down.push(2*k+1);
+ 
+    void _update_val(ll x, int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a) {
+            return;
+        }
+        if (a <= l && r <= b) {
+            nd->updateall(x);
+            return;
+        }
+ 
+        nd->push();
+        _update_val(x, a, b, nd->left, l, (l + r) / 2);
+        _update_val(x, a, b, nd->right, (l + r) / 2, r);
+        nd->update();
     }
+ 
+    ll _query_max(int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a) {
+            return -inf;
+        }
+        if (a <= l && r <= b) {
+            return nd->max_v;
+        }
+        nd->push();
+        ll lv = _query_max(a, b, nd->left, l, (l + r) / 2);
+        ll rv = _query_max(a, b, nd->right, (l + r) / 2, r);
+        return max(lv, rv);
+    }
+ 
+    ll _query_min(int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a) {
+            return inf;
+        }
+        if (a <= l && r <= b) {
+            return nd->min_v;
+        }
+        nd->push();
+        ll lv = _query_min(a, b, nd->left, l, (l + r) / 2);
+        ll rv = _query_min(a, b, nd->right, (l + r) / 2, r);
+        return min(lv, rv);
+    }
+ 
+    ll _query_sum(int a, int b, Node *nd, int l, int r) {
+        if (b <= l || r <= a) {
+            return 0;
+        }
+        if (a <= l && r <= b) {
+            return nd->sum;
+        }
+        nd->push();
+        ll lv = _query_sum(a, b, nd->left, l, (l + r) / 2);
+        ll rv = _query_sum(a, b, nd->right, (l + r) / 2, r);
+        return lv + rv;
+    }
+ 
 public:
-    SegmentTreeBeats(const int num,const T inf = (1LL<<60)) {
-        vector<T> a(num,0);
-        *this = SegmentTreeBeats(a,inf);
+    SegmentTreeBeats(vector<ll> a) : n(a.size()) {
+        n0 = 1;
+        while (n0 < n) n0 <<= 1;
+ 
+        Node *nds = new Node[2 * n0];
+        root = nds;
+ 
+        nds[0].len = n0;
+        for (int i = 0; i < n0 - 1; ++i) {
+            nds[i].left = &nds[2 * i + 1];
+            nds[i].right = &nds[2 * i + 2];
+            nds[2 * i + 1].len = nds[2 * i + 2].len = (nds[i].len >> 1);
+        }
+ 
+        for (int i = 0; i < n; ++i) nds[n0 - 1 + i].init(a[i]);
+        for (int i = n; i < n0; ++i) nds[n0 - 1 + i].init_empty();
+        for (int i = n0 - 2; i >= 0; i--) nds[i].update();
     }
-    SegmentTreeBeats(const vector<T>& a,const T inf = (1LL<<60)) : inf(inf){
-        int num = a.size();
-        for (length = 1; length <= num; length *= 2);
-        node_max_first.resize(2*length);
-        node_max_second.resize(2*length);
-        count_max_first.resize(2*length);
-        node_min_first.resize(2*length);
-        node_min_second.resize(2*length);
-        count_min_first.resize(2*length);
-        node_sum.resize(2*length);
-        range.resize(2*length);
-        lazy_add.resize(2*length);
-        lazy_update.resize(2*length);
+    SegmentTreeBeats(int n) : SegmentTreeBeats(vector<ll>(n, 0)) {}
+ 
+    void update_min(int a, int b, ll x) { _update_min(x, a, b, root, 0, n0); }
+ 
+    void update_max(int a, int b, ll x) { _update_max(x, a, b, root, 0, n0); }
+ 
+    void add_val(int a, int b, ll x) { _add_val(x, a, b, root, 0, n0); }
+ 
+    void update_val(int a, int b, ll x) { _update_val(x, a, b, root, 0, n0); }
+ 
+    ll query_max(int a, int b) { return _query_max(a, b, root, 0, n0); }
+ 
+    ll query_min(int a, int b) { return _query_min(a, b, root, 0, n0); }
+ 
+    ll query_sum(int a, int b) { return _query_sum(a, b, root, 0, n0); }
 
-        for(int i=0; i<2*length; ++i) lazy_add[i] = 0, lazy_update[i] = inf;
-        for(int i = 0; i < length; ++i) range[i+length] = make_pair(i,i+1);
-        for(int i = length - 1; i >= 0; --i) range[i] = make_pair(range[(i<<1)+0].first,range[(i<<1)+1].second);
-
-        for(int i=0; i<num; ++i) {
-            node_max_first[length+i] = node_min_first[length+i] = node_sum[length+i] = a[i];
-            node_max_second[length+i] = -inf;
-            node_min_second[length+i] = inf;
-            count_max_first[length+i] = count_min_first[length+i] = 1;
-        }
-        for(int i=num; i<length; ++i) {
-            node_max_first[length+i] = node_max_second[length+i] = -inf;
-            node_min_first[length+i] = node_min_second[length+i] = inf;
-            count_max_first[length+i] = count_min_first[length+i] = 0;
-        }
-        for(int i=length-1; i; --i) merge(i);
-    }
-    inline void range_chmin(int a, int b, long long x) {
-        down.push(1);
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a || node_max_first[k] <= x) continue;
-            if(a <= range[k].first && range[k].second <= b && node_max_second[k] < x) {
-                internal_chmax(k, x);
-                continue;
-            }
-            down_propagate(k);
-            up.push(k);
-        }
-        up_merge();
-    }
-    inline void range_chmax(int a, int b, long long x,int k = 1) {
-        down.push(1);
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a || x <= node_min_first[k]) continue;
-            if(a <= range[k].first && range[k].second <= b && x < node_min_second[k]) {
-                internal_chmin(k, x);
-                continue;
-            }
-            down_propagate(k);
-            up.push(k);
-        }
-        up_merge();
-    }
-    inline void range_add(int a, int b, long long x,int k = 1) {
-        down.push(1);
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a) continue;
-            if(a <= range[k].first && range[k].second <= b) {
-                internal_add(k, x);
-                continue;
-            }
-            down_propagate(k);
-            up.push(k);
-        }
-        up_merge();
-    }
-    inline void range_update(int a, int b, long long x,int k = 1) {
-        down.push(1);
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a) continue;
-            if(a <= range[k].first && range[k].second <= b) {
-                internal_update(k, x);
-                continue;
-            }
-            down_propagate(k);
-            up.push(k);
-        }
-        up_merge();
-    }
-    inline T get_max(int a, int b, int k = 1) {
-        down.push(1);
-        long long v = inf;
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a) continue;
-            if(a <= range[k].first && range[k].second <= b) {
-                v = max(v,node_max_first[k]);
-                continue;
-            }
-            down_propagate(k);
-        }
-        return v;
-    }
-    inline T get_min(int a, int b, int k = 1) {
-        down.push(1);
-        long long v = inf;
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a) continue;
-            if(a <= range[k].first && range[k].second <= b) {
-                v = min(v,node_min_first[k]);
-                continue;
-            }
-            down_propagate(k);
-        }
-        return v;
-    }
-    inline T get_sum(int a, int b, int k = 1) {
-        down.push(1);
-        long long v = 0;
-        while(down.size()) {
-            int k = down.top();
-            down.pop();
-            if(b <= range[k].first || range[k].second <= a) continue;
-            if(a <= range[k].first && range[k].second <= b) {
-                v += node_sum[k];
-                continue;
-            }
-            down_propagate(k);
-        }
-        return v;
+    ll get(int i) {
+        return query_sum(i, i+1);
     }
 
-    T get(int i) {
-        return get_sum(i, i+1);
+    ll operator[](int i) {
+        return query_sum(i, i+1);
     }
 
-    T operator[](int i) {
-        return get(i);
+    void update(int i, ll x) {
+        update_val(i, i+1, x);
     }
 
-    void update(int i, T x) {
-        range_update(i, i+1, x);
-    }
-
-    void add(int i, T x) {
-        range_add(i, i+1, x);
+    void add(int i, ll x) {
+        add_val(i, i+1, x);
     }
 };
 
