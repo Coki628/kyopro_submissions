@@ -157,6 +157,36 @@ pll trisearch_min(ll lo, ll hi, const F &func, ll offset=0) {
 }
 
 
+// 三分探索(整数)(未verify)
+template<typename F>
+pll trisearch_max(ll lo, ll hi, const F &func, ll offset=0) {
+    
+    ll m1 = lo, l = lo;
+    ll m2 = hi, r = hi;
+    while (lo+2 < hi) {
+        m1 = (lo*2+hi) / 3;
+        m2 = (lo+hi*2) / 3;
+        ll res1 = func(m1);
+        ll res2 = func(m2);
+        if (res1 >= res2) {
+            hi = m2;
+        } else {
+            lo = m1;
+        }
+    }
+    ll mx = -INF;
+    pll res;
+    rep(i, max(m1-offset, l), min(m2+offset, r)) {
+        ll val = func(i);
+        if (val > mx) {
+            mx = val;
+            res = {i, val};
+        }
+    }
+    return res;
+}
+
+
 // 座標圧縮
 template<typename T>
 pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
@@ -519,3 +549,31 @@ ll mul_overflow(ll x, ll y) {
     ll z;
     return __builtin_mul_overflow(x, y, &z);
 }
+
+
+// 標準mapを継承したdefaultdictクラス
+template<typename key, typename val>
+struct defaultdict : public map<key, val> {
+
+    const val init;
+
+    defaultdict() : init(val()) {};
+
+    defaultdict(val init) : init(init) {}
+
+    val& operator[](const key& k) {
+        if (map<key, val>::count(k)) {
+            return map<key, val>::operator[](k);
+        } else {
+            return map<key, val>::operator[](k) = init;
+        }
+    }
+
+    val& operator[](key&& k) {
+        if (map<key, val>::count(k)) {
+            return map<key, val>::operator[](k);
+        } else {
+            return map<key, val>::operator[](k) = init;
+        }
+    }
+};

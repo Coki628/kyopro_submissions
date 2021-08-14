@@ -156,26 +156,6 @@ vector<T> accumulate(vector<T> &A, bool indexed=0) {
 //     return res;
 // }
 
-// ダメだった。戻り値で参照返すから、initを更新してしまう。。
-// 代入で呼ばれた時と参照で呼ばれた時で処理を出し分けたりできればいいんだけど、
-// そういうのはできなそう。。
-// template<typename Key, typename Val>
-// struct defaultdict : public map<Key, Val> {
-
-//     Val init;
-
-//     defaultdict() : init(Val()) {};
-
-//     defaultdict(Val init) : init(init) {}
-
-//     Val& operator[](Key k) {
-//         if (map<Key, Val>::count(k)) return map<Key, Val>::operator[](k);
-//         else {
-//             return init;
-//         }
-//     }
-// };
-
 #define debug(x) (cout << #x << ": " << x << endl)
 
 int main() {
