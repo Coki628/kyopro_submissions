@@ -6,7 +6,7 @@
 
 
 template<typename T>
-map<T, ll> Counter(vector<T> &A) {
+map<T, ll> Counter(const vector<T> &A) {
     map<T, ll> res;
     for (T a : A) {
         res[a]++;
@@ -551,29 +551,3 @@ ll mul_overflow(ll x, ll y) {
 }
 
 
-// 標準mapを継承したdefaultdictクラス
-template<typename key, typename val>
-struct defaultdict : public map<key, val> {
-
-    const val init;
-
-    defaultdict() : init(val()) {};
-
-    defaultdict(val init) : init(init) {}
-
-    val& operator[](const key& k) {
-        if (map<key, val>::count(k)) {
-            return map<key, val>::operator[](k);
-        } else {
-            return map<key, val>::operator[](k) = init;
-        }
-    }
-
-    val& operator[](key&& k) {
-        if (map<key, val>::count(k)) {
-            return map<key, val>::operator[](k);
-        } else {
-            return map<key, val>::operator[](k) = init;
-        }
-    }
-};

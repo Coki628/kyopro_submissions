@@ -8,7 +8,7 @@
 template<typename T>
 struct Point {
     T x, y;
-    Point () {}
+    Point() : x(0), y(0) {}
     Point(T x, T y) : x(x), y(y) {}
     Point operator+(const Point &p) { return {x+p.x, y+p.y}; }
     Point operator-(const Point &p) { return {x-p.x, y-p.y}; }
@@ -19,9 +19,10 @@ struct Point {
     T norm(const Point &p) { return p.x*p.x + p.y*p.y; }
     T abs(const Point &p) { return hypot(x-p.x, y-p.y); }
     T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
+    void print() { cout << x << ' ' << y << '\n'; }
 };
 template<typename T> struct Segment { Point<T> p1, p2; };
-#define Line Segment
+template<typename T> using Line = Segment<T>;
 template<typename T>
 struct Circle {
     Point<T> c;

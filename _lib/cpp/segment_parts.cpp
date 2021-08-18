@@ -325,6 +325,26 @@ const bool E = false;
 // 参考：ARC017_d, cf1459_c
 // ※遅延セグ木は使えない。詳しくは該当の問題にて。
 
+// 復元付き(直前の値を持たせる。inplaceに潰してしまう前に、各時点でのprvは別配列で保管する)
+// 参考：cf1557_d
+struct Node {
+    ll val, prv;
+    operator ll() const { return val; }
+};
+// 区間最大値取得・区間更新
+auto f = [](Node a, Node b) -> Node {
+    if (a.val >= b.val) {
+        return a;
+    } else {
+        return b;
+    }
+};
+auto g = [](Node a, Node b) -> Node { return b; };
+auto h = [](Node a, Node b) -> Node { return b; };
+const Node T = {-INF, -1};
+// 要素が取りうる範囲外の値にする
+const Node E = {INF, -1};
+
 // 区間和取得・区間加算・区間乗算を作ろうとしたんだけど失敗。
 // なんか掛け算がちゃんと機能しない。。
 struct Node {

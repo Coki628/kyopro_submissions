@@ -132,13 +132,13 @@ vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
 struct UnionFind {
 
     int n, groupcnt;
-    vector<int> par, rank, size;
+    vector<int> par, rank, sz;
     vector<bool> tree;
 
     UnionFind(int n) : n(n) {
         par.resize(n);
         rank.resize(n);
-        size.resize(n, 1);
+        sz.resize(n, 1);
         tree.resize(n, 1);
         rep(i, 0, n) par[i] = i;
         groupcnt = n;
@@ -150,7 +150,7 @@ struct UnionFind {
         n = _n;
         par.resize(n);
         rank.resize(n);
-        size.resize(n, 1);
+        sz.resize(n, 1);
         rep(i, 0, n) par[i] = i;
         groupcnt = n;
     }
@@ -181,11 +181,11 @@ struct UnionFind {
         groupcnt--;
         if (rank[x] < rank[y]) {
             par[x] = y;
-            size[y] += size[x];
+            sz[y] += sz[x];
             return y;
         } else {
             par[y] = x;
-            size[x] += size[y];
+            sz[x] += sz[y];
             if (rank[x] == rank[y]) {
                 rank[x]++;
             }
@@ -194,17 +194,17 @@ struct UnionFind {
     }
 
     // 同じ集合に属するか判定
-    bool is_same(int a, int b) {
+    bool same(int a, int b) {
         return find(a) == find(b);
     }
 
     // あるノードの属する集合のノード数
-    int get_size(int x) {
-        return size[find(x)];
+    ll size(int x) {
+        return sz[find(x)];
     }
 
     // 集合の数
-    int get_size() {
+    int size() {
         return groupcnt;
     }
 

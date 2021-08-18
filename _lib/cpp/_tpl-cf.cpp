@@ -67,9 +67,9 @@ template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return 
 template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
 template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
 
-template<typename T> T sum(vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
-template<typename T> T max(vector<T> &A) { return *max_element(ALL(A)); }
-template<typename T> T min(vector<T> &A) { return *min_element(ALL(A)); }
+template<typename T> T sum(const vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T max(const vector<T> &A) { return *max_element(ALL(A)); }
+template<typename T> T min(const vector<T> &A) { return *min_element(ALL(A)); }
 
 ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
 int toint(char num) { return num - '0'; }
@@ -93,12 +93,12 @@ ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 ld degrees(ld radians) { return radians * 180.0 / PI; }
 ld radians(ld degrees) { return degrees * PI / 180.0; }
 
-template<typename T> int bisect_left(vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
-template<typename T> int bisect_right(vector<T> &A, T val, int lo=0) { return upper_bound(A.begin()+lo, A.end(), val) - A.begin(); }
+template<typename T> int bisect_left(const vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
+template<typename T> int bisect_right(const vector<T> &A, T val, int lo=0) { return upper_bound(A.begin()+lo, A.end(), val) - A.begin(); }
 template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 
-template<typename T> map<T, ll> Counter(vector<T> &A) { map<T, ll> res; for (T a : A) res[a]++; return res; }
+template<typename T> map<T, ll> Counter(const vector<T> &A) { map<T, ll> res; for (T a : A) res[a]++; return res; }
 map<char, ll> Counter(string &S) { map<char, ll> res; for (char c : S) res[c]++; return res; }
 template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
 
@@ -106,7 +106,7 @@ template<typename T> struct Accumulate {
     vector<T> acc; int N;
     Accumulate() {}
     Accumulate(int N) : N(N) { acc.resize(N); }
-    Accumulate(vector<T> &A) { N = A.size(); acc = A; build(); }
+    Accumulate(const vector<T> &A) { N = A.size(); acc = A; build(); }
     void set(int i, T a) { acc[i] = a; }
     void build() { rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
     T query(int l, int r) { assert(0 <= l and l <= N and 0 <= r and r <= N); return acc[r]-acc[l]; }
@@ -129,7 +129,6 @@ template<int mod> struct ModInt {
     ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
     bool operator==(const ModInt &p) const { return x == p.x; }
     bool operator!=(const ModInt &p) const { return x != p.x; }
-    bool operator<(const ModInt &p) const { return x < p.x; }
     ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); }
     ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; }
     friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; }

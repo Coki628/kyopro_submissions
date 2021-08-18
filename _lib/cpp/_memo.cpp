@@ -132,5 +132,10 @@ int main() {
     //     return;
     // }
 
+    set<pair<ll, ll>> se;
+    (*se.begin()).first;
+    // これのが楽だね
+    se.begin()->first;
+
     return 0;
 }
