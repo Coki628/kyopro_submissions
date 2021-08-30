@@ -17,17 +17,17 @@ struct defaultdict : public map<_Key, _Tp, _Compare, _Alloc> {
 
     _Tp& operator[](const _Key& k) {
         if (this->count(k)) {
-            return map<_Key, _Tp>::operator[](k);
+            return map<_Key, _Tp, _Compare, _Alloc>::operator[](k);
         } else {
-            return map<_Key, _Tp>::operator[](k) = init;
+            return map<_Key, _Tp, _Compare, _Alloc>::operator[](k) = init;
         }
     }
 
     _Tp& operator[](_Key&& k) {
         if (this->count(k)) {
-            return map<_Key, _Tp>::operator[](k);
+            return map<_Key, _Tp, _Compare, _Alloc>::operator[](k);
         } else {
-            return map<_Key, _Tp>::operator[](k) = init;
+            return map<_Key, _Tp, _Compare, _Alloc>::operator[](k) = init;
         }
     }
 };

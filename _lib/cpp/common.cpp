@@ -15,7 +15,7 @@ map<T, ll> Counter(const vector<T> &A) {
 }
 
 
-map<char, ll> Counter(string &S) {
+map<char, ll> Counter(const string &S) {
     map<char, ll> res;
     for (char c : S) {
         res[c]++;
@@ -230,7 +230,7 @@ struct Compress {
         return dat.size();
     }
 
-    vector<T> zip(vector<T> &A) {
+    vector<T> zip(const vector<T> &A) {
         int M = A.size();
         vector<T> res(M);
         rep(i, M) res[i] = zip(A[i]);
@@ -241,7 +241,7 @@ struct Compress {
 
 // ランレングス圧縮
 template<typename T>
-vector<pair<T, int>> RLE(vector<T> &A) {
+vector<pair<T, int>> RLE(const vector<T> &A) {
     if (A.empty()) return {};
     int N = A.size();
     vector<pair<T, int>> res;
@@ -262,7 +262,7 @@ vector<pair<T, int>> RLE(vector<T> &A) {
 
 
 // ランレングス圧縮(文字列)
-vector<pair<char, ll>> RLE(string &S) {
+vector<pair<char, ll>> RLE(const string &S) {
     if (S.empty()) return {};
     ll N = S.size();
     vector<pair<char, ll>> res;
@@ -309,7 +309,7 @@ struct MatPow {
 
     MatPow() {}
 
-    vector<vector<T>> mat_dot(vector<vector<T>> &A, vector<vector<T>> &B) {
+    vector<vector<T>> mat_dot(const vector<vector<T>> &A, const vector<vector<T>> &B) {
         int n1 = A.size();
         int n2 = A[0].size();
         int m2 = B[0].size();
@@ -340,7 +340,7 @@ struct MatPow {
         return res;
     }
 
-    vector<T> solve(vector<vector<T>> mat, vector<T> &_init, ll K) {
+    vector<T> solve(vector<vector<T>> mat, const vector<T> &_init, ll K) {
         int n = mat.size();
         auto init = list2d(n, 1, (T)0);
         rep(i, 0, n) init[i][0] = _init[i];
@@ -355,7 +355,7 @@ struct MatPow {
 
 // 連立方程式の解(ガウス・ジョルダン法) ※未verify
 template<typename T>
-vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
+vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
     int N = A.size();
     auto B = list2d<T>(N, N+1, 0);
     rep(i, 0, N) {
@@ -407,14 +407,12 @@ vector<T> gauss_jordan(vector<vector<T>> A, vector<T> b) {
 
 // 連立方程式の解(ガウス・ジョルダン法)(2値用)
 template<int BITLEN>
-pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, vector<bitset<BITLEN>> &A, bool extended=true) {
+pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, const vector<bitset<BITLEN>> &A, bool extended=true) {
     assert(N == A.size());
     auto res = A;
     int rank = 0;
     rep(col, M) {
-        if (extended and col == M-1) {
-            break;
-        }
+        if (extended and col == M-1) break;
         int pivot = -1;
         rep(row, rank, N) {
             if (res[row][col]) {
@@ -422,9 +420,7 @@ pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, vector<bitset<BITLE
                 break;
             }
         }
-        if (pivot == -1) {
-            continue;
-        }
+        if (pivot == -1) continue;
         swap(res[rank], res[pivot]);
         rep(row, N) {
             if (row != rank and res[row][col]) {
@@ -444,7 +440,7 @@ pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, vector<bitset<BITLE
 
 
 // ダブリング
-vvl doubling(int MXLOG, vector<ll> &A) {
+vvl doubling(int MXLOG, const vector<ll> &A) {
 
     int N = A.size();
     auto nxt = list2d(MXLOG, N, -1LL);
@@ -472,7 +468,7 @@ ll randrange(ll l, ll r) {
 
 // 最小増加部分列
 template<typename T>
-vector<T> LIS(vector<T> &A, bool equal=false) {
+vector<T> LIS(const vector<T> &A, bool equal=false) {
 
     auto compare = (not equal) ? [](T a, T b) { return a > b; } : [](T a, T b) { return a >= b; };
     auto bisect = (not equal) ? bisect_left<T> : bisect_right<T>;
@@ -505,7 +501,7 @@ void answer(ll i) {
 
 
 template<typename T1, typename T2>
-pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) {
+pair<vector<T1>, vector<T2>> zip(const vector<pair<T1, T2>> &A) {
     int N = A.size();
     pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)};
     rep(i, N) {
@@ -515,7 +511,7 @@ pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) {
     return res;
 }
 template<typename T1, typename T2, typename T3>
-tuple<vector<T1>, vector<T2>, vector<T3>> zip(vector<tuple<T1, T2, T3>> &A) {
+tuple<vector<T1>, vector<T2>, vector<T3>> zip(const vector<tuple<T1, T2, T3>> &A) {
     int N = A.size();
     tuple<vector<T1>, vector<T2>, vector<T3>> res = {vector<T1>(N), vector<T2>(N), vector<T3>(N)};
     rep(i, N) {
@@ -549,5 +545,3 @@ ll mul_overflow(ll x, ll y) {
     ll z;
     return __builtin_mul_overflow(x, y, &z);
 }
-
-

@@ -250,14 +250,16 @@ T inv_mod(T a, T mod) {
 }
 
 
-// 等差数列の和：(初項l, 末項r, 項数n) 
-mint get_sum(mint l, mint r, mint n) {
+// 等差数列の和：(初項l, 末項r, 項数n)
+template<typename T> 
+T arithmetic_sequence_sum(T l, T r, T n) {
     return (l+r)*n/2;
 }
 
 
 // 等差数列の和：(初項a, 公差d, 項数n)
-mint get_sum(mint a, mint d, mint n) {
+template<typename T> 
+T arithmetic_sequence_sum(T a, T d, T n) {
     return (a*2+(n-1)*d)*n/2;
 }
 
@@ -346,8 +348,8 @@ struct Eratosthenes {
         }
     }
 
-    // 高速素因数分解(osa_k法)(未verify)
-    vector<pair<ll, int>> factorize(const vector<ll> &minfactor, ll x) {
+    // 高速素因数分解(osa_k法)
+    vector<pair<ll, int>> factorize(ll x) {
 
         vector<pair<ll, int>> res;
         while (x > 1) {
@@ -366,7 +368,7 @@ struct Eratosthenes {
     vector<ll> divisors(int n) {
         vector<ll> res = {1};
 
-        auto fact = factorize(minfactor, n);
+        auto fact = factorize(n);
 
         for (auto [p, cnt] : fact) {
             ll m = res.size();

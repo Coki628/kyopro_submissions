@@ -24,8 +24,10 @@ using vvpll = vector<vector<pll>>;
 #define rep3(i, a, b, c) for(ll i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
 #define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
+#define eb emplace_back
 #define mkp make_pair
 #define ALL(A) A.begin(), A.end()
+#define UNIQUE(A) sort(ALL(A)), A.erase(unique(ALL(A)), A.end())
 #define elif else if
 #define tostr to_string
 constexpr ll INF = 1e18;
@@ -84,7 +86,7 @@ ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
-int bit_length(ll x) { return x != 0 ? floor(log2(x))+1 : 0; }
+int bit_length(ll x) { return x != 0 ? floor(log2((ld)x))+1 : 0; }
 string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0'; x >>= 1; } reverse(ALL(res)); if(res == "") res += '0'; return res; }
 
 ll gcd(ll a, ll b) { return __gcd(a, b); }
@@ -99,8 +101,9 @@ template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, 
 template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 
 template<typename T> map<T, ll> Counter(const vector<T> &A) { map<T, ll> res; for (T a : A) res[a]++; return res; }
-map<char, ll> Counter(string &S) { map<char, ll> res; for (char c : S) res[c]++; return res; }
-template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
+map<char, ll> Counter(const string &S) { map<char, ll> res; for (char c : S) res[c]++; return res; }
+template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(const vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
+template<typename T1, typename T2, typename T3> tuple<vector<T1>, vector<T2>, vector<T3>> zip(const vector<tuple<T1, T2, T3>> &A) { int N = A.size(); tuple<vector<T1>, vector<T2>, vector<T3>> res = {vector<T1>(N), vector<T2>(N), vector<T3>(N)}; rep(i, N) { get<0>(res)[i] = get<0>(A[i]); get<1>(res)[i] = get<1>(A[i]); get<2>(res)[i] = get<2>(A[i]); } return res; }
 
 template<typename T> struct Accumulate {
     vector<T> acc; int N;

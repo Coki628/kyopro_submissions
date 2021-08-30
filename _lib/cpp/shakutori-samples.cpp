@@ -169,3 +169,28 @@ rep(i, N) {
     seg.update(L[i], R[i], -1);
 }
 print(ans);
+
+// これもなるべく短く動かすタイプ。
+// 集合管理で、区間の外側同士が条件を満たすので、集合を2つ持つ(ABC215_f)
+BIT<int> bit1(M), bit2(M);
+bit1.add(Y[0], 1);
+rep(i, 1, N) bit2.add(Y[i], 1);
+int r = 1;
+rep(l, N) {
+    while (r < N and X[r]-X[l] < m) {
+        bit2.add(Y[r], -1);
+        r++;
+    }
+    if (r == N) break;
+    int mn1 = bit1.bisearch_fore(0, M-1, 1);
+    int mx1 = bit1.bisearch_back(0, M-1, 1);
+    int mn2 = bit2.bisearch_fore(0, M-1, 1);
+    int mx2 = bit2.bisearch_back(0, M-1, 1);
+    if (
+        X[r]-X[l] >= m and mn1 != -1 and mn2 != -1 and
+        (cp.unzip(mx1)-cp.unzip(mn2) >= m or cp.unzip(mx2)-cp.unzip(mn1) >= m)
+    ) {
+        return true;
+    }
+    if (l+1 < N) bit1.add(Y[l+1], 1);
+}

@@ -6,15 +6,15 @@
 
 
 // Mod数え上げnCr
+template<typename T>
 struct ModTools {
 
     int MAX;
-    const int MOD;
-    vector<mint> fact, inv;
+    vector<T> fact, factinv;
 
-    ModTools(int MOD) : MOD(MOD) {};
+    ModTools() {};
 
-    ModTools(int MOD, int mx) : MOD(MOD) {
+    ModTools(int mx) {
         build(mx);
     }
 
@@ -22,33 +22,67 @@ struct ModTools {
         // nCrならn、nHrならn+rまで作る
         MAX = ++mx;
         fact.resize(MAX);
-        inv.resize(MAX);
+        factinv.resize(MAX);
         fact[0] = fact[1] = 1;
         rep(i, 2, MAX) {
             fact[i] = fact[i-1] * i;
         }
-        inv[MAX-1] = fact[MAX-1].inverse();
+        factinv[MAX-1] = (T)1 / fact[MAX-1];
         rep(i, MAX-2, -1, -1) {
-            inv[i] = inv[i+1] * (i+1);
+            factinv[i] = factinv[i+1] * (i+1);
         }
     }
 
-    mint nCr(int n, int r) {
+    T nCr(int n, int r) {
         if (n < r) return 0;
         r = min(r, n-r);
-        mint num = fact[n];
-        mint den = inv[r] * inv[n-r];
+        T num = fact[n];
+        T den = factinv[r] * factinv[n-r];
         return num * den;
     }
 
-    mint nHr(int n, int r) {
+    T nHr(int n, int r) {
         return nCr(r+n-1, r);
     }
 };
 
 
 // 任意Mod数え上げnCr
+template<typename T>
 struct AnyModTools {
+
+    vector<pair<T, int>> factorize(T n) {
+        vector<pair<T, int>> ret;
+        for(T i=2; i*i<=n; i++) {
+            int cnt = 0;
+            while(n % i == 0) {
+                n /= i;
+                cnt++;
+            }
+            if(cnt) ret.emplace_back(i, cnt);
+        }
+        if(n > 1) ret.emplace_back(n, 1);
+        return ret;
+    }
+
+    // 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
+    T extgcd(T a, T b, T& x, T& y) {
+        T d = a;
+        if(b != 0){
+            d = extgcd(b, a%b, y, x);
+            y -= (a/b) * x;
+        }else{
+            x = 1; y = 0;
+        }
+        return d;
+    }
+
+    // MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
+    T inv_mod(T a, T mod) {
+        T x, y;
+        extgcd(a, mod, x, y);
+        return (mod + x%mod) % mod;
+    }
 
     const int64_t mod;
     // 素数冪を (p, c) で表現したもの
@@ -242,7 +276,7 @@ ll bell(int N, int K) {
 // ベル数(玉区別あり、箱区別なし、制限なし) ※未Verify
 mint bell(int N, int K) {
 
-    ModTools mt(MOD, max(N, K));
+    ModTools<mint> mt(max(N, K));
 
     // 前計算しておく
     vector<mint> prev(K+1);
@@ -277,4 +311,243 @@ ll partition(int N, int K) {
         }
     }
     return dp[K][N];
+}
+
+
+// 参考：https://ei1333.github.io/library/math/combinatorics/mod-int.cpp
+// ModInt
+template<int mod>
+struct ModInt {
+    int x;
+
+    ModInt() : x(0) {}
+
+    ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
+
+    ModInt &operator+=(const ModInt &p) {
+        if((x += p.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    ModInt &operator-=(const ModInt &p) {
+        if((x += mod - p.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    ModInt &operator*=(const ModInt &p) {
+        x = (int) (1LL * x * p.x % mod);
+        return *this;
+    }
+
+    ModInt &operator/=(const ModInt &p) {
+        *this *= p.inverse();
+        return *this;
+    }
+
+    ModInt operator-() const { return ModInt(-x); }
+
+    ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; }
+
+    ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; }
+
+    ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; }
+
+    ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; }
+
+    bool operator==(const ModInt &p) const { return x == p.x; }
+
+    bool operator!=(const ModInt &p) const { return x != p.x; }
+
+    ModInt inverse() const {
+        int a = x, b = mod, u = 1, v = 0, t;
+        while(b > 0) {
+            t = a / b;
+            swap(a -= t * b, b);
+            swap(u -= t * v, v);
+        }
+        return ModInt(u);
+    }
+
+    ModInt pow(int64_t n) const {
+        ModInt ret(1), mul(x);
+        while(n > 0) {
+            if(n & 1) ret *= mul;
+            mul *= mul;
+            n >>= 1;
+        }
+        return ret;
+    }
+
+    friend ostream &operator<<(ostream &os, const ModInt &p) {
+        return os << p.x;
+    }
+
+    friend istream &operator>>(istream &is, ModInt &a) {
+        int64_t t;
+        is >> t;
+        a = ModInt< mod >(t);
+        return (is);
+    }
+
+    static int get_mod() { return mod; }
+};
+using mint = ModInt<MOD>;
+
+
+// 参考：https://ei1333.github.io/library/math/combinatorics/arbitrary-mod-int.cpp
+// 任意ModInt
+struct ArbitraryModInt {
+
+    int x;
+
+    ArbitraryModInt() : x(0) {}
+
+    ArbitraryModInt(int64_t y) : x(y >= 0 ? y % get_mod() : (get_mod() - (-y) % get_mod()) % get_mod()) {}
+
+    static int &get_mod() {
+        static int mod = 0;
+        return mod;
+    }
+
+    static void set_mod(int md) {
+        get_mod() = md;
+    }
+
+    ArbitraryModInt &operator+=(const ArbitraryModInt &p) {
+        if((x += p.x) >= get_mod()) x -= get_mod();
+        return *this;
+    }
+
+    ArbitraryModInt &operator-=(const ArbitraryModInt &p) {
+        if((x += get_mod() - p.x) >= get_mod()) x -= get_mod();
+        return *this;
+    }
+
+    ArbitraryModInt &operator*=(const ArbitraryModInt &p) {
+        unsigned long long a = (unsigned long long) x * p.x;
+        unsigned xh = (unsigned) (a >> 32), xl = (unsigned) a, d, m;
+        asm("divl %4; \n\t" : "=a" (d), "=d" (m) : "d" (xh), "a" (xl), "r" (get_mod()));
+        x = m;
+        return *this;
+    }
+
+    ArbitraryModInt &operator/=(const ArbitraryModInt &p) {
+        *this *= p.inverse();
+        return *this;
+    }
+
+    ArbitraryModInt operator-() const { return ArbitraryModInt(-x); }
+
+    ArbitraryModInt operator+(const ArbitraryModInt &p) const { return ArbitraryModInt(*this) += p; }
+
+    ArbitraryModInt operator-(const ArbitraryModInt &p) const { return ArbitraryModInt(*this) -= p; }
+
+    ArbitraryModInt operator*(const ArbitraryModInt &p) const { return ArbitraryModInt(*this) *= p; }
+
+    ArbitraryModInt operator/(const ArbitraryModInt &p) const { return ArbitraryModInt(*this) /= p; }
+
+    bool operator==(const ArbitraryModInt &p) const { return x == p.x; }
+
+    bool operator!=(const ArbitraryModInt &p) const { return x != p.x; }
+
+    ArbitraryModInt inverse() const {
+        int a = x, b = get_mod(), u = 1, v = 0, t;
+        while(b > 0) {
+            t = a / b;
+            swap(a -= t * b, b);
+            swap(u -= t * v, v);
+        }
+        return ArbitraryModInt(u);
+    }
+
+    ArbitraryModInt pow(int64_t n) const {
+        ArbitraryModInt ret(1), mul(x);
+        while(n > 0) {
+            if(n & 1) ret *= mul;
+            mul *= mul;
+            n >>= 1;
+        }
+        return ret;
+    }
+
+    friend ostream &operator<<(ostream &os, const ArbitraryModInt &p) {
+        return os << p.x;
+    }
+
+    friend istream &operator>>(istream &is, ArbitraryModInt &a) {
+        int64_t t;
+        is >> t;
+        a = ArbitraryModInt(t);
+        return (is);
+    }
+};
+
+
+// 参考：https://ferin-tech.hatenablog.com/entry/2019/08/11/%E3%83%A9%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B8%E3%83%A5%E8%A3%9C%E9%96%93
+// 　　　https://ei1333.github.io/library/math/combinatorics/lagrange-polynomial.cpp
+// 使い方
+// ・引数：x=0,1,2...の時のyを格納したリストと、求めたいf(t)のt
+// ・戻り値：f(t)の時の値
+// ・計算量：O(Nlog(mod)) ※階乗逆元をちゃんと前計算してればO(N)っぽい。
+// ラグランジュ補間：値を求める
+template<typename T>
+T lagrange_polynomial(const vector<T> &y, int64_t t) {
+    int N = y.size() - 1;
+    ModTools<T> mt(N);
+    if(t <= N) return y[t];
+    T ret(0);
+    vector< T > dp(N + 1, 1), pd(N + 1, 1);
+    for(int i = 0; i < N; i++) dp[i + 1] = dp[i] * (t - i);
+    for(int i = N; i > 0; i--) pd[i - 1] = pd[i] * (t - i);
+    for(int i = 0; i <= N; i++) {
+        T tmp = y[i] * dp[i] * pd[i] * mt.factinv[i] * mt.factinv[N-i];
+        if((N - i) & 1) ret -= tmp;
+        else ret += tmp;
+    }
+    return ret;
+}
+
+
+// 参考：https://ferin-tech.hatenablog.com/entry/2019/08/11/%E3%83%A9%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B8%E3%83%A5%E8%A3%9C%E9%96%93
+// 　　　https://ei1333.github.io/library/math/combinatorics/lagrange-polynomial-2.cpp
+// 使い方
+// ・引数：y=f(x)の(x,y)のペアを格納したリストX,Y
+// ・戻り値：f(x)=ax^0+bx^1+cx^2+...のa,b,c...を格納したリスト
+// ・計算量：O(N^2)
+// ラグランジュ補間：係数を求める
+template<typename T>
+vector<T> lagrange_polynomial(const vector<T> &x, const vector<T> &y) {
+    int k = (int) x.size() - 1;
+
+    vector<T> f(k + 1), dp(k + 2);
+    dp[0] = 1;
+    for(int j = 0; j <= k; j++) {
+        for(int l = k + 1; l > 0; l--) {
+            dp[l] = dp[l] * -x[j] + dp[l - 1];
+        }
+        dp[0] *= -x[j];
+    }
+
+    for(int i = 0; i <= k; i++) {
+        T d = 1;
+        for(int j = 0; j <= k; j++) {
+            if(i != j) {
+                d *= x[i] - x[j];
+            }
+        }
+        T mul = y[i] / d;
+        if(x[i] == 0) {
+            for(int j = 0; j <= k; j++) {
+                f[j] += dp[j + 1] * mul;
+            }
+        } else {
+            T inv = T(1) / (-x[i]), pre = 0;
+            for(int j = 0; j <= k; j++) {
+                T cur = (dp[j] - pre) * inv;
+                f[j] += cur * mul;
+                pre = cur;
+            }
+        }
+    }
+    return f;
 }

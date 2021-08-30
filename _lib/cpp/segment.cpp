@@ -2070,6 +2070,7 @@ ll merge_segment(pll seg1, pll seg2) {
 }
 
 
+// 参考：https://mugen1337.hatenablog.com/entry/2020/10/14/134022
 // 閉区間の範囲を管理
 template<typename T>
 struct RangeSet {
@@ -2164,7 +2165,7 @@ struct RangeSet {
         return (int)st.size()-2;
     }
     // mex [x,~)
-    int mex(T x=0) {
+    T mex(T x=0) {
         auto ite=prev(st.lower_bound({x+1,x+1}));
         if (ite->first<=x and x<=ite->second) return ite->second+1;
         else return x;
