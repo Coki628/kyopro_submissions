@@ -5,6 +5,13 @@
 #include "_tpl.cpp"
 
 
+constexpr ld EPS = 1e-10;
+constexpr ld PI = M_PI;
+
+ld degrees(ld radians) { return radians * 180.0 / PI; }
+ld radians(ld degrees) { return degrees * PI / 180.0; }
+
+
 template<typename T>
 struct Point {
     T x, y;
@@ -21,18 +28,25 @@ struct Point {
     T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
     void print() { cout << x << ' ' << y << '\n'; }
 };
+
+
 template<typename T> struct Segment { Point<T> p1, p2; };
 template<typename T> using Line = Segment<T>;
+
+
 template<typename T>
 struct Circle {
     Point<T> c;
     ld r;
     Circle(Point<T> c, ld r=0.0) : c(c), r(r) {}
 };
+
+
 // 内積
 template<typename T> T dot(const Point<T> a, const Point<T> b) { return a.x*b.x + a.y*b.y; }
 // 外積
 template<typename T> T cross(const Point<T> a, const Point<T> b) { return a.x*b.y - a.y*b.x; }
+
 
 // 線分p0,p1から線分p0,p2への回転方向
 template<typename T>
@@ -51,6 +65,7 @@ ll ccw(Point<T> p0, Point<T> p1, Point<T> p2) {
     return 0;
 }
 
+
 // 回転行列：座標cを軸に座標pから半時計回りにdig度回転させた座標を返す
 template<typename T>
 Point<T> rotate(Point<T> c, Point<T> p, ld dig) {
@@ -58,6 +73,7 @@ Point<T> rotate(Point<T> c, Point<T> p, ld dig) {
     T y = (p.x-c.x)*sin(radians(dig)) + (p.y-c.y)*cos(radians(dig)) + c.y;
     return {x, y};
 }
+
 
 // ∠abcについて、反時計回り側の角度を取得
 template<typename T>
@@ -72,10 +88,12 @@ ld get_degree(Point<T> a, Point<T> b, Point<T> c) {
     return res;
 }
 
+
 // 余弦定理(辺a,bと間の角度degから、反対側の辺cを求める)
 ld cos_formula(ld a, ld b, ld deg) {
     return sqrt(a*a+b*b-2*a*b*cos(radians(deg)));
 }
+
 
 // 2点を通る直線の式の係数a,b
 template<typename T>
@@ -87,10 +105,12 @@ pair<T, T> get_a_and_b(Point<T> p1, Point<T> p2) {
     return {a, b};
 }
 
+
 // 3次元での2点間距離√((x1-x2)^2+(y1-y2)^2+(z1-z2)^2)
 ld dist(tuple<ld, ld, ld> a, tuple<ld, ld, ld> b) {
     return sqrt((get<0>(a)-get<0>(b))*(get<0>(a)-get<0>(b))+(get<1>(a)-get<1>(b))*(get<1>(a)-get<1>(b))+(get<2>(a)-get<2>(b))*(get<2>(a)-get<2>(b)));
 }
+
 
 // アンドリューのアルゴリズム(Monotone Chain)：凸包に使った座標と距離を返す
 template<typename T>
@@ -138,6 +158,7 @@ vector<pair<Point<T>, ld>> monotone_chain(vector<Point<T>> li) {
     }
     return res;
 }
+
 
 // ピックの定理(多角形の座標から、内部にある格子点の数を出す)
 tuple<ll, ll, ll> pick_theorem(vector<Point<ll>> P) {

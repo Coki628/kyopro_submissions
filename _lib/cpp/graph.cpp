@@ -16,7 +16,7 @@ vector<int> bfs(const vvi &nodes, const vector<int> &src) {
         que.push(s);
     }
 
-    while(!que.empty()) {
+    while (!que.empty()) {
         int u = que.front(); que.pop();
         for (auto v: nodes[u]) {
             if (res[v] == -1) {
@@ -40,7 +40,7 @@ vector<ll> bfs01(const vvpll &nodes, const vector<ll> &src) {
         que.push_back(s);
     }
 
-    while(!que.empty()) {
+    while (!que.empty()) {
         ll u = que.front(); que.pop_front();
         for (auto [v, c] : nodes[u]) {
             if (c == 0 and res[u] < res[v]) {
@@ -60,7 +60,7 @@ vector<ll> bfs01(const vvpll &nodes, const vector<ll> &src) {
 
 // ダイクストラ(テンプレートで小数コストも対応)
 template<typename T>
-vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
+vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
 
     int N = nodes.size();
     vector<T> res(N, INF);
@@ -68,7 +68,7 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
     res[src] = 0;
     que.push({0, src});
 
-    while(!que.empty()) {
+    while (!que.empty()) {
         auto [dist, u] = que.top(); que.pop();
         if (res[u] < dist) continue;
         for (auto [v, cost] : nodes[u]) {
@@ -79,53 +79,6 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
         }
     }
     return res;
-}
-
-
-// ダイクストラ(O(V^2)版) ※未verify
-template<typename T>
-vector<T> dijkstra(const vector<vector<T>> &G, int src) {
-    int N = G.size();
-    vector<T> dist(N, INF);
-    vector<bool> used(N);
-
-    dist[src] = 0;
-    while (1) {
-        int v = -1;
-        rep(u, 0, N) {
-            if (!used[u] and (v == -1 or dist[u] < dist[v])) {
-                v = u;
-            }
-        }
-        if (v == -1) {
-            break;
-        }
-        used[v] = true;
-        rep(u, 0, N) {
-            dist[u] = min(dist[u], dist[v] + G[v][u]);
-        }
-    }
-    return dist;
-}
-
-
-template<typename T>
-vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
-    ll N = G.size();
-    rep(i, 0, N) G[i][i] = 0;
-    rep(k, 0, N) {
-        rep(i, 0, N) {
-            rep(j, 0, N) {
-                chmin(G[i][j], G[i][k] + G[k][j]);
-            }
-        }
-    }
-    rep(i, 0, N) {
-        if (G[i][i] < 0) {
-            return {};
-        }
-    }
-    return G;
 }
 
 
@@ -224,191 +177,6 @@ struct UnionFind {
 };
 
 
-// 重み付きUF
-template<typename T>
-struct WeightedUnionFind {
-
-    int n;
-    vector<int> par, rank;
-    vector<T> weight;
-    
-    WeightedUnionFind(int n) : n(n) {
-        par.resize(n);
-        rank.resize(n);
-        // 根への距離を管理
-        weight.resize(n);
-        rep(i, 0, n) par[i] = i;
-    }
-
-    // 検索
-    int find(int x) {
-        if (par[x] == x) {
-            return x;
-        } else {
-            int y = find(par[x]);
-            // 親への重みを追加しながら根まで走査
-            weight[x] += weight[par[x]];
-            par[x] = y;
-            return y;
-        }
-    }
-
-    // 併合
-    void merge(int x, int y, ll w) {
-        int rx = find(x);
-        int ry = find(y);
-        if (rx == ry) return;
-
-        // xの木の高さ < yの木の高さ
-        if (rank[rx] < rank[ry]) {
-            par[rx] = ry;
-            weight[rx] = w - weight[x] + weight[y];
-        } else {
-            par[ry] = rx;
-            weight[ry] = - w - weight[y] + weight[x];
-            // 木の高さが同じだった場合の処理
-            if (rank[rx] == rank[ry]) {
-                rank[rx]++;
-            }
-        }
-    }
-
-    // 同じ集合に属するか
-    bool is_same(int x, int y) {
-        return find(x) == find(y);
-    }
-
-    // xからyへのコスト
-    T diff(int x, int y) {
-        return weight[x] - weight[y];
-    }
-};
-
-
-// 部分永続UF
-struct PartiallyPersistentUnionFind {
-
-    int n;
-    vector<int> par, last;
-
-    PartiallyPersistentUnionFind(int n) : n(n) {
-        // xが根のときはxを含むグループのサイズ(の-1倍)、そうでないときは親ノード
-        par.resize(n+1, -1);
-        // 最後に「根」ではなくなった瞬間の時刻
-        last.resize(n+1, -1);
-    }
-
-    PartiallyPersistentUnionFind() {}
-
-    // 根の検索(グループ番号)
-    int find(int t, int x) {
-        // 根ならその番号を返す
-        if (last[x] == -1 || t < last[x]) {
-            return x;
-        } else {
-            return find(t, par[x]);
-        }
-    }
-
-    // 併合
-    bool merge(int t, int a, int b) {
-        // 根を探す
-        int x = find(t, a);
-        int y = find(t, b);
-        if (x == y) {
-            return false;
-        }
-        // 要素数の少ない方を付け替える(マージテク)
-        if (par[x] > par[y]) {
-            swap(x, y);
-        }
-        // xにyを付ける
-        par[x] += par[y];
-        par[y] = x;
-        last[y] = t;
-        return true;
-    }
-
-    // 同じ集合に属するか判定
-    bool is_same(int t, int a, int b) {
-        return find(t, a) == find(t, b);
-    }
-};
-
-
-// 全方位木DP
-// ・主な使用方法
-// 　・f1は集合同士のマージ、f2はある集合に新しく辺を取り込む時のマージに使う。
-// 　　例えば普通の木DPの遷移が dp[u] += dp[v]+1 だったら、
-// 　　f1が dp[u]+dp[v] で、f2が dp[v]+1 に相当する感じ。
-
-// 全方位木DP
-template<typename sum_t, typename key_t, typename F1, typename F2>
-struct ReRooting {
-    struct Edge {
-        int to;
-        key_t data;
-        sum_t dp, ndp;
-    };
-
-    vector<vector<Edge>> g;
-    vector<sum_t> subdp, dp;
-    const sum_t ident;
-    const F1 f1;
-    const F2 f2;
-
-    ReRooting(int V, const F1 f1, const F2 f2, const sum_t &ident)
-        : g(V), f1(f1), f2(f2), ident(ident), subdp(V, ident), dp(V, ident) {}
-
-    void add_edge(int u, int v, const key_t &d) {
-        g[u].emplace_back((Edge) {v, d, ident, ident});
-        g[v].emplace_back((Edge) {u, d, ident, ident});
-    }
-
-    void add_edge_bi(int u, int v, const key_t &d, const key_t &e) {
-        g[u].emplace_back((Edge) {v, d, ident, ident});
-        g[v].emplace_back((Edge) {u, e, ident, ident});
-    }
-
-    void dfs_sub(int idx, int par) {
-        for(auto &e : g[idx]) {
-        if(e.to == par) continue;
-        dfs_sub(e.to, idx);
-        subdp[idx] = f1(subdp[idx], f2(subdp[e.to], e.data));
-        }
-    }
-
-    void dfs_all(int idx, int par, const sum_t &top) {
-        sum_t buff{ident};
-        for(int i = 0; i < (int) g[idx].size(); i++) {
-        auto &e = g[idx][i];
-        e.ndp = buff;
-        e.dp = f2(par == e.to ? top : subdp[e.to], e.data);
-        buff = f1(buff, e.dp);
-        }
-        dp[idx] = buff;
-        buff = ident;
-        for(int i = (int) g[idx].size() - 1; i >= 0; i--) {
-        auto &e = g[idx][i];
-        if(e.to != par) dfs_all(e.to, idx, f1(e.ndp, buff));
-        e.ndp = f1(e.ndp, buff);
-        buff = f1(buff, e.dp);
-        }
-    }
-
-    vector<sum_t> build() {
-        dfs_sub(0, -1);
-        dfs_all(0, -1, ident);
-        return dp;
-    }
-};
-
-template<typename sum_t, typename key_t, typename F1, typename F2>
-ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2, const sum_t& M1, const key_t& M2) {
-    return {N, f1, f2, M1};
-}
-
-
 // HL分解
 // ・主な使用方法など
 // 　・初期化後、忘れずにbuildを呼ぶこと。
@@ -423,7 +191,7 @@ ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2,
 // HL分解
 struct HeavyLightDecomposition {
 public:
-    vvi &g;
+    vvi g;
     vector< int > sz, in, out, head, rev, par, dep;
 
     void build() {
@@ -530,6 +298,238 @@ public:
             dfs_hld(to, idx, times);
         }
         out[idx] = times;
+    }
+};
+
+
+template<typename T>
+vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
+    ll N = G.size();
+    rep(i, 0, N) G[i][i] = 0;
+    rep(k, 0, N) {
+        rep(i, 0, N) {
+            rep(j, 0, N) {
+                chmin(G[i][j], G[i][k] + G[k][j]);
+            }
+        }
+    }
+    rep(i, 0, N) {
+        if (G[i][i] < 0) {
+            return {};
+        }
+    }
+    return G;
+}
+
+
+// 全方位木DP
+// ・主な使用方法
+// 　・f1は集合同士のマージ、f2はある集合に新しく辺を取り込む時のマージに使う。
+// 　　例えば普通の木DPの遷移が dp[u] += dp[v]+1 だったら、
+// 　　f1が dp[u]+dp[v] で、f2が dp[v]+1 に相当する感じ。
+
+// 全方位木DP
+template<typename sum_t, typename key_t, typename F1, typename F2>
+struct ReRooting {
+    struct Edge {
+        int to;
+        key_t data;
+        sum_t dp, ndp;
+    };
+
+    vector<vector<Edge>> g;
+    vector<sum_t> subdp, dp;
+    const sum_t ident;
+    const F1 f1;
+    const F2 f2;
+
+    ReRooting(int V, const F1 f1, const F2 f2, const sum_t &ident)
+        : g(V), f1(f1), f2(f2), ident(ident), subdp(V, ident), dp(V, ident) {}
+
+    void add_edge(int u, int v, const key_t &d) {
+        g[u].emplace_back((Edge) {v, d, ident, ident});
+        g[v].emplace_back((Edge) {u, d, ident, ident});
+    }
+
+    void add_edge_bi(int u, int v, const key_t &d, const key_t &e) {
+        g[u].emplace_back((Edge) {v, d, ident, ident});
+        g[v].emplace_back((Edge) {u, e, ident, ident});
+    }
+
+    void dfs_sub(int idx, int par) {
+        for(auto &e : g[idx]) {
+        if(e.to == par) continue;
+        dfs_sub(e.to, idx);
+        subdp[idx] = f1(subdp[idx], f2(subdp[e.to], e.data));
+        }
+    }
+
+    void dfs_all(int idx, int par, const sum_t &top) {
+        sum_t buff{ident};
+        for(int i = 0; i < (int) g[idx].size(); i++) {
+        auto &e = g[idx][i];
+        e.ndp = buff;
+        e.dp = f2(par == e.to ? top : subdp[e.to], e.data);
+        buff = f1(buff, e.dp);
+        }
+        dp[idx] = buff;
+        buff = ident;
+        for(int i = (int) g[idx].size() - 1; i >= 0; i--) {
+        auto &e = g[idx][i];
+        if(e.to != par) dfs_all(e.to, idx, f1(e.ndp, buff));
+        e.ndp = f1(e.ndp, buff);
+        buff = f1(buff, e.dp);
+        }
+    }
+
+    vector<sum_t> build() {
+        dfs_sub(0, -1);
+        dfs_all(0, -1, ident);
+        return dp;
+    }
+};
+
+template<typename sum_t, typename key_t, typename F1, typename F2>
+ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2, const sum_t& M1, const key_t& M2) {
+    return {N, f1, f2, M1};
+}
+
+
+// ダイクストラ(O(V^2)版) ※未verify
+template<typename T>
+vector<T> dijkstra(const vector<vector<T>> &G, int src) {
+    int N = G.size();
+    vector<T> dist(N, INF);
+    vector<bool> used(N);
+
+    dist[src] = 0;
+    while (1) {
+        int v = -1;
+        rep(u, 0, N) {
+            if (!used[u] and (v == -1 or dist[u] < dist[v])) {
+                v = u;
+            }
+        }
+        if (v == -1) {
+            break;
+        }
+        used[v] = true;
+        rep(u, 0, N) {
+            dist[u] = min(dist[u], dist[v] + G[v][u]);
+        }
+    }
+    return dist;
+}
+
+
+// 重み付きUF
+template<typename T>
+struct WeightedUnionFind {
+
+    int n;
+    vector<int> par, rank;
+    vector<T> weight;
+    
+    WeightedUnionFind(int n) : n(n) {
+        par.resize(n);
+        rank.resize(n);
+        // 根への距離を管理
+        weight.resize(n);
+        rep(i, 0, n) par[i] = i;
+    }
+
+    // 検索
+    int find(int x) {
+        if (par[x] == x) {
+            return x;
+        } else {
+            int y = find(par[x]);
+            // 親への重みを追加しながら根まで走査
+            weight[x] += weight[par[x]];
+            par[x] = y;
+            return y;
+        }
+    }
+
+    // 併合
+    void merge(int x, int y, ll w) {
+        int rx = find(x);
+        int ry = find(y);
+        if (rx == ry) return;
+
+        // xの木の高さ < yの木の高さ
+        if (rank[rx] < rank[ry]) {
+            par[rx] = ry;
+            weight[rx] = w - weight[x] + weight[y];
+        } else {
+            par[ry] = rx;
+            weight[ry] = - w - weight[y] + weight[x];
+            // 木の高さが同じだった場合の処理
+            if (rank[rx] == rank[ry]) {
+                rank[rx]++;
+            }
+        }
+    }
+
+    // 同じ集合に属するか
+    bool same(int x, int y) {
+        return find(x) == find(y);
+    }
+
+    // xからyへのコスト
+    T diff(int x, int y) {
+        return weight[x] - weight[y];
+    }
+};
+
+
+// 部分永続UF
+struct PartiallyPersistentUnionFind {
+
+    int n;
+    vector<int> par, last;
+
+    PartiallyPersistentUnionFind(int n) : n(n) {
+        // xが根のときはxを含むグループのサイズ(の-1倍)、そうでないときは親ノード
+        par.resize(n+1, -1);
+        // 最後に「根」ではなくなった瞬間の時刻
+        last.resize(n+1, -1);
+    }
+
+    PartiallyPersistentUnionFind() {}
+
+    // 根の検索(グループ番号)
+    int find(int t, int x) {
+        // 根ならその番号を返す
+        if (last[x] == -1 || t < last[x]) {
+            return x;
+        } else {
+            return find(t, par[x]);
+        }
+    }
+
+    // 併合
+    bool merge(int t, int a, int b) {
+        // 根を探す
+        int x = find(t, a);
+        int y = find(t, b);
+        if (x == y) {
+            return false;
+        }
+        // 要素数の少ない方を付け替える(マージテク)
+        if (par[x] > par[y]) {
+            swap(x, y);
+        }
+        // xにyを付ける
+        par[x] += par[y];
+        par[y] = x;
+        last[y] = t;
+        return true;
+    }
+
+    // 同じ集合に属するか判定
+    bool same(int t, int a, int b) {
+        return find(t, a) == find(t, b);
     }
 };
 

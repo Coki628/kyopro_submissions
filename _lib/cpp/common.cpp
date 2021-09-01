@@ -5,6 +5,35 @@
 #include "_tpl.cpp"
 
 
+ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
+int toint(char num) { return num - '0'; }
+char tochar(int num) { return '0' + num; }
+int ord(char c) { return (int)c; }
+char chr(int a) { return (char)a; }
+
+ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
+ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
+template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
+template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+
+template<typename T> T sum(const vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T max(const vector<T> &A) { return *max_element(ALL(A)); }
+template<typename T> T min(const vector<T> &A) { return *min_element(ALL(A)); }
+
+ll pow(int x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
+
+int popcount(ll S) { return __builtin_popcountll(S); }
+int bit_length(ll x) { return x != 0 ? floor(log2((ld)x))+1 : 0; }
+
+template<typename T> int bisect_left(const vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
+template<typename T> int bisect_right(const vector<T> &A, T val, int lo=0) { return upper_bound(A.begin()+lo, A.end(), val) - A.begin(); }
+
+
 template<typename T>
 map<T, ll> Counter(const vector<T> &A) {
     map<T, ll> res;
@@ -13,8 +42,6 @@ map<T, ll> Counter(const vector<T> &A) {
     }
     return res;
 }
-
-
 template<typename T>
 vector<ll> Counter(const vector<T> &A, T mx) {
 
@@ -24,8 +51,6 @@ vector<ll> Counter(const vector<T> &A, T mx) {
     }
     return res;
 }
-
-
 map<char, ll> Counter(const string &S) {
     map<char, ll> res;
     for (char c : S) {
@@ -75,7 +100,7 @@ ll bisearch_max(ll mn, ll mx, const F &func) {
 }
 
 
-// 条件を満たす最小値を見つける二分探索(小数用)
+// 条件を満たす最小値を見つける二分探索(実数)
 template<typename F>
 ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
 
@@ -95,7 +120,7 @@ ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
 }
 
 
-// 条件を満たす最大値を見つける二分探索(小数用) 
+// 条件を満たす最大値を見つける二分探索(実数)
 template<typename F>
 ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
 
@@ -115,7 +140,146 @@ ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
 }
 
 
-// 三分探索(小数)
+template<typename T1, typename T2>
+pair<vector<T1>, vector<T2>> zip(const vector<pair<T1, T2>> &A) {
+    int N = A.size();
+    pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)};
+    rep(i, N) {
+        res.first[i] = A[i].first;
+        res.second[i] = A[i].second;
+    }
+    return res;
+}
+template<typename T1, typename T2, typename T3>
+tuple<vector<T1>, vector<T2>, vector<T3>> zip(const vector<tuple<T1, T2, T3>> &A) {
+    int N = A.size();
+    tuple<vector<T1>, vector<T2>, vector<T3>> res = {vector<T1>(N), vector<T2>(N), vector<T3>(N)};
+    rep(i, N) {
+        get<0>(res)[i] = get<0>(A[i]);
+        get<1>(res)[i] = get<1>(A[i]);
+        get<2>(res)[i] = get<2>(A[i]);
+    }
+    return res;
+}
+
+
+// 座標圧縮(二分探索ベース)
+template<typename T>
+struct Compress {
+
+    int N;
+    vector<T> dat;
+
+    Compress(vector<T> A) {
+        sort(A.begin(), A.end());
+        A.erase(unique(A.begin(), A.end()), A.end());
+        N = A.size();
+        dat = A;
+    }
+
+    int zip(T x) {
+        return bisect_left(dat, x);
+    }
+
+    T unzip(int x) {
+        return dat[x];
+    }
+
+    int operator[](T x) {
+        return zip(x);
+    }
+
+    int size() {
+        return dat.size();
+    }
+
+    vector<T> zip(const vector<T> &A) {
+        int M = A.size();
+        vector<T> res(M);
+        rep(i, M) res[i] = zip(A[i]);
+        return res;
+    }
+};
+
+
+// ランレングス圧縮
+template<typename T>
+vector<pair<T, int>> RLE(const vector<T> &A) {
+    if (A.empty()) return {};
+    int N = A.size();
+    vector<pair<T, int>> res;
+    T cur = A[0];
+    int cnt = 1;
+    rep(i, 1, N) {
+        if (A[i] == A[i-1]) {
+            cnt++;
+        } else {
+            res.pb({cur, cnt});
+            cnt = 1;
+            cur = A[i];
+        }
+    }
+    res.pb({cur, cnt});
+    return res;
+}
+// ランレングス圧縮(文字列)
+vector<pair<char, int>> RLE(const string &S) {
+    if (S.empty()) return {};
+    int N = S.size();
+    vector<pair<char, int>> res;
+    char cur = S[0];
+    int cnt = 1;
+    rep(i, 1, N) {
+        if (S[i] == S[i-1]) {
+            cnt++;
+        } else {
+            res.pb({cur, cnt});
+            cnt = 1;
+            cur = S[i];
+        }
+    }
+    res.pb({cur, cnt});
+    return res;
+}
+
+
+// [l,r)の範囲で乱数生成
+mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+ll randrange(ll l, ll r) {
+    uniform_int_distribution<ll> rand(l, r-1);
+    return rand(mt);
+}
+
+
+// 最小増加部分列
+template<typename T>
+vector<T> LIS(const vector<T> &A, bool equal=false) {
+
+    auto compare = (not equal) ? [](T a, T b) { return a > b; } : [](T a, T b) { return a >= b; };
+    auto bisect = (not equal) ? bisect_left<T> : bisect_right<T>;
+    vector<T> res;
+    res.pb(A[0]);
+    ll n = A.size();
+    rep(i, 1, n) {
+        if (compare(A[i], res.back())) {
+            res.pb(A[i]);
+        } else {
+            res[bisect(res, A[i])] = A[i];
+        }
+    }
+    return res;
+}
+
+
+// 参考：https://rsk0315.hatenablog.com/entry/2021/02/23/163040
+// 乗算のオーバーフロー検知
+bool mul_overflow(ll x, ll y) {
+    ll z;
+    return __builtin_mul_overflow(x, y, &z);
+}
+
+
+// 三分探索(実数)
 template<typename F>
 pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
 
@@ -208,88 +372,6 @@ pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
         zipped[unzipped[i]] = i;
     }
     return {zipped, unzipped};
-}
-
-
-// 座標圧縮(二分探索ベース)
-template<typename T>
-struct Compress {
-
-    int N;
-    vector<T> dat;
-
-    Compress(vector<T> A) {
-        sort(A.begin(), A.end());
-        A.erase(unique(A.begin(), A.end()), A.end());
-        N = A.size();
-        dat = A;
-    }
-
-    int zip(T x) {
-        return bisect_left(dat, x);
-    }
-
-    T unzip(int x) {
-        return dat[x];
-    }
-
-    int operator[](T x) {
-        return zip(x);
-    }
-
-    int size() {
-        return dat.size();
-    }
-
-    vector<T> zip(const vector<T> &A) {
-        int M = A.size();
-        vector<T> res(M);
-        rep(i, M) res[i] = zip(A[i]);
-        return res;
-    }
-};
-
-
-// ランレングス圧縮
-template<typename T>
-vector<pair<T, int>> RLE(const vector<T> &A) {
-    if (A.empty()) return {};
-    int N = A.size();
-    vector<pair<T, int>> res;
-    T cur = A[0];
-    int cnt = 1;
-    rep(i, 1, N) {
-        if (A[i] == A[i-1]) {
-            cnt++;
-        } else {
-            res.pb({cur, cnt});
-            cnt = 1;
-            cur = A[i];
-        }
-    }
-    res.pb({cur, cnt});
-    return res;
-}
-
-
-// ランレングス圧縮(文字列)
-vector<pair<char, ll>> RLE(const string &S) {
-    if (S.empty()) return {};
-    ll N = S.size();
-    vector<pair<char, ll>> res;
-    char cur = S[0];
-    ll cnt = 1;
-    rep(i, 1, N) {
-        if (S[i] == S[i-1]) {
-            cnt++;
-        } else {
-            res.pb({cur, cnt});
-            cnt = 1;
-            cur = S[i];
-        }
-    }
-    res.pb({cur, cnt});
-    return res;
 }
 
 
@@ -469,34 +551,6 @@ vvl doubling(int MXLOG, const vector<ll> &A) {
 }
 
 
-// [l,r)の範囲で乱数生成
-mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
-ll randrange(ll l, ll r) {
-    uniform_int_distribution<ll> rand(l, r-1);
-    return rand(mt);
-}
-
-
-// 最小増加部分列
-template<typename T>
-vector<T> LIS(const vector<T> &A, bool equal=false) {
-
-    auto compare = (not equal) ? [](T a, T b) { return a > b; } : [](T a, T b) { return a >= b; };
-    auto bisect = (not equal) ? bisect_left<T> : bisect_right<T>;
-    vector<T> res;
-    res.pb(A[0]);
-    ll n = A.size();
-    rep(i, 1, n) {
-        if (compare(A[i], res.back())) {
-            res.pb(A[i]);
-        } else {
-            res[bisect(res, A[i])] = A[i];
-        }
-    }
-    return res;
-}
-
-
 // インタラクティブ用
 ll ask(ll i) {
     ll res;
@@ -508,51 +562,4 @@ ll ask(ll i) {
 
 void answer(ll i) {
     cout << "! " << i+1 << endl;
-}
-
-
-template<typename T1, typename T2>
-pair<vector<T1>, vector<T2>> zip(const vector<pair<T1, T2>> &A) {
-    int N = A.size();
-    pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)};
-    rep(i, N) {
-        res.first[i] = A[i].first;
-        res.second[i] = A[i].second;
-    }
-    return res;
-}
-template<typename T1, typename T2, typename T3>
-tuple<vector<T1>, vector<T2>, vector<T3>> zip(const vector<tuple<T1, T2, T3>> &A) {
-    int N = A.size();
-    tuple<vector<T1>, vector<T2>, vector<T3>> res = {vector<T1>(N), vector<T2>(N), vector<T3>(N)};
-    rep(i, N) {
-        get<0>(res)[i] = get<0>(A[i]);
-        get<1>(res)[i] = get<1>(A[i]);
-        get<2>(res)[i] = get<2>(A[i]);
-    }
-    return res;
-}
-
-
-string bin(ll x) {
-    string res;
-    while (x) {
-        if (x & 1) {
-            res += '1';
-        } else {
-            res += '0';
-        }
-        x >>= 1;
-    }
-    reverse(ALL(res));
-    if (res == "") res += '0';
-    return res;
-}
-
-
-// 参考：https://rsk0315.hatenablog.com/entry/2021/02/23/163040
-// 乗算のオーバーフロー検知
-ll mul_overflow(ll x, ll y) {
-    ll z;
-    return __builtin_mul_overflow(x, y, &z);
 }

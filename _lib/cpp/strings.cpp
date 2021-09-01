@@ -5,6 +5,12 @@
 #include "_tpl.cpp"
 
 
+const string digits = "0123456789";
+const string ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
+const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const string ascii_letters = ascii_lowercase + ascii_uppercase;
+
+
 string replace(string str, const string& replace, const string& with) {
     if(!replace.empty()) {
         size_t pos = 0;
@@ -22,6 +28,22 @@ string zfill(string str, int len) {
     int n = str.size();
     rep(i, len-n) zeros += '0';
     return zeros+str;
+}
+
+
+string bin(ll x) {
+    string res;
+    while (x) {
+        if (x & 1) {
+            res += '1';
+        } else {
+            res += '0';
+        }
+        x >>= 1;
+    }
+    reverse(ALL(res));
+    if (res == "") res += '0';
+    return res;
 }
 
 

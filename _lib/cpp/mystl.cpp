@@ -6,7 +6,7 @@
 
 
 // 標準mapを継承したdefaultdict
-template <typename _Key, typename _Tp, typename _Compare=less<_Key>, typename _Alloc=allocator<pair<const _Key, _Tp>>>
+template<typename _Key, typename _Tp, typename _Compare=less<_Key>, typename _Alloc=allocator<pair<const _Key, _Tp>>>
 struct defaultdict : public map<_Key, _Tp, _Compare, _Alloc> {
 
     const _Tp init;
@@ -125,6 +125,7 @@ struct my_deque : public deque<_Tp, _Alloc> {
 #define deque my_deque
 
 
+// ※なんかコンストラクタが言うこと聞かないので微妙。。
 template<typename _Tp, typename _Alloc=std::allocator<_Tp>>
 struct my_vector : public vector<_Tp, _Alloc> {
     _Tp pop() {

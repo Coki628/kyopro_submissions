@@ -9,7 +9,7 @@
 const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 // 8方向
-const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+const vector<pii> directions8 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 
 ll gridtoid(ll i, ll j, ll W) {
@@ -18,6 +18,61 @@ ll gridtoid(ll i, ll j, ll W) {
 
 pll idtogrid(ll id, ll W) {
     return divmod(id, W);
+}
+
+
+// グリッド転置
+template<typename T>
+void transpose(vector<vector<T>> &grid) {
+    int H = grid.size();
+    int W = grid[0].size();
+    auto res = list2d(W, H, (T)0);
+    rep(i, 0, H) {
+        rep(j, 0, W) {
+            res[j][i] = grid[i][j];
+        }
+    }
+    swap(res, grid);
+}
+void transpose(vector<string> &grid) {
+    int H = grid.size();
+    int W = grid[0].size();
+    vector<string> res(W, string(H, '*'));
+    rep(i, 0, H) {
+        rep(j, 0, W) {
+            res[j][i] = grid[i][j];
+        }
+    }
+    swap(res, grid);
+}
+
+
+// グリッドBFS
+vvl bfs(const vector<string> &grid, const vector<pii> &src, char invalid='#') {
+
+    int H = grid.size();
+    int W = grid[0].size();
+    auto res = list2d(H, W, INF);
+    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    queue<pii> que;
+    for (auto [h, w] : src) {
+        que.push({h, w});
+        res[h][w] = 0;
+    }
+    while (!que.empty()) {
+        auto [h, w] = que.front(); que.pop();
+        for (auto [dh, dw] : directions) {
+            int nh = h + dh;
+            int nw = w + dw;
+            if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;
+            if (grid[nh][nw] == invalid) continue;
+            if (res[nh][nw] == INF) {
+                res[nh][nw] = res[h][w] + 1;
+                que.push({nh, nw});
+            }
+        }
+    }
+    return res;
 }
 
 
@@ -47,38 +102,9 @@ vector<string> build_grid(int H, int W, char intv, int offset=1) {
 }
 
 
-// グリッドBFS
-vvl bfs(const vector<string> &grid, vector<pii> src) {
-
-    int H = grid.size();
-    int W = grid[0].size();
-    auto res = list2d(H, W, INF);
-    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-    queue<pii> que;
-    for (auto [h, w] : src) {
-        que.push({h, w});
-        res[h][w] = 0;
-    }
-    while (!que.empty()) {
-        auto [h, w] = que.front(); que.pop();
-        for (auto [dh, dw] : directions) {
-            int nh = h + dh;
-            int nw = w + dw;
-            if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;
-            if (grid[nh][nw] == '#') continue;
-            if (res[nh][nw] == INF) {
-                res[nh][nw] = res[h][w] + 1;
-                que.push({nh, nw});
-            }
-        }
-    }
-    return res;
-}
-
-
 // グリッドダイクストラ(H*Wグリッド, 始点{h, w}) 
 using P = tuple<ll, int, int>;
-vvl dijkstra(const vvl &grid, pii src) {
+vvl dijkstra(const vvl &grid, pii src, ll invalid=-1) {
 
     int H = grid.size();
     int W = grid[0].size();
@@ -96,7 +122,7 @@ vvl dijkstra(const vvl &grid, pii src) {
             int nh = h+dh;
             int nw = w+dw;
             if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;
-            if (grid[nh][nw] == -1) continue;
+            if (grid[nh][nw] == invalid) continue;
             ll cost = grid[nh][nw];
             if (dist+cost < res[nh][nw]) {
                 res[nh][nw] = dist+cost;
@@ -105,30 +131,4 @@ vvl dijkstra(const vvl &grid, pii src) {
         }
     }
     return res;
-}
-
-
-// グリッド転置
-template<typename T>
-void transpose(const vector<vector<T>> &grid) {
-    int H = grid.size();
-    int W = grid[0].size();
-    auto res = list2d(W, H, (T)0);
-    rep(i, 0, H) {
-        rep(j, 0, W) {
-            res[j][i] = grid[i][j];
-        }
-    }
-    swap(res, grid);
-}
-void transpose(const vector<string> &grid) {
-    int H = grid.size();
-    int W = grid[0].size();
-    vector<string> res(W, string(H, '*'));
-    rep(i, 0, H) {
-        rep(j, 0, W) {
-            res[j][i] = grid[i][j];
-        }
-    }
-    swap(res, grid);
 }

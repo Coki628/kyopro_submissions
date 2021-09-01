@@ -5,7 +5,11 @@
 #include "_tpl.cpp"
 
 
-// 素数判定 
+ll gcd(ll a, ll b) { return __gcd(a, b); }
+ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
+
+
+// 素数判定：O(√num)
 bool is_prime(ll num) {
 
     if (num < 2) {
@@ -32,39 +36,6 @@ bool is_prime(ll num) {
 }
 
 
-// 素数列挙(エラトステネスの篩)
-vector<ll> eratosthenes_sieve(ll n) {
-
-    vector<bool> table(n+1);
-    vector<ll> primes;
-    rep(i, 2, n+1) {
-        if (table[i] == 0) {
-            primes.pb(i);
-            for (ll j=i+i; j<=n; j+=i) {
-                table[j] = 1;
-            }
-        }
-    }
-    return primes;
-}
-
-
-// 素因数分解(mapベース)
-map<ll, ll> factorize(ll x) {
-
-    map<ll, ll> res;
-    for (ll i=2; i*i<=x; i++) {
-        while (x%i == 0) {
-            x /= i;
-            res[i]++;
-        }
-        if (x == 1) break;
-    }
-    if (x != 1) res[x]++;
-    return res;
-}
-
-
 // 素因数分解(vectorベース)
 template<typename T>
 vector<pair<T, int>> factorize(T n) {
@@ -79,52 +50,6 @@ vector<pair<T, int>> factorize(T n) {
     }
     if(n > 1) ret.emplace_back(n, 1);
     return ret;
-}
-
-
-// 高速素因数分解(osa_k法)、前計算
-vector<ll> eratosthenes_sieve(ll n) {
-
-    vector<ll> table(n+1);
-    table[1] = 1;
-    rep(i, 2, n+1) {
-        if (table[i] == 0) {
-            for (ll j=i; j<=n; j+=i) {
-                table[j] = i;
-            }
-        }
-    }
-    return table;
-}
-
-// 高速素因数分解(osa_k法)(mapベース)
-map<ll, ll> factorize(vector<ll> &table, ll x) {
-
-    map<ll, ll> res;
-    while (x != table[x]) {
-        res[table[x]]++;
-        x /= table[x];
-    }
-    if (x != 1) {
-        res[x]++;
-    }
-    return res;
-}
-
-// 高速素因数分解(osa_k法)(vectorベース)
-vector<pair<ll, int>> factorize(const vector<ll> &minfactor, ll x) {
-
-    vector<pair<ll, int>> res;
-    while (x > 1) {
-        int p = minfactor[x];
-        int cnt = 0;
-        while (minfactor[x] == p) {
-            x /= p;
-            cnt++;
-        }
-        res.pb({p, cnt});
-    }
-    return res;
 }
 
 
@@ -205,17 +130,6 @@ ll isqrt(ll n, bool ceil=false) {
 }
 
 
-// ピタゴラス数(未整備。重複削除とかgcdで互いに素とか考えてない。)
-vector<ll> calc(ll m, ll n) {
-    ll a = abs(pow(m, 2) - pow(n, 2));
-    ll b = 2*m*n;
-    ll c = pow(m, 2) + pow(n, 2);
-    vector<ll> res = {a, b, c};
-    sort(ALL(res));
-    return res;
-}
-
-
 // 桁和：O(logN)
 ll digit_sum(ll n) {
     ll res = 0;
@@ -225,28 +139,13 @@ ll digit_sum(ll n) {
     }
     return res;
 }
-
-
-// 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
-template<typename T>
-T extgcd(T a, T b, T& x, T& y) {
-    T d = a;
-    if(b != 0){
-        d = extgcd(b, a%b, y, x);
-        y -= (a/b) * x;
-    }else{
-        x = 1; y = 0;
+// 桁和：O(|S|)(未verify)
+ll digit_sum(string S) {
+    ll res = 0;
+    rep(i, S.size()) {
+        res += toint(S[i]);
     }
-    return d;
-}
-
-
-// MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
-template<typename T>
-T inv_mod(T a, T mod) {
-    T x, y;
-    extgcd(a, mod, x, y);
-    return (mod + x%mod) % mod;
+    return res;
 }
 
 
@@ -255,52 +154,10 @@ template<typename T>
 T arithmetic_sequence_sum(T l, T r, T n) {
     return (l+r)*n/2;
 }
-
-
 // 等差数列の和：(初項a, 公差d, 項数n)
 template<typename T> 
 T arithmetic_sequence_sum(T a, T d, T n) {
     return (a*2+(n-1)*d)*n/2;
-}
-
-
-// 添字GCD畳み込み(計算量：O(NloglogN))
-template<typename T>
-vector<T> gcd_convolution(vector<T> F, vector<T> G) {
-    int N = max(F.size(), G.size());
-
-    // 高速ゼータ変換
-    auto fast_zeta = [&](vector<T> &a) {
-        int n = a.size();
-        vector<bool> sieve(n, false);
-        for (int p = 2; p < n; ++p) {
-            if (sieve[p]) continue;
-            for (int k=(n-1)/p; k>=0; k--) sieve[k*p]=true, a[k]+=a[k*p];
-        }
-    };
-    // 高速メビウス変換
-    auto fast_mobius = [&](vector<T> &a) {
-        int n = a.size();
-        vector<bool> sieve(n, false);
-        for (int p = 2; p < n; ++p) {
-            if (sieve[p]) continue;
-            else {
-                for (int k=0; k*p<n; k++) sieve[k*p]=true, a[k]-=a[k*p];
-            }
-        }
-    };
-
-    fast_zeta(F);
-    fast_zeta(G);
-
-    vector<T> H(N);
-    rep(i, min(F.size(), G.size())) {
-        H[i] = F[i]*G[i];
-    }
-
-    fast_mobius(H);
-
-    return H;
 }
 
 
@@ -403,3 +260,156 @@ struct Eratosthenes {
         return mobius;
     }
 };
+
+
+// 素数列挙(エラトステネスの篩)
+vector<ll> eratosthenes_sieve(ll n) {
+
+    vector<bool> table(n+1);
+    vector<ll> primes;
+    rep(i, 2, n+1) {
+        if (table[i] == 0) {
+            primes.pb(i);
+            for (ll j=i+i; j<=n; j+=i) {
+                table[j] = 1;
+            }
+        }
+    }
+    return primes;
+}
+
+
+// 素因数分解(mapベース)
+map<ll, ll> factorize(ll x) {
+
+    map<ll, ll> res;
+    for (ll i=2; i*i<=x; i++) {
+        while (x%i == 0) {
+            x /= i;
+            res[i]++;
+        }
+        if (x == 1) break;
+    }
+    if (x != 1) res[x]++;
+    return res;
+}
+
+
+// 高速素因数分解(osa_k法)、前計算
+vector<ll> eratosthenes_sieve(ll n) {
+
+    vector<ll> table(n+1);
+    table[1] = 1;
+    rep(i, 2, n+1) {
+        if (table[i] == 0) {
+            for (ll j=i; j<=n; j+=i) {
+                table[j] = i;
+            }
+        }
+    }
+    return table;
+}
+
+// 高速素因数分解(osa_k法)(mapベース)
+map<ll, ll> factorize(vector<ll> &table, ll x) {
+
+    map<ll, ll> res;
+    while (x != table[x]) {
+        res[table[x]]++;
+        x /= table[x];
+    }
+    if (x != 1) {
+        res[x]++;
+    }
+    return res;
+}
+
+// 高速素因数分解(osa_k法)(vectorベース)
+vector<pair<ll, int>> factorize(const vector<ll> &minfactor, ll x) {
+
+    vector<pair<ll, int>> res;
+    while (x > 1) {
+        int p = minfactor[x];
+        int cnt = 0;
+        while (minfactor[x] == p) {
+            x /= p;
+            cnt++;
+        }
+        res.pb({p, cnt});
+    }
+    return res;
+}
+
+
+// ピタゴラス数(未整備。重複削除とかgcdで互いに素とか考えてない。)
+vector<ll> calc(ll m, ll n) {
+    ll a = abs(pow(m, 2) - pow(n, 2));
+    ll b = 2*m*n;
+    ll c = pow(m, 2) + pow(n, 2);
+    vector<ll> res = {a, b, c};
+    sort(ALL(res));
+    return res;
+}
+
+
+// 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
+template<typename T>
+T extgcd(T a, T b, T& x, T& y) {
+    T d = a;
+    if(b != 0){
+        d = extgcd(b, a%b, y, x);
+        y -= (a/b) * x;
+    }else{
+        x = 1; y = 0;
+    }
+    return d;
+}
+
+
+// MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
+template<typename T>
+T inv_mod(T a, T mod) {
+    T x, y;
+    extgcd(a, mod, x, y);
+    return (mod + x%mod) % mod;
+}
+
+
+// 添字GCD畳み込み(計算量：O(NloglogN))
+template<typename T>
+vector<T> gcd_convolution(vector<T> F, vector<T> G) {
+    int N = max(F.size(), G.size());
+
+    // 高速ゼータ変換
+    auto fast_zeta = [&](vector<T> &a) {
+        int n = a.size();
+        vector<bool> sieve(n, false);
+        for (int p = 2; p < n; ++p) {
+            if (sieve[p]) continue;
+            for (int k=(n-1)/p; k>=0; k--) sieve[k*p]=true, a[k]+=a[k*p];
+        }
+    };
+    // 高速メビウス変換
+    auto fast_mobius = [&](vector<T> &a) {
+        int n = a.size();
+        vector<bool> sieve(n, false);
+        for (int p = 2; p < n; ++p) {
+            if (sieve[p]) continue;
+            else {
+                for (int k=0; k*p<n; k++) sieve[k*p]=true, a[k]-=a[k*p];
+            }
+        }
+    };
+
+    fast_zeta(F);
+    fast_zeta(G);
+
+    vector<T> H(N);
+    rep(i, min(F.size(), G.size())) {
+        H[i] = F[i]*G[i];
+    }
+
+    fast_mobius(H);
+
+    return H;
+}
