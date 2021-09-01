@@ -13,7 +13,7 @@ path_w = '{0}/out.cpp'.format(os.getcwd())
 
 out = []
 indent = '    '
-with open(path_r) as f:
+with open(path_r, encoding='utf-8') as f:
     depth = 0
     for line in f.readlines():
 
@@ -142,5 +142,5 @@ with open(path_r) as f:
         else:
             out.append('{0}}}\n'.format(indent * depth))
 
-with open(path_w, mode='w') as f:
+with open(path_w, mode='w', encoding='utf-8') as f:
     f.write(''.join(out))

@@ -27,7 +27,7 @@ path_w = '{0}/out.py'.format(os.getcwd())
 
 out = []
 indent = '    '
-with open(path_r) as f:
+with open(path_r, encoding='utf-8') as f:
     depth = 0
     for line in f.readlines():
 
@@ -199,5 +199,5 @@ with open(path_r) as f:
 
         out.append(indent*depth + line + '\n')
 
-with open(path_w, mode='w') as f:
+with open(path_w, mode='w', encoding='utf-8') as f:
     f.write(''.join(out))
