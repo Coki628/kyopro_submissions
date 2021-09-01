@@ -390,6 +390,8 @@ struct ModInt {
     }
 
     static int get_mod() { return mod; }
+
+    // operator int() const { return x; }
 };
 using mint = ModInt<MOD>;
 

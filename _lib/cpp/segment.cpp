@@ -35,8 +35,9 @@ template<typename T> struct Accumulate {
 
     void build() {
         rep(i, N-1) {
-            acc[i+1] += acc[i]; acc.insert(acc.begin(), 0);
+            acc[i+1] += acc[i];
         }
+        acc.insert(acc.begin(), 0);
     }
 
     T query(int l, int r) {

@@ -48,7 +48,7 @@ vector<string> build_grid(int H, int W, char intv, int offset=1) {
 
 
 // グリッドBFS
-vvl bfs(vector<string> &grid, vector<pii> src) {
+vvl bfs(const vector<string> &grid, vector<pii> src) {
 
     int H = grid.size();
     int W = grid[0].size();
@@ -78,7 +78,7 @@ vvl bfs(vector<string> &grid, vector<pii> src) {
 
 // グリッドダイクストラ(H*Wグリッド, 始点{h, w}) 
 using P = tuple<ll, int, int>;
-vvl dijkstra(vvl &grid, pii src) {
+vvl dijkstra(const vvl &grid, pii src) {
 
     int H = grid.size();
     int W = grid[0].size();
@@ -110,7 +110,7 @@ vvl dijkstra(vvl &grid, pii src) {
 
 // グリッド転置
 template<typename T>
-void transpose(vector<vector<T>> &grid) {
+void transpose(const vector<vector<T>> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(W, H, (T)0);
@@ -121,7 +121,7 @@ void transpose(vector<vector<T>> &grid) {
     }
     swap(res, grid);
 }
-void transpose(vector<string> &grid) {
+void transpose(const vector<string> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     vector<string> res(W, string(H, '*'));

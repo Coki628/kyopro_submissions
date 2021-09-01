@@ -15,6 +15,17 @@ map<T, ll> Counter(const vector<T> &A) {
 }
 
 
+template<typename T>
+vector<ll> Counter(const vector<T> &A, T mx) {
+
+    vector<ll> res(mx+1);
+    for (T a : A) {
+        res[a]++;
+    }
+    return res;
+}
+
+
 map<char, ll> Counter(const string &S) {
     map<char, ll> res;
     for (char c : S) {

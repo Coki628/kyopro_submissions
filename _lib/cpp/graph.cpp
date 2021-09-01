@@ -6,7 +6,7 @@
 
 
 // BFS
-vector<int> bfs(vvi &nodes, vector<int> src) {
+vector<int> bfs(const vvi &nodes, const vector<int> &src) {
 
     int N = nodes.size();
     vector<int> res(N, -1);
@@ -30,7 +30,7 @@ vector<int> bfs(vvi &nodes, vector<int> src) {
 
 
 // 01BFS(コストが0or1なら使える)
-vector<ll> bfs01(vvpll &nodes, vector<ll> src) {
+vector<ll> bfs01(const vvpll &nodes, const vector<ll> &src) {
 
     ll N = nodes.size();
     vector<ll> res(N, INF);
@@ -84,7 +84,7 @@ vector<T> dijkstra(vector<vector<pair<ll, T>>> &nodes, int src) {
 
 // ダイクストラ(O(V^2)版) ※未verify
 template<typename T>
-vector<T> dijkstra(vector<vector<T>> &G, int src) {
+vector<T> dijkstra(const vector<vector<T>> &G, int src) {
     int N = G.size();
     vector<T> dist(N, INF);
     vector<bool> used(N);
