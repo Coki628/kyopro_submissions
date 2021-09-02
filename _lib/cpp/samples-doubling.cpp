@@ -35,6 +35,9 @@ auto f = [](const Node &prev, const Node &power) {
     return res;
 };
 
+// 遷移元が違うのでこれはライブラリ側をいじらないと無理そう(AGC036b)
+// nxt[k][i] = nxt[k-1][i] + nxt[k-1][(i+nxt[k-1][i])%N]
+
 // 位置とじゃんけんの勝者(ARC109c)
 struct Node {
     ll nxt;
