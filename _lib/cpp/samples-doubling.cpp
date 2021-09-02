@@ -1,0 +1,49 @@
+/*
+・ライブラリ：ダブリングサンプル
+*/
+
+#include "_tpl.cpp"
+
+
+// 一番基本の位置だけ
+auto f = [](ll prev, ll power) {
+    return power;
+};
+
+// 位置とそこまでの和(ABC175d,他多数)
+struct Node {
+    ll nxt, sm;
+    operator ll() const { return nxt; }
+};
+auto f = [](const Node &prev, const Node &power) {
+    Node res;
+    res.nxt = power.nxt;
+    res.sm = prev.sm + power.sm;
+    return res;
+};
+
+// 位置と和と、そこまでの最大値(ABC175d)
+struct Node {
+    ll nxt, sm, mx;
+    operator ll() const { return nxt; }
+};
+auto f = [](const Node &prev, const Node &power) {
+    Node res;
+    res.nxt = power.nxt;
+    res.sm = prev.sm + power.sm;
+    res.mx = max(prev.mx, prev.sm + power.mx);
+    return res;
+};
+
+// 位置とじゃんけんの勝者(ARC109c)
+struct Node {
+    ll nxt;
+    char c;
+    operator ll() const { return nxt; }
+};
+auto f = [](const Node &prev, const Node &power) {
+    Node res;
+    res.nxt = power.nxt;
+    res.c = check(prev.c, power.c);
+    return res;
+};
