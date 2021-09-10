@@ -4,7 +4,7 @@
 　　　https://ei1333.github.io/library/math/combinatorics/lagrange-polynomial-2.cpp
 ・ABC高難度埋め
 ・新しい知見の履修。今まで名前聞いただけだったやつ。
-・ラグランジュ補間
+・新履修：ラグランジュ補間
 ・N次式のy=f(x)のペア(x,y)がN+1個分かっていれば、この式について色々分かるというもの。
 　ferinさんの記事の説明が分かりやすかった。
 　これはy=f(x)の各項の係数を求める、つまりy=ax^0+bx^1+cx^2+...のa,b,cを返すタイプ。計算量はO(N^2)。

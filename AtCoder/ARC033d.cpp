@@ -2,8 +2,7 @@
 参考：https://blog.hamayanhamayan.com/entry/2019/08/14/131223
 　　　https://ferin-tech.hatenablog.com/entry/2019/08/11/%E3%83%A9%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B8%E3%83%A5%E8%A3%9C%E9%96%93
 　　　https://ei1333.github.io/library/math/combinatorics/lagrange-polynomial-2.cpp
-・新しい知見の履修。今まで名前聞いただけだったやつ。
-・ラグランジュ補間
+・新履修：ラグランジュ補間
 ・N次式のy=f(x)のペア(x,y)がN+1個分かっていれば、この式について色々分かるというもの。
 　ferinさんの記事の説明が分かりやすかった。
 　これはf(x)の値yを求めるタイプ。階乗の逆元を前計算しておけば多分線形で解ける。

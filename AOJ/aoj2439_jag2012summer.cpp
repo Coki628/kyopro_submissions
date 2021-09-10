@@ -1,23 +1,12 @@
 /*
-参考：https://twitter.com/e869120/status/1393753066331992065/photo/1
-　　　https://twitter.com/e869120/status/1393753066331992065/photo/3
-・E8さん典型90問埋め
-・幾何、凸包、新履修：ピックの定理
-・最近こどふぉでも類題出たし、重い腰上げて幾何問の履修。
-・凸包はPython時代に書いたやつ写経してきた。
-・ピックの定理は新しく履修だね。多角形の面積と辺上の格子点数が分かると、
-　内部の点数も分かるというもの。で、凸包が作ってあれば、外周を辿ることはできるので、
-　線分の外積の和/2で面積が求まって、2点間のマンハッタン距離xyみたいなやつのgcd取ると
-　線上にある格子点数もわかる。格子点ってようは2値が整数で重なる場所なので、
-　gcdで求まるのなるほどー、って感じ。
-・最初素直に組んだらWAが出て、誤差ゲーが始まったのかと思ったら意外とそうでもなくて、
-　結局同じWAが出てる人の提出見たんだけど、ソート条件にxしか使ってないのが原因だった。
-　確かにyの並び無視してたら、x座標が全部同じみたいな時に訪問順ぐちゃぐちゃになって壊れそう。
-　2番目の条件としてyも並べるようにしたら無事AC。
-・確かに今回誤差はあんま出なそうなんだよね。計算だいたい掛け算だし、
-　少数出るの多分面積とピックの定理でそれぞれ/2してるとこだけだと思うんだよね。
-　まあそれなら式変形して整数でやれって話ではあるんだけどね。。
-　(だいたいみんなそうしてそうだった。)
+参考：https://mayokoex.hatenablog.com/entry/2016/09/01/184646
+　　　https://okuraofvegetable.hatenablog.com/entry/2015/08/21/110612
+・新履修：箱根DP
+・有名DPの元ネタで、未履修だったけど類題に出会ってついにやった。
+　最初ぱっと聞くと考え方むずいけど、ちゃんと考えると何とかイメージできる。
+・ようは順列の並べ替えで、未確定部分をどう残していくかの状態を持って、
+　今の列を確定していく感じ。並べ替え前と後の列をペアしていく感じ。
+　実際の動きはソース内コメント参照。
 */
 
 // #pragma GCC target("avx2")
@@ -40,7 +29,7 @@ using vvpll = vector<vector<pll>>;
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
 #define rep1(i, a) for(ll i = 0, _aa = a; i < _aa; i++)
 #define rep2(i, a, b) for(ll i = a, _bb = b; i < _bb; i++)
-#define rep3(i, a, b, c) for(ll i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
+#define rep3(i, a, b, c) for(ll i = a, _bb = b; (a <= i && i < _bb) or (a >= i && i > _bb); i += c)
 #define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
 #define mkp make_pair
@@ -112,8 +101,8 @@ ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 ld degrees(ld radians) { return radians * 180.0 / PI; }
 ld radians(ld degrees) { return degrees * PI / 180.0; }
 
-template<typename T> int bisect_left(vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
-template<typename T> int bisect_right(vector<T> &A, T val, int lo=0) { return upper_bound(A.begin()+lo, A.end(), val) - A.begin(); }
+template<typename T> int bisect_left(vector<T> &A, T val) { return lower_bound(ALL(A), val) - A.begin(); }
+template<typename T> int bisect_right(vector<T> &A, T val) { return upper_bound(ALL(A), val) - A.begin(); }
 template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
 
@@ -123,11 +112,7 @@ template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(vector<pair<
 
 template<typename T> struct Accumulate {
     vector<T> acc; int N;
-    Accumulate() {}
-    Accumulate(int N) : N(N) { acc.resize(N); }
-    Accumulate(vector<T> &A) { N = A.size(); acc = A; build(); }
-    void set(int i, T a) { acc[i] = a; }
-    void build() { rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
+    Accumulate(vector<T> &A) { N = A.size(); acc = A; rep(i, N-1) acc[i+1] += acc[i]; acc.insert(acc.begin(), 0); }
     T query(int l, int r) { assert(0 <= l and l <= N and 0 <= r and r <= N); return acc[r]-acc[l]; }
     T get(int i) { return query(i, i+1); }
     T operator[](int i) { return query(i, i+1); }
@@ -158,123 +143,37 @@ template<int mod> struct ModInt {
 };
 using mint = ModInt<MOD>;
 
-struct Point {
-    ld x, y;
-    // Point(ld x, ld y) : x(x), y(y) {}
-    Point operator+(const Point &p) { return {x+p.x, y+p.y}; }
-    Point operator-(const Point &p) { return {x-p.x, y-p.y}; }
-    Point operator*(const Point &p) { return {x*p.x, y*p.y}; }
-    Point operator/(const Point &p) { return {x/p.x, y/p.y}; }
-    Point operator*(ld k) { return {x*k, y*k}; }
-    Point operator/(ld k) { return {x/k, y/k}; }
-    ld norm(const Point &p) { return p.x*p.x + p.y*p.y; }
-    ld abs(const Point &p) { return hypot(x-p.x, y-p.y); }
-    ld manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
-};
-struct Segment { Point p1, p2; };
-using Line = Segment;
-struct Circle {
-    Point c;
-    ld r;
-    Circle(Point c=Point(), ld r=0.0) : c(c), r(r) {}
-};
-// 内積
-ld dot(const Point a, const Point b) { return a.x*b.x + a.y*b.y; }
-// 外積
-ld cross(const Point a, const Point b) { return a.x*b.y - a.y*b.x; }
-
-// 線分p0,p1から線分p0,p2への回転方向 
-ll ccw(Point p0, Point p1, Point p2) {
-    Point a = p1-p0;
-    Point b = p2-p0;
-    // 反時計回り
-    if (cross(a, b) > EPS) return 1;
-    // 時計回り
-    if (cross(a, b) < -EPS) return -1;
-    // 直線上(p2 => p0 => p1)
-    if (dot(a, b) < -EPS) return 2;
-    // 直線上(p0 => p1 => p2)
-    if (a.norm(a) < b.norm(b)) return -2;
-    // 直線上(p0 => p2 => p1)
-    return 0;
-}
-
-// アンドリューのアルゴリズム(Monotone Chain)：凸包に使った座標と距離を返す
-vector<pair<Point, ld>> monotone_chain(vector<Point> li) {
-    int N = li.size();
-    assert(N >= 2);
-
-    sort(ALL(li), [](Point a, Point b) {
-        // ソート条件にyも使う
-        if (a.x == b.x) return a.y < b.y;
-        else return a.x < b.x; 
-    });
-
-    // 上半分
-    // 使う座標と距離を保持
-    vector<pair<Point, ld>> stack;
-    stack.pb({li[0], 0});
-    stack.pb({li[1], li[0].abs(li[1])});
-    rep(i, 2, N) {
-        // 1つ前->次 と 1つ前->2つ前 のベクトルで外積をチェックして向きを判定する
-        while (stack.size() >= 2 and ccw(stack[stack.size()-2].first, stack[stack.size()-1].first, li[i]) == 1) {
-            // 次が反時計回り側にある時は1つ前を外す
-            stack.pop_back();
-        }
-        // 次が時計回り側にあればOKなので進める
-        stack.pb({li[i], stack.back().first.abs(li[i])});
-    }
-    vector<pair<Point, ld>> res;
-    rep(i, 1, stack.size()) {
-        res.pb(stack[i]);
-    }
-
-    // 下半分(やることは同じ)
-    stack.clear();
-    stack.pb({li[li.size()-1], 0});
-    stack.pb({li[li.size()-2], li[li.size()-1].abs(li[li.size()-2])});
-    rrep(i, N-3, -1) {
-        while (stack.size() >= 2 and ccw(stack[stack.size()-2].first, stack[stack.size()-1].first, li[i]) == 1) {
-            stack.pop_back();
-        }
-        stack.pb({li[i], stack.back().first.abs(li[i])});
-    }
-    rep(i, 1, stack.size()) {
-        res.pb(stack[i]);
-    }
-    return res;
-}
-
 void solve() {
     ll N;
     cin >> N;
-    vector<Point> li;
+    vector<char> A(N);
+    rep(i, N) cin >> A[i];
+
+    // dp[i][j] := i番目まで見て、未確定がj個ある時の通り数
+    auto dp = list2d<mint>(N+1, N+1, 0);
+    dp[0][0] = 1;
     rep(i, N) {
-        ld x, y;
-        cin >> x >> y;
-        li.pb(Point({x, y}));
+        rep(j, N) {
+            if (A[i] == '-') {
+                dp[i+1][j] = dp[i][j];
+            // Dの時にはここより手前だったものがここに来るので、
+            // 未確定のjを1つこの位置に決める(iは今決めるか選べる)
+            } elif (A[i] == 'D') {
+                // 未確定のjをこの位置iに決めてこのiだったものはまだ決めない
+                dp[i+1][j] += dp[i][j]*j;
+                // 未確定のjをこの位置iに決めてこのiだったものもいずれかのjに決める
+                if (j) dp[i+1][j-1] += dp[i][j]*j*j;
+            // Uの時は未確定のjを決めることはできないので、
+            // このiだったものを今のいずれかのjで決めるかどうかだけ選べる
+            } else {
+                // iだったものをいずれかのjに決める
+                dp[i+1][j] += dp[i][j]*j;
+                // ここではiだったものを決めない
+                dp[i+1][j+1] += dp[i][j];
+            }
+        }
     }
-
-    auto res = monotone_chain(li);
-    ll M = res.size();
-
-    // 多角形の面積(線分の外積の和/2で求まる)
-    ld S = 0;
-    rep(i, M) {
-        S += cross(res[i].first, res[(i+1)%M].first);
-    }
-    S = abs(S)/2;
-
-    // 線分上にある格子点の個数
-    ll b = 0;
-    rep(i, M) {
-        auto a = res[i].first-res[(i+1)%M].first;
-        b += gcd((ll)abs(a.x), (ll)abs(a.y));
-    }
-    // 内側にある格子点の数
-    ll i = S-b/2.0+1;
-
-    ll ans = b+i-N;
+    mint ans = dp[N][0];
     print(ans);
 }
 
