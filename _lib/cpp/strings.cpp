@@ -48,7 +48,7 @@ string bin(ll x) {
 
 
 // 回文判定
-bool is_palindrome(string &S) {
+bool is_palindrome(const string &S) {
     ll N = S.size();
     rep(i, N/2) {
         ll j = N-i-1;

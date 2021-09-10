@@ -203,12 +203,12 @@ auto g = [](Node a, Func b) -> Node {
     }
 };
 auto h = [](Func a, Func b) -> Func {
-    if (not b.update) {
-        a.add += b.add;
-    } else {
+    if (b.update) {
         a.update = 1;
         a.add = 0;
         a.assign = b.add+b.assign;
+    } else {
+        a.add += b.add;
     }
     return a;
 };
@@ -232,17 +232,47 @@ auto g = [](ll a, Func b) -> ll {
     }
 };
 auto h = [](Func a, Func b) -> Func {
-    if (not b.update) {
-        a.add += b.add;
-    } else {
+    if (b.update) {
         a.update = 1;
         a.add = 0;
-        a.assign = b.add+b.assign;
+        a.assign = b.add+b.assign; 
+    } else {
+        a.add += b.add;
     }
     return a;
 };
 const ll T = 0;
 const Func E = {0, 0, 0};
+
+// 区間和取得・区間乗算・区間更新
+// 参考：tkppc6-1_f
+struct Func {
+    mint mul, assign;
+    bool update;
+    bool operator==(const Func &f) const {
+        return mul == f.mul and assign == f.assign and update == f.update;
+    }
+};
+auto f = [](mint a, mint b) -> mint { return a+b; };
+auto g = [](mint a, Func b) -> mint {
+    if (b.update) {
+        return b.mul*b.assign;
+    } else {
+        return a*b.mul;
+    }
+};
+auto h = [](Func a, Func b) -> Func {
+    if (b.update) {
+        a.update = 1;
+        a.mul = 1;
+        a.assign = b.mul*b.assign;
+    } else {
+        a.mul *= b.mul;
+    }
+    return a;
+};
+const mint T = 0;
+const Func E = {1, 0, 0};
 
 // 区間和取得・区間01反転
 // 参考：s8pc2_h, joisc2012day3-1
@@ -344,29 +374,3 @@ auto h = [](Node a, Node b) -> Node { return b; };
 const Node T = {-INF, -1};
 // 要素が取りうる範囲外の値にする
 const Node E = {INF, -1};
-
-// 区間和取得・区間加算・区間乗算を作ろうとしたんだけど失敗。
-// なんか掛け算がちゃんと機能しない。。
-struct Node {
-    ll val, sz;
-    operator ll() const { return val; }
-};
-struct Func {
-    ll add, mul;
-    bool operator==(const Func &f) const {
-        return add == f.add and mul == f.mul;
-    }
-};
-auto f = [](Node a, Node b) -> Node { return { a.val+b.val, a.sz+b.sz }; };
-auto g = [](Node a, Func b) -> Node {
-    a.val *= b.mul;
-    a.val += a.sz*b.add;
-    return a;
-};
-auto h = [](Func a, Func b) -> Func {
-    a.add += b.add;
-    a.mul *= b.mul;
-    return a;
-};
-const Node T = {0, 0};
-const Func E = {0, 1};

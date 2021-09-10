@@ -13,6 +13,7 @@ char chr(int a) { return (char)a; }
 
 ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
 ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+ll modulo(ll a, ll b) { return ((a % b) + b) % b; }
 template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
 template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
 template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
@@ -279,6 +280,65 @@ bool mul_overflow(ll x, ll y) {
 }
 
 
+// ダブリング
+template<typename T, typename F>
+struct Doubling {
+
+    int N;
+    vector<vector<T>> dat;
+    const int MXLOG;
+    const F f;
+
+    Doubling(int MXLOG, const vector<T> &A, T init, const F f) : MXLOG(MXLOG), f(f) {
+        N = A.size();
+        dat = list2d(MXLOG, N, init);
+        rep(i, N) {
+            dat[0][i] = A[i];
+        }
+        rep(k, 1, MXLOG) {
+            rep(i, N) {
+                dat[k][i] = f(dat[k-1][i], dat[k-1][dat[k-1][i]]);
+            }
+        }
+    }
+
+    // stから始めてK個先を返す
+    T get(T st, ll K) {
+        T res = st;
+        rep(k, MXLOG-1, -1, -1) {
+            if (K>>k & 1) {
+                res = f(res, dat[k][res]);
+            }
+        }
+        return res;
+    }
+
+    // stから始めて1個先を返す
+    T next(T st) {
+        return f(st, dat[0][st]);
+    }
+
+    // stから始めてgに到達するまでの回数を返す
+    ll times(T st, ll g) {
+        T cur = st;
+        ll res = 0;
+        rep(k, MXLOG-1, -1, -1) {
+            if (dat[k][cur] < g) {
+                res += 1LL<<k;
+                cur = dat[k][cur];
+            }
+        }
+        res++;
+        return res;
+    }
+};
+
+template<typename T, typename F>
+Doubling<T, F> get_doubling(int MXLOG, const vector<T> &A, T init, const F f) {
+    return {MXLOG, A, init, f};
+}
+
+
 // 三分探索(実数)
 template<typename F>
 pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
@@ -408,8 +468,9 @@ struct MatPow {
         int m2 = B[0].size();
         auto res = list2d(n1, m2, (T)0);
         rep(i, 0, n1) {
-            rep(j, 0, m2) {
-                rep(k, 0, n2) {
+            rep(k, 0, n2) {
+                if (A[i][k] == 0) continue;
+                rep(j, 0, m2) {
                     res[i][j] += A[i][k]*B[k][j];
                 }
             }
@@ -548,65 +609,6 @@ vvl doubling(int MXLOG, const vector<ll> &A) {
         }
     }
     return nxt;
-}
-
-
-// ダブリング
-template<typename T, typename F>
-struct Doubling {
-
-    int N;
-    vector<vector<T>> dat;
-    const int MXLOG;
-    const F f;
-
-    Doubling(int MXLOG, const vector<T> &A, T init, const F f) : MXLOG(MXLOG), f(f) {
-        N = A.size();
-        dat = list2d(MXLOG, N, init);
-        rep(i, N) {
-            dat[0][i] = A[i];
-        }
-        rep(k, 1, MXLOG) {
-            rep(i, N) {
-                dat[k][i] = f(dat[k-1][i], dat[k-1][dat[k-1][i]]);
-            }
-        }
-    }
-
-    // stから始めてK個先を返す
-    T get(T st, ll K) {
-        T res = st;
-        rep(k, MXLOG-1, -1, -1) {
-            if (K>>k & 1) {
-                res = f(res, dat[k][res]);
-            }
-        }
-        return res;
-    }
-
-    // stから始めて1個先を返す
-    T next(T st) {
-        return f(st, dat[0][st]);
-    }
-
-    // stから始めてgに到達するまでの回数を返す
-    ll times(T st, ll g) {
-        T cur = st;
-        ll res = 0;
-        rep(k, MXLOG-1, -1, -1) {
-            if (dat[k][cur] < g) {
-                res += 1LL<<k;
-                cur = dat[k][cur];
-            }
-        }
-        res++;
-        return res;
-    }
-};
-
-template<typename T, typename F>
-Doubling<T, F> get_doubling(int MXLOG, const vector<T> &A, T init, const F f) {
-    return {MXLOG, A, init, f};
 }
 
 

@@ -639,9 +639,10 @@ struct LazySegmentTree {
         update(i, i+1, x);
     }
 
+    template<typename P=ll>
     void print(int n) {
         rep(i, n) {
-            cout << query(i, i+1);
+            cout << (P)query(i, i+1);
             if (i == n-1) cout << endl;
             else cout << ' ';
         }

@@ -174,10 +174,11 @@ struct ArbitraryModInt {
         return (is);
     }
 };
+// using mint = ArbitraryModInt;
 
 
 // Mod数え上げnCr
-template<typename T>
+template<typename T=mint>
 struct ModTools {
 
     int MAX;
@@ -204,6 +205,14 @@ struct ModTools {
         }
     }
 
+    T factorial(int x) {
+        return fact[x];
+    }
+
+    T inverse(int x) {
+        return factinv[x];
+    }
+
     T nCr(int n, int r) {
         if (n < r) return 0;
         r = min(r, n-r);
@@ -216,7 +225,6 @@ struct ModTools {
         return nCr(r+n-1, r);
     }
 
-    // ※未verify
     T nPr(int n, int r) {
         if (n < r) return 0;
         return fact[n] * factinv[n-r];
@@ -427,16 +435,16 @@ ll nCr(int n, int r) {
 }
 
 
-// スターリング数(玉区別あり、箱区別なし、1個以上) ※未Verify
-ll stirling(int N, int K) {
-    auto dp = list2d(N+1, K+1, 0LL);
+// スターリング数(玉区別あり、箱区別なし、1個以上)
+vector<vector<mint>> stirling(int N, int K) {
+    auto dp = list2d<mint>(N+1, K+1, 0);
     dp[0][0] = 1;
     rep(i, 1, N+1) {
         rep(k, 1, K+1) {
-            dp[i][k] = dp[i-1][k-1] + k*dp[i-1][k];
+            dp[i][k] = dp[i-1][k-1] + dp[i-1][k]*k;
         }
     }
-    return dp[N][K];
+    return dp;
 }
 
 
@@ -444,7 +452,7 @@ ll stirling(int N, int K) {
 ll bell(int N, int K) {
     ll ans = 0;
     rep(i, K+1) {
-        ans += stirling(N, i);
+        ans += stirling(N, i)[N][i];
     }
     return ans;
 }

@@ -29,35 +29,6 @@ vector<int> bfs(const vvi &nodes, const vector<int> &src) {
 }
 
 
-// 01BFS(コストが0or1なら使える)
-vector<ll> bfs01(const vvpll &nodes, const vector<ll> &src) {
-
-    ll N = nodes.size();
-    vector<ll> res(N, INF);
-    deque<ll> que;
-    for (ll s : src) {
-        res[s] = 0;
-        que.push_back(s);
-    }
-
-    while (!que.empty()) {
-        ll u = que.front(); que.pop_front();
-        for (auto [v, c] : nodes[u]) {
-            if (c == 0 and res[u] < res[v]) {
-                res[v] = res[u];
-                que.push_front(v);
-            } elif (c == 1 and res[u]+1 < res[v]) {
-                res[v] = res[u]+1;
-                que.push_back(v);
-            } elif (c >= 2) {
-                assert(c == 0 or c == 1);
-            }
-        }
-    }
-    return res;
-}
-
-
 // ダイクストラ(テンプレートで小数コストも対応)
 template<typename T>
 vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
@@ -392,6 +363,35 @@ struct ReRooting {
 template<typename sum_t, typename key_t, typename F1, typename F2>
 ReRooting<sum_t, key_t, F1, F2> get_rerooting(int N, const F1& f1, const F2& f2, const sum_t& M1, const key_t& M2) {
     return {N, f1, f2, M1};
+}
+
+
+// 01BFS(コストが0or1なら使える)
+vector<ll> bfs01(const vvpll &nodes, const vector<ll> &src) {
+
+    ll N = nodes.size();
+    vector<ll> res(N, INF);
+    deque<ll> que;
+    for (ll s : src) {
+        res[s] = 0;
+        que.push_back(s);
+    }
+
+    while (!que.empty()) {
+        ll u = que.front(); que.pop_front();
+        for (auto [v, c] : nodes[u]) {
+            if (c == 0 and res[u] < res[v]) {
+                res[v] = res[u];
+                que.push_front(v);
+            } elif (c == 1 and res[u]+1 < res[v]) {
+                res[v] = res[u]+1;
+                que.push_back(v);
+            } elif (c >= 2) {
+                assert(c == 0 or c == 1);
+            }
+        }
+    }
+    return res;
 }
 
 
