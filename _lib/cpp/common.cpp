@@ -8,24 +8,22 @@
 ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
 int toint(char num) { return num - '0'; }
 char tochar(int num) { return '0' + num; }
-int ord(char c) { return (int)c; }
-char chr(int a) { return (char)a; }
 
-ll floor(ll a, ll b) { if (a < 0) { return (a-b+1) / b; } else { return a / b; } }
-ll ceil(ll a, ll b) { if (a >= 0) { return (a+b-1) / b; } else { return a / b; } }
+ll floor(ll a, ll b) { if (a < 0) return (a-b+1) / b; else return a / b; }
+ll ceil(ll a, ll b) { if (a >= 0) return (a+b-1) / b; else return a / b; }
 ll modulo(ll a, ll b) { return ((a % b) + b) % b; }
 template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
 template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
 template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
 
-template<typename T> T sum(const vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
+template<typename T> T sum(const vector<T> &A) { return accumulate(ALL(A), (T)0); }
 template<typename T> T max(const vector<T> &A) { return *max_element(ALL(A)); }
 template<typename T> T min(const vector<T> &A) { return *min_element(ALL(A)); }
 
-ll pow(int x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
-ll pow(int x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
-ll pow(ll x, int n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
-ll pow(ll x, ll n) { ll res = 1; rep(_, 0, n) res *= x; return res; }
+ll pow(int x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
+ll pow(int x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
+ll pow(ll x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
+ll pow(ll x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
 ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 
 int popcount(ll S) { return __builtin_popcountll(S); }
@@ -89,46 +87,6 @@ ll bisearch_max(ll mn, ll mx, const F &func) {
     ll ng = mx;
     while (ok+1 < ng) {
         ll mid = (ok+ng) / 2;
-        if (func(mid)) {
-            // 上を探しに行く
-            ok = mid;
-        } else {
-            // 下を探しに行く
-            ng = mid;
-        }
-    }
-    return ok;
-}
-
-
-// 条件を満たす最小値を見つける二分探索(実数)
-template<typename F>
-ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
-
-    ld ok = mx;
-    ld ng = mn;
-    rep(_, 0, times) {
-        ld mid = (ok+ng) / 2;
-        if (func(mid)) {
-            // 下を探しに行く
-            ok = mid;
-        } else {
-            // 上を探しに行く
-            ng = mid;
-        }
-    }
-    return ok;
-}
-
-
-// 条件を満たす最大値を見つける二分探索(実数)
-template<typename F>
-ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
-
-    ld ok = mn;
-    ld ng = mx;
-    rep(_, 0, times) {
-        ld mid = (ok+ng) / 2;
         if (func(mid)) {
             // 上を探しに行く
             ok = mid;
@@ -241,6 +199,69 @@ vector<pair<char, int>> RLE(const string &S) {
     }
     res.pb({cur, cnt});
     return res;
+}
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
+int ord(char c) { return (int)c; }
+char chr(int a) { return (char)a; }
+
+
+// 条件を満たす最小値を見つける二分探索(実数)
+template<typename F>
+ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
+
+    ld ok = mx;
+    ld ng = mn;
+    rep(_, 0, times) {
+        ld mid = (ok+ng) / 2;
+        if (func(mid)) {
+            // 下を探しに行く
+            ok = mid;
+        } else {
+            // 上を探しに行く
+            ng = mid;
+        }
+    }
+    return ok;
+}
+
+
+// 条件を満たす最大値を見つける二分探索(実数)
+template<typename F>
+ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
+
+    ld ok = mn;
+    ld ng = mx;
+    rep(_, 0, times) {
+        ld mid = (ok+ng) / 2;
+        if (func(mid)) {
+            // 上を探しに行く
+            ok = mid;
+        } else {
+            // 下を探しに行く
+            ng = mid;
+        }
+    }
+    return ok;
 }
 
 

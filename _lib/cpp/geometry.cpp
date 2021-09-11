@@ -5,6 +5,25 @@
 #include "_tpl.cpp"
 
 
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
 constexpr ld EPS = 1e-10;
 constexpr ld PI = M_PI;
 
@@ -23,16 +42,15 @@ struct Point {
     Point operator/(const Point &p) { return {x/p.x, y/p.y}; }
     Point operator*(T k) { return {x*k, y*k}; }
     Point operator/(T k) { return {x/k, y/k}; }
-    T norm(const Point &p) { return p.x*p.x + p.y*p.y; }
+    T norm() { return x*x + y*y; }
+    T abs() { return sqrt(norm()); }
     T abs(const Point &p) { return hypot(x-p.x, y-p.y); }
     T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
     void print() { cout << x << ' ' << y << '\n'; }
 };
 
-
 template<typename T> struct Segment { Point<T> p1, p2; };
 template<typename T> using Line = Segment<T>;
-
 
 template<typename T>
 struct Circle {
@@ -41,12 +59,23 @@ struct Circle {
     Circle(Point<T> c, ld r=0.0) : c(c), r(r) {}
 };
 
-
 // 内積
 template<typename T> T dot(const Point<T> a, const Point<T> b) { return a.x*b.x + a.y*b.y; }
 // 外積
 template<typename T> T cross(const Point<T> a, const Point<T> b) { return a.x*b.y - a.y*b.x; }
 
+// 線分segに対する点pの射影
+template<typename T> 
+Point<T> project(Segment<T> seg, Point<T> p) {
+    auto base = seg.p2 - seg.p1;
+    T r = dot(p-seg.p1, base) / base.norm();
+    return seg.p1 + base*r;
+}
+// 線分segを対称軸とした点pの線対称の点
+template<typename T>
+Point<T> reflect(Segment<T> seg, Point<T> p) {
+    return p + (project(seg, p) - p) * (T)2;
+}
 
 // 線分p0,p1から線分p0,p2への回転方向
 template<typename T>
@@ -60,7 +89,7 @@ ll ccw(Point<T> p0, Point<T> p1, Point<T> p2) {
     // 直線上(p2 => p0 => p1)
     if (dot(a, b) < -EPS) return 2;
     // 直線上(p0 => p1 => p2)
-    if (a.norm(a) < b.norm(b)) return -2;
+    if (a.norm() < b.norm()) return -2;
     // 直線上(p0 => p2 => p1)
     return 0;
 }

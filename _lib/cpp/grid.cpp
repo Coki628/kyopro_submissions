@@ -7,23 +7,14 @@
 
 // 4方向
 const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-
-// 8方向
-const vector<pii> directions8 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-
-
-ll gridtoid(ll i, ll j, ll W) {
-    return i*W+j;
-}
-
-pll idtogrid(ll id, ll W) {
-    return divmod(id, W);
-}
+// グリッド⇔列変換
+ll gridtoid(ll i, ll j, ll W) { return i*W+j; }
+pll idtogrid(ll id, ll W) { return divmod(id, W); }
 
 
 // グリッド転置
 template<typename T>
-void transpose(vector<vector<T>> &grid) {
+vector<vector<T>> transpose(const vector<vector<T>> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(W, H, (T)0);
@@ -32,9 +23,9 @@ void transpose(vector<vector<T>> &grid) {
             res[j][i] = grid[i][j];
         }
     }
-    swap(res, grid);
+    return res;
 }
-void transpose(vector<string> &grid) {
+vector<string> transpose(const vector<string> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     vector<string> res(W, string(H, '*'));
@@ -43,8 +34,46 @@ void transpose(vector<string> &grid) {
             res[j][i] = grid[i][j];
         }
     }
-    swap(res, grid);
+    return res;
 }
+
+
+// グリッドを時計回りに90度回転
+vector<string> rot90(const vector<string> &grid) {
+    int H = grid.size();
+    int W = grid[0].size();
+    vector<string> res(W, string(H, '*'));
+    rep(i, 0, H) {
+        rep(j, 0, W) {
+            res[j][H-i-1] = grid[i][j];
+        }
+    }
+    return res;
+}
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
+
+// 8方向
+const vector<pii> directions8 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 
 // グリッドBFS

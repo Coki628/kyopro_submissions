@@ -5,54 +5,6 @@
 #include "_tpl.cpp"
 
 
-// BFS
-vector<int> bfs(const vvi &nodes, const vector<int> &src) {
-
-    int N = nodes.size();
-    vector<int> res(N, -1);
-    queue<int> que;
-    for (int s : src) {
-        res[s] = 0;
-        que.push(s);
-    }
-
-    while (!que.empty()) {
-        int u = que.front(); que.pop();
-        for (auto v: nodes[u]) {
-            if (res[v] == -1) {
-                res[v] = res[u]+1;
-                que.push(v);
-            }
-        }
-    }
-    return res;
-}
-
-
-// ダイクストラ(テンプレートで小数コストも対応)
-template<typename T>
-vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
-
-    int N = nodes.size();
-    vector<T> res(N, INF);
-    priority_queue<pair<T, ll>, vector<pair<T, ll>>, greater<pair<T, ll>>> que;
-    res[src] = 0;
-    que.push({0, src});
-
-    while (!que.empty()) {
-        auto [dist, u] = que.top(); que.pop();
-        if (res[u] < dist) continue;
-        for (auto [v, cost] : nodes[u]) {
-            if (dist+cost < res[v]) {
-                res[v] = dist+cost;
-                que.push({dist+cost, v});
-            }
-        }
-    }
-    return res;
-}
-
-
 struct UnionFind {
 
     int n, groupcnt;
@@ -146,6 +98,93 @@ struct UnionFind {
         return res;
     }
 };
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
+// BFS
+vector<int> bfs(const vvi &nodes, const vector<int> &src) {
+
+    int N = nodes.size();
+    vector<int> res(N, -1);
+    queue<int> que;
+    for (int s : src) {
+        res[s] = 0;
+        que.push(s);
+    }
+
+    while (!que.empty()) {
+        int u = que.front(); que.pop();
+        for (auto v: nodes[u]) {
+            if (res[v] == -1) {
+                res[v] = res[u]+1;
+                que.push(v);
+            }
+        }
+    }
+    return res;
+}
+
+
+// ダイクストラ(テンプレートで小数コストも対応)
+template<typename T>
+vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
+
+    int N = nodes.size();
+    vector<T> res(N, INF);
+    priority_queue<pair<T, ll>, vector<pair<T, ll>>, greater<pair<T, ll>>> que;
+    res[src] = 0;
+    que.push({0, src});
+
+    while (!que.empty()) {
+        auto [dist, u] = que.top(); que.pop();
+        if (res[u] < dist) continue;
+        for (auto [v, cost] : nodes[u]) {
+            if (dist+cost < res[v]) {
+                res[v] = dist+cost;
+                que.push({dist+cost, v});
+            }
+        }
+    }
+    return res;
+}
+
+
+template<typename T>
+vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
+    ll N = G.size();
+    rep(i, 0, N) G[i][i] = 0;
+    rep(k, 0, N) {
+        rep(i, 0, N) {
+            rep(j, 0, N) {
+                chmin(G[i][j], G[i][k] + G[k][j]);
+            }
+        }
+    }
+    rep(i, 0, N) {
+        if (G[i][i] < 0) {
+            return {};
+        }
+    }
+    return G;
+}
 
 
 // HL分解
@@ -271,26 +310,6 @@ public:
         out[idx] = times;
     }
 };
-
-
-template<typename T>
-vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
-    ll N = G.size();
-    rep(i, 0, N) G[i][i] = 0;
-    rep(k, 0, N) {
-        rep(i, 0, N) {
-            rep(j, 0, N) {
-                chmin(G[i][j], G[i][k] + G[k][j]);
-            }
-        }
-    }
-    rep(i, 0, N) {
-        if (G[i][i] < 0) {
-            return {};
-        }
-    }
-    return G;
-}
 
 
 // 全方位木DP

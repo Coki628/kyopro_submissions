@@ -47,6 +47,25 @@ string bin(ll x) {
 }
 
 
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
 // 回文判定
 bool is_palindrome(const string &S) {
     ll N = S.size();

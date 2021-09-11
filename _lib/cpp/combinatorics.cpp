@@ -87,6 +87,140 @@ struct ModInt {
 using mint = ModInt<MOD>;
 
 
+// Mod数え上げnCr
+template<typename T=mint>
+struct ModTools {
+
+    int MAX;
+    vector<T> fact, factinv;
+
+    ModTools() {};
+
+    ModTools(int mx) {
+        build(mx);
+    }
+
+    void build(int mx) {
+        // nCrならn、nHrならn+rまで作る
+        MAX = ++mx;
+        fact.resize(MAX);
+        factinv.resize(MAX);
+        fact[0] = fact[1] = 1;
+        rep(i, 2, MAX) {
+            fact[i] = fact[i-1] * i;
+        }
+        factinv[MAX-1] = (T)1 / fact[MAX-1];
+        rep(i, MAX-2, -1, -1) {
+            factinv[i] = factinv[i+1] * (i+1);
+        }
+    }
+
+    T factorial(int x) {
+        return fact[x];
+    }
+
+    T inverse(int x) {
+        return factinv[x];
+    }
+
+    T nCr(int n, int r) {
+        if (n < r or r < 0) return 0;
+        r = min(r, n-r);
+        T num = fact[n];
+        T den = factinv[r] * factinv[n-r];
+        return num * den;
+    }
+
+    T nHr(int n, int r) {
+        return nCr(r+n-1, r);
+    }
+
+    T nPr(int n, int r) {
+        if (n < r or r < 0) return 0;
+        return fact[n] * factinv[n-r];
+    }
+};
+
+
+// 順列全列挙
+template<typename T>
+vector<vector<T>> permutations(const vector<T> &A, int N=-1) {
+
+    if (N == -1) N = A.size();
+    int M = A.size();
+    vector<vector<T>> comb;
+    rep(bit, 0, 1<<M) {
+        if (popcount(bit) != N) continue;
+        vector<T> res;
+        rep(i, 0, M) {
+            if (bit>>i & 1) {
+                res.pb(A[i]);
+            }
+        }
+        comb.pb(res);
+    }
+
+    vector<vector<T>> res;
+    for (auto &perm : comb) {
+        sort(ALL(perm));
+        do {
+            res.pb(perm);
+        } while (next_permutation(ALL(perm)));
+    }
+    return res;
+}
+
+
+// 組み合わせ全列挙
+template<typename T>
+vector<vector<T>> combinations(const vector<T> &A, int N) {
+    int M = A.size();
+    vector<vector<T>> res;
+    auto rec = [&](auto&& f, vector<T> &cur, ll x, ll n) -> void {
+        if (n == N) {
+            res.pb(cur);
+            return;
+        }
+        rep(i, x, M) {
+            cur.pb(A[i]);
+            f(f, cur, i+1, n+1);
+            cur.pop_back();
+        }
+    };
+    vector<T> cur;
+    rec(rec, cur, 0, 0);
+    return res;
+}
+
+
+// 階乗(modなし)
+template<typename T>
+T factorial(T x) {
+    T res = 1;
+    for (T i=1; i<=x; i++) res *= i;
+    return res;
+}
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
 // 参考：https://ei1333.github.io/library/math/combinatorics/arbitrary-mod-int.cpp
 // 任意ModInt
 struct ArbitraryModInt {
@@ -175,61 +309,6 @@ struct ArbitraryModInt {
     }
 };
 // using mint = ArbitraryModInt;
-
-
-// Mod数え上げnCr
-template<typename T=mint>
-struct ModTools {
-
-    int MAX;
-    vector<T> fact, factinv;
-
-    ModTools() {};
-
-    ModTools(int mx) {
-        build(mx);
-    }
-
-    void build(int mx) {
-        // nCrならn、nHrならn+rまで作る
-        MAX = ++mx;
-        fact.resize(MAX);
-        factinv.resize(MAX);
-        fact[0] = fact[1] = 1;
-        rep(i, 2, MAX) {
-            fact[i] = fact[i-1] * i;
-        }
-        factinv[MAX-1] = (T)1 / fact[MAX-1];
-        rep(i, MAX-2, -1, -1) {
-            factinv[i] = factinv[i+1] * (i+1);
-        }
-    }
-
-    T factorial(int x) {
-        return fact[x];
-    }
-
-    T inverse(int x) {
-        return factinv[x];
-    }
-
-    T nCr(int n, int r) {
-        if (n < r) return 0;
-        r = min(r, n-r);
-        T num = fact[n];
-        T den = factinv[r] * factinv[n-r];
-        return num * den;
-    }
-
-    T nHr(int n, int r) {
-        return nCr(r+n-1, r);
-    }
-
-    T nPr(int n, int r) {
-        if (n < r) return 0;
-        return fact[n] * factinv[n-r];
-    }
-};
 
 
 // 任意Mod数え上げnCr
@@ -339,57 +418,6 @@ struct AnyModTools {
 };
 
 
-// 順列全列挙
-template<typename T>
-vector<vector<T>> permutations(const vector<T> &A, int N=-1) {
-
-    if (N == -1) N = A.size();
-    int M = A.size();
-    vector<vector<T>> comb;
-    rep(bit, 0, 1<<M) {
-        if (popcount(bit) != N) continue;
-        vector<T> res;
-        rep(i, 0, M) {
-            if (bit>>i & 1) {
-                res.pb(A[i]);
-            }
-        }
-        comb.pb(res);
-    }
-
-    vector<vector<T>> res;
-    for (auto &perm : comb) {
-        sort(ALL(perm));
-        do {
-            res.pb(perm);
-        } while (next_permutation(ALL(perm)));
-    }
-    return res;
-}
-
-
-// 組み合わせ全列挙
-template<typename T>
-vector<vector<T>> combinations(const vector<T> &A, int N) {
-    int M = A.size();
-    vector<vector<T>> res;
-    auto rec = [&](auto&& f, vector<T> &cur, ll x, ll n) -> void {
-        if (n == N) {
-            res.pb(cur);
-            return;
-        }
-        rep(i, x, M) {
-            cur.pb(A[i]);
-            f(f, cur, i+1, n+1);
-            cur.pop_back();
-        }
-    };
-    vector<T> cur;
-    rec(rec, cur, 0, 0);
-    return res;
-}
-
-
 // 重複組み合わせ全列挙
 template<typename T>
 vector<vector<T>> combinations_with_replacement(const vector<T> &A, int N) {
@@ -408,15 +436,6 @@ vector<vector<T>> combinations_with_replacement(const vector<T> &A, int N) {
     };
     vector<T> cur;
     rec(rec, cur, 0, 0);
-    return res;
-}
-
-
-// 階乗(modなし)
-template<typename T>
-T factorial(T x) {
-    T res = 1;
-    for (T i=1; i<=x; i++) res *= i;
     return res;
 }
 

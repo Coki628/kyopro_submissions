@@ -9,33 +9,6 @@ ll gcd(ll a, ll b) { return __gcd(a, b); }
 ll lcm(ll x, ll y) { return (x * y) / gcd(x, y); }
 
 
-// 素数判定：O(√num)
-bool is_prime(ll num) {
-
-    if (num < 2) {
-        return false;
-    }
-    if (set<ll>({2, 3, 5}).count(num)) {
-        return true;
-    }
-    if (num%2 == 0 or num%3 == 0 or num%5 == 0) {
-        return false;
-    }
-    // 疑似素数(2でも3でも割り切れない数字)で次々に割っていく
-    ll prime = 7;
-    ll step = 4;
-    ll num_sqrt = sqrt(num);
-    while (prime <= num_sqrt) {
-        if (num%prime == 0) {
-            return false;
-        }
-        prime += step;
-        step = 6-step;
-    }
-    return true;
-}
-
-
 // 素因数分解(vectorベース)
 template<typename T>
 vector<pair<T, int>> factorize(T n) {
@@ -149,18 +122,6 @@ ll digit_sum(string S) {
 }
 
 
-// 等差数列の和：(初項l, 末項r, 項数n)
-template<typename T> 
-T arithmetic_sequence_sum(T l, T r, T n) {
-    return (l+r)*n/2;
-}
-// 等差数列の和：(初項a, 公差d, 項数n)
-template<typename T> 
-T arithmetic_sequence_sum(T a, T d, T n) {
-    return (a*2+(n-1)*d)*n/2;
-}
-
-
 // エラトステネスの篩
 struct Eratosthenes {
 
@@ -262,7 +223,67 @@ struct Eratosthenes {
 };
 
 
-// 素数列挙(エラトステネスの篩)
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
+
+// 等差数列の和：(初項l, 末項r, 項数n)
+template<typename T> 
+T arithmetic_sequence_sum(T l, T r, T n) {
+    return (l+r)*n/2;
+}
+// 等差数列の和：(初項a, 公差d, 項数n)
+template<typename T> 
+T arithmetic_sequence_sum(T a, T d, T n) {
+    return (a*2+(n-1)*d)*n/2;
+}
+
+
+// 素数判定：O(√num)
+bool is_prime(ll num) {
+
+    if (num < 2) {
+        return false;
+    }
+    if (set<ll>({2, 3, 5}).count(num)) {
+        return true;
+    }
+    if (num%2 == 0 or num%3 == 0 or num%5 == 0) {
+        return false;
+    }
+    // 疑似素数(2でも3でも割り切れない数字)で次々に割っていく
+    ll prime = 7;
+    ll step = 4;
+    ll num_sqrt = sqrt(num);
+    while (prime <= num_sqrt) {
+        if (num%prime == 0) {
+            return false;
+        }
+        prime += step;
+        step = 6-step;
+    }
+    return true;
+}
+
+
+// 素数列挙(エラトステネスの篩)(旧)
 vector<ll> eratosthenes_sieve(ll n) {
 
     vector<bool> table(n+1);
@@ -279,7 +300,7 @@ vector<ll> eratosthenes_sieve(ll n) {
 }
 
 
-// 素因数分解(mapベース)
+// 素因数分解(mapベース)(旧)
 map<ll, ll> factorize(ll x) {
 
     map<ll, ll> res;
