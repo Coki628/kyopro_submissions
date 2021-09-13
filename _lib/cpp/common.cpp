@@ -221,6 +221,53 @@ vector<pair<char, int>> RLE(const string &S) {
 
 
 
+vector<string> split(const string &S, char separator) {
+    int N = S.size();
+    vector<string> res;
+    string cur;
+    rep(i, N) {
+        if (S[i] == separator) {
+            res.eb(cur);
+            cur = "";
+        } else {
+            cur += S[i];
+        }
+    }
+    if (cur.size()) res.eb(cur);
+    return res;
+}
+
+
+string to_string(const string &S) { return S; }
+template<typename T>
+string join(const vector<T> &A, char separator=0) {
+    int N = A.size();
+    string res;
+    rep(i, N) {
+        res += tostr(A[i]);
+        if (separator != 0 and i != N-1) res += separator;
+    }
+    return res;
+}
+
+
+template<typename T, typename F>
+vector<T> mapping(const vector<string> &A, const F &f) {
+    int N = A.size();
+    vector<T> res(N);
+    rep(i, N) res[i] = f(A[i]);
+    return res;
+}
+
+
+template<typename T>
+vector<T> sorted(vector<T> A, bool reverse=false) {
+    sort(ALL(A));
+    if (reverse) std::reverse(ALL(A));
+    return A;
+}
+
+
 int ord(char c) { return (int)c; }
 char chr(int a) { return (char)a; }
 

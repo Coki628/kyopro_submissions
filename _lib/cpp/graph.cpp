@@ -143,7 +143,67 @@ vector<int> bfs(const vvi &nodes, const vector<int> &src) {
 }
 
 
-// ダイクストラ(テンプレートで小数コストも対応)
+// ダイクストラ
+template<typename T, typename E, typename F>
+struct Dijkstra {
+
+    int N;
+    const T inf;
+    vector<vector<pair<int, E>>> nodes;
+    const F f;
+    vector<int> prv;
+
+    Dijkstra(const vector<vector<pair<int, E>>> &nodes, T inf, F f) :
+        nodes(nodes),
+        inf(inf),
+        f(f),
+        N(nodes.size()) {}
+
+    vector<T> solve(const vector<int> &src, T init=T(), bool restore=false) {
+        vector<T> res(N, inf);
+        if (restore) prv.assign(N, -1);
+        priority_queue<pair<T, int>, vector<pair<T, int>>, greater<pair<T, int>>> que;
+        for (int s : src) {
+            res[s] = init;
+            que.push({init, s});
+        }
+        while (que.size()) {
+            auto [dist, u] = que.top(); que.pop();
+            if (res[u] < dist) continue;
+            for (auto [v, cost] : nodes[u]) {
+                T nxtdist = f(dist, cost);
+                if (nxtdist < res[v]) {
+                    res[v] = nxtdist;
+                    if (restore) prv[v] = u;
+                    que.push({nxtdist, v});
+                }
+            }
+        }
+        return res;
+    }
+
+    // s からの最短経路
+    vector<T> solve(int s, T init=T(), bool restore=false) {
+        return solve(vector<int>({s}), init, restore);
+    }
+
+    // s -> t 間の経路を取得
+    vector<int> get_route(int s, int t) {
+        vector<int> res = {t};
+        while (t != s) {
+            t = prv[t];
+            if (t == -1) {
+                return vector<int>();
+            }
+            res.eb(t);
+        }
+        reverse(ALL(res));
+        return res;
+    }
+};
+
+
+// ダイクストラ
 template<typename T>
 vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
 
@@ -285,7 +345,7 @@ public:
 
     explicit HeavyLightDecomposition(vvi &g) : g(g) {}
 
-    private:
+private:
     void dfs_sz(int idx, int p, int d) {
         dep[idx] = d;
         par[idx] = p;
