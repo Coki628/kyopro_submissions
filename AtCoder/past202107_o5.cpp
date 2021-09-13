@@ -1,14 +1,5 @@
 /*
-参考：https://blog.hamayanhamayan.com/entry/2021/07/24/203806
-・Beatsで殴ってしまったので、正攻法もやっておく。
-・貰うDP、集合2つで効率よく管理
-・遷移してこれる条件であるBの累積maxは単調性があるので、
-　候補をsetなどで持っておいて、条件を満たさない所まで消す、といったことができる。
-　この時に条件に使う「その時点で持てる所持金最大値」と、
-　実際に遷移させる値としての「その時点でのコスト最小値」は別物だが、
-　それぞれについて別のsetなどで持って順序逆に持たせることで、どちらも正しく管理できる。
-・公式解もはまやんさんもmultisetと言っていたが、
-　特に同じものを2つ持つ意味はないはずなので、setで問題なくACできた。
+・ライブラリ整備：my_priority_queue
 */
 
 // #pragma GCC target("avx2")
@@ -149,6 +140,27 @@ template<int mod> struct ModInt {
 };
 using mint = ModInt<MOD>;
 
+template<typename _Tp, typename _Sequence=vector<_Tp>, typename _Compare=less<typename _Sequence::value_type>>
+struct my_priority_queue : public priority_queue<_Tp, _Sequence, _Compare> {
+    _Tp pop() {
+        auto res = this->top();
+        priority_queue<_Tp, _Sequence, _Compare>::pop();
+        return res;
+    }
+};
+
+template<typename key>
+struct my_set : public set<key> {
+    key front() {
+        return *this->begin();
+    }
+    key pop_front() {
+        auto res = front();
+        this->erase(this->begin());
+        return res;
+    }
+};
+
 void solve() {
     ll N;
     cin >> N;
@@ -166,23 +178,24 @@ void solve() {
 
     vector<ll> dp(N+1, INF);
     dp[0] = 0;
-    set<pll> se1, se2;
+    my_priority_queue<pll, vector<pll>, greater<pll>> pq;
+    my_set<pll> se;
     // {その時点で持てる所持金最大値, その時点でのコスト最小値}
-    se1.insert({acc[0], 0});
-    se1.insert({INF, INF});
+    pq.push({acc[0], 0});
+    pq.push({INF, INF});
     // {その時点でのコスト最小値, その時点で持てる所持金最大値}
-    se2.insert({0, acc[0]});    
-    se2.insert({INF, INF});
+    se.insert({0, acc[0]});    
+    se.insert({INF, INF});
     rep(i, 1, N+1) {
-        // iに遷移してこれないものをsetから除く
-        while (se1.begin()->first < accmx[i]) {
-            auto [a, b] = *se1.begin(); se1.erase(se1.begin());
-            se2.erase({b, a});
+        // iに遷移してこれないものをpriqueとsetから除く
+        while (pq.top().first < accmx[i]) {
+            auto [a, b] = pq.pop();
+            se.erase({b, a});
         }
-        dp[i] = se2.begin()->first+accmx[i];
-        // 現在の状態を遷移の候補としてsetに加える
-        se1.insert({acc[i]-dp[i], dp[i]});
-        se2.insert({dp[i], acc[i]-dp[i]});
+        dp[i] = se.front().first+accmx[i];
+        // 現在の状態を遷移の候補としてpriqueとsetに加える
+        pq.push({acc[i]-dp[i], dp[i]});
+        se.insert({dp[i], acc[i]-dp[i]});
     }
     ll ans = sum(A)-dp[N];
     if (ans >= 0) {

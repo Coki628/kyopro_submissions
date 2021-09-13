@@ -1,14 +1,5 @@
 /*
-参考：https://blog.hamayanhamayan.com/entry/2021/07/24/203806
-・Beatsで殴ってしまったので、正攻法もやっておく。
-・貰うDP、集合2つで効率よく管理
-・遷移してこれる条件であるBの累積maxは単調性があるので、
-　候補をsetなどで持っておいて、条件を満たさない所まで消す、といったことができる。
-　この時に条件に使う「その時点で持てる所持金最大値」と、
-　実際に遷移させる値としての「その時点でのコスト最小値」は別物だが、
-　それぞれについて別のsetなどで持って順序逆に持たせることで、どちらも正しく管理できる。
-・公式解もはまやんさんもmultisetと言っていたが、
-　特に同じものを2つ持つ意味はないはずなので、setで問題なくACできた。
+・ライブラリ整備：my_set
 */
 
 // #pragma GCC target("avx2")
@@ -149,6 +140,18 @@ template<int mod> struct ModInt {
 };
 using mint = ModInt<MOD>;
 
+template<typename key>
+struct my_set : public set<key> {
+    key front() {
+        return *this->begin();
+    }
+    key pop_front() {
+        auto res = front();
+        this->erase(this->begin());
+        return res;
+    }
+};
+
 void solve() {
     ll N;
     cin >> N;
@@ -166,7 +169,7 @@ void solve() {
 
     vector<ll> dp(N+1, INF);
     dp[0] = 0;
-    set<pll> se1, se2;
+    my_set<pll> se1, se2;
     // {その時点で持てる所持金最大値, その時点でのコスト最小値}
     se1.insert({acc[0], 0});
     se1.insert({INF, INF});
@@ -175,11 +178,11 @@ void solve() {
     se2.insert({INF, INF});
     rep(i, 1, N+1) {
         // iに遷移してこれないものをsetから除く
-        while (se1.begin()->first < accmx[i]) {
-            auto [a, b] = *se1.begin(); se1.erase(se1.begin());
+        while (se1.front().first < accmx[i]) {
+            auto [a, b] = se1.pop_front();
             se2.erase({b, a});
         }
-        dp[i] = se2.begin()->first+accmx[i];
+        dp[i] = se2.front().first+accmx[i];
         // 現在の状態を遷移の候補としてsetに加える
         se1.insert({acc[i]-dp[i], dp[i]});
         se2.insert({dp[i], acc[i]-dp[i]});
