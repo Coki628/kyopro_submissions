@@ -353,7 +353,7 @@ pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
 
 // 三分探索(整数)
 template<typename F>
-pll trisearch_min(ll lo, ll hi, const F &func, ll offset=0) {
+pll trisearch_min(ll lo, ll hi, const F &func, ll offset=1) {
     
     ll m1 = lo, l = lo;
     ll m2 = hi, r = hi;
@@ -381,9 +381,9 @@ pll trisearch_min(ll lo, ll hi, const F &func, ll offset=0) {
 }
 
 
-// 三分探索(整数)(未verify)
+// 三分探索(整数)
 template<typename F>
-pll trisearch_max(ll lo, ll hi, const F &func, ll offset=0) {
+pll trisearch_max(ll lo, ll hi, const F &func, ll offset=1) {
     
     ll m1 = lo, l = lo;
     ll m2 = hi, r = hi;

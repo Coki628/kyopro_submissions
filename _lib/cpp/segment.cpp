@@ -140,6 +140,14 @@ struct BIT {
         return query(i, i+1);
     }
 
+    void print(int n) {
+        rep(i, n) {
+            cout << query(i, i+1);
+            if (i == n-1) cout << endl;
+            else cout << ' ';
+        }
+    }
+
     // 区間[l, r]を左から右に向かってx番目の値がある位置
     ll bisearch_fore(int l, int r, ll x) {
         if (l > r) return -1;
@@ -322,6 +330,26 @@ SegmentTree<Monoid, F> get_segment_tree(const F& f, const Monoid& M1) {
 }
 
 
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
 // 遅延評価セグメント木(うしさん版)
 template<typename F, typename G, typename H, typename Monoid, typename OperatorMonoid>
 struct LazySegmentTree {
@@ -484,33 +512,14 @@ struct LazySegmentTree {
 };
 
 template<typename F, typename G, typename H, typename T, typename E>
-LazySegmentTree<F, G, H, T, E> get_Lazy_segment_tree(const F& f, const G& g, const H& h, const T& ti, const E& ei) {
+LazySegmentTree<F, G, H, T, E> get_lazy_segment_tree(const F& f, const G& g, const H& h, const T& ti, const E& ei) {
     return {f, g, h, ti, ei};
 }
 
 template<typename F, typename G, typename H, typename T, typename E>
-LazySegmentTree<F, G, H, T, E> get_Lazy_segment_tree(int N, const F& f, const G& g, const H& h, const T& ti, const E& ei) {
+LazySegmentTree<F, G, H, T, E> get_lazy_segment_tree(int N, const F& f, const G& g, const H& h, const T& ti, const E& ei) {
     return {N, f, g, h, ti, ei};
 }
-
-
-
-
-
-
-
-
-
-
-////////// end template included here //////////
-
-
-
-
-
-
-
-
 
 
 // 区間加算BIT(区間加算・区間和取得)
@@ -581,6 +590,14 @@ struct BIT2 {
 
     T operator[](int i) {
         return query(i, i+1);
+    }
+
+    void print(int n) {
+        rep(i, n) {
+            cout << query(i, i+1);
+            if (i == n-1) cout << endl;
+            else cout << ' ';
+        }
     }
 
     // 区間[l, r]を左から右に向かってx番目の値がある位置

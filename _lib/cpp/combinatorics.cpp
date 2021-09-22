@@ -521,7 +521,7 @@ ll partition(int N, int K) {
 // 参考：https://ferin-tech.hatenablog.com/entry/2019/08/11/%E3%83%A9%E3%82%B0%E3%83%A9%E3%83%B3%E3%82%B8%E3%83%A5%E8%A3%9C%E9%96%93
 // 　　　https://ei1333.github.io/library/math/combinatorics/lagrange-polynomial.cpp
 // 使い方
-// ・引数：x=0,1,2...の時のyを格納したリストと、求めたいf(t)のt
+// ・引数：x=0,1,2...の時のyを格納したリスト(N次式なら長さN+1)と、求めたいf(t)のt
 // ・戻り値：f(t)の時の値
 // ・計算量：O(Nlog(mod)) ※階乗逆元をちゃんと前計算してればO(N)っぽい。
 // ラグランジュ補間：値を求める

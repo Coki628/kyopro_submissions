@@ -40,6 +40,13 @@ struct Point {
     Point operator-(const Point &p) { return {x-p.x, y-p.y}; }
     Point operator*(const Point &p) { return {x*p.x, y*p.y}; }
     Point operator/(const Point &p) { return {x/p.x, y/p.y}; }
+    Point &operator+=(const Point &p) { x += p.x, y += p.y; return *this; }
+    Point &operator-=(const Point &p) { x -= p.x, y -= p.y; return *this; }
+    Point &operator*=(const Point &p) { x *= p.x, y *= p.y; return *this; }
+    Point &operator/=(const Point &p) { x /= p.x, y /= p.y; return *this; }
+    bool operator<(const Point &p) { return mkp(x, y) < mkp(p.x, p.y); }
+    bool operator==(const Point &p) { return std::abs(x-p.x) < EPS and std::abs(y-p.y) < EPS; }
+    bool operator!=(const Point &p) { return std::abs(x-p.x) >= EPS or std::abs(y-p.y) >= EPS; }
     Point operator*(T k) { return {x*k, y*k}; }
     Point operator/(T k) { return {x/k, y/k}; }
     T norm() { return x*x + y*y; }
@@ -104,7 +111,7 @@ Point<T> rotate(Point<T> c, Point<T> p, ld dig) {
 }
 
 
-// ∠abcについて、反時計回り側の角度を取得
+// 座標bを軸にして反時計回りに座標aから座標cに向かう角度を取得
 template<typename T>
 ld get_degree(Point<T> a, Point<T> b, Point<T> c) {
     // bから見たa,cへ向かうベクトル

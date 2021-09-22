@@ -34,7 +34,7 @@ struct Doubling {
     const int MXLOG;
     const F f;
 
-    Doubling(int MXLOG, const vector<T> &A, T init, const F f) : MXLOG(MXLOG), f(f) {
+    Doubling(int MXLOG, const vector<T> &A, T init, const F &f) : MXLOG(MXLOG), f(f) {
         N = A.size();
         dat = list2d(MXLOG, N, init);
         rep(i, N) {
@@ -47,12 +47,24 @@ struct Doubling {
         }
     }
 
+    Doubling(const vector<vector<T>> &A, const F &f) : MXLOG(A.size()), dat(A), f(f) {}
+
     // stから始めてK個先を返す
     T get(T st, ll K) {
         T res = st;
         rep(k, MXLOG-1, -1, -1) {
             if (K>>k & 1) {
                 res = f(res, dat[k][res]);
+            }
+        }
+        return res;
+    }
+
+    vector<T> get(const vector<T> &st, ll K) {
+        vector<T> res = st;
+        rep(k, MXLOG-1, -1, -1) {
+            if (K>>k & 1) {
+                res = f(res, dat[k], k);
             }
         }
         return res;
@@ -79,8 +91,13 @@ struct Doubling {
 };
 
 template<typename T, typename F>
-Doubling<T, F> get_doubling(int MXLOG, const vector<T> &A, T init, const F f) {
+Doubling<T, F> get_doubling(int MXLOG, const vector<T> &A, T init, const F &f) {
     return {MXLOG, A, init, f};
+}
+
+template<typename T, typename F>
+Doubling<T, F> get_doubling(const vector<vector<T>> &A, const F &f) {
+    return {A, f};
 }
 
 
@@ -101,3 +118,51 @@ vvl doubling(int MXLOG, const vector<ll> &A) {
     }
     return nxt;
 }
+
+
+// 参考：https://outline.hatenadiary.jp/entry/2020/07/02/205628
+// きたまさ法
+template<typename T>
+struct Kitamasa {
+    vector<T> a;    // 初期値ベクトル
+    vector<T> d;    // 係数ベクトル
+    int k;
+    
+    Kitamasa(vector<T>& a, vector<T>& d) : a(a), d(d), k((int)a.size()) {}
+    
+    // a_n の係数ベクトルを求める
+    vector<T> dfs(int64_t n) {
+        if (n == k)  return d;
+        
+        vector<T> res(k);
+        if (n & 1 || n < k * 2) {
+            vector<T> x = dfs(n - 1);
+            for (int i = 0; i < k; ++i)  res[i] = d[i] * x[k - 1];
+            for (int i = 0; i + 1 < k; ++i)  res[i + 1] += x[i];
+        }
+        else {
+            vector<vector<T>> x(k, vector<T>(k));
+            x[0] = dfs(n >> 1);
+            for (int i = 0; i + 1 < k; ++i) {
+                for (int j = 0; j < k; ++j)  x[i + 1][j] = d[j] * x[i][k - 1];
+                for (int j = 0; j + 1 < k; ++j)  x[i + 1][j + 1] += x[i][j];
+            }
+            for (int i = 0; i < k; ++i){
+                for (int j = 0; j < k; ++j) {
+                    res[j] += x[0][i] * x[i][j];
+                }
+            }
+        }
+
+        return res;
+    }
+
+    // a_n を求める
+    T calc(int64_t n) {
+        if (n < k) return a[n];
+        vector<T> x = dfs(n);
+        T res = 0;
+        for (int i = 0; i < k; ++i)  res += x[i] * a[i];
+        return res;
+    }
+};

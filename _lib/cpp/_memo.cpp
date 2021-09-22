@@ -137,5 +137,15 @@ int main() {
     // これのが楽だね
     se.begin()->first;
 
+    // vectorのfind
+    // find(ALL(A), x);
+
+    // string <-> vector<char> 変換
+    // string S = "1231223";
+    // vector<char> A(ALL(S));
+    // string T(ALL(A));
+
+    // pushとかinsertの代わりにemplaceって使えるみたい
+
     return 0;
 }
