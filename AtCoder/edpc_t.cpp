@@ -2,7 +2,7 @@
 参考：https://blog.hamayanhamayan.com/entry/2019/01/12/150046
 　　　https://ikatakos.com/pot/programming_algorithm/contest_history/atcoder/2019/0106_educational_dp_3
 ・自力ならず。まあこの辺はどれもムズイ。
-・順列DP系、挿入DP？、累積和で遷移高速化
+・挿入DP系、累積和で遷移高速化
 ・普通に考えると、それまでに選んだ要素の集合が状態に欲しくて無理になる。
 　ここで、順列特有の性質をうまく使って状態を持たせる。
 　dp[i][j] := i番目まで決めて、直前の値より小さいものがj個ある場合の通り数
