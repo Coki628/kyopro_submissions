@@ -204,7 +204,7 @@ auto g = [](Node a, Func b) -> Node {
 };
 auto h = [](Func a, Func b) -> Func {
     if (b.update) {
-        a.update = 1;
+        a.update = true;
         a.add = 0;
         a.assign = b.add+b.assign;
     } else {
@@ -233,7 +233,7 @@ auto g = [](ll a, Func b) -> ll {
 };
 auto h = [](Func a, Func b) -> Func {
     if (b.update) {
-        a.update = 1;
+        a.update = true;
         a.add = 0;
         a.assign = b.add+b.assign; 
     } else {
@@ -263,7 +263,7 @@ auto g = [](mint a, Func b) -> mint {
 };
 auto h = [](Func a, Func b) -> Func {
     if (b.update) {
-        a.update = 1;
+        a.update = true;
         a.mul = 1;
         a.assign = b.mul*b.assign;
     } else {
@@ -374,3 +374,66 @@ auto h = [](Node a, Node b) -> Node { return b; };
 const Node T = {-INF, -1};
 // 要素が取りうる範囲外の値にする
 const Node E = {INF, -1};
+
+// 区間最小値取得・区間等差数列更新
+// 参考：ABC177f
+// 使い方：更新時に左端の分を引く
+struct Node {
+    ll val, left;
+    operator ll() const { return val; }
+};
+auto f = [](Node a, Node b) -> Node { return { min(a.val, b.val), min(a.left, b.left) }; };
+auto g = [](Node a, ll b) -> Node { return { b+a.left, a.left }; };
+auto h = [](ll a, ll b) -> ll { return b; };
+const Node T = {INF, INF};
+const ll E = INF;
+
+// 区間最小値取得・区間等差数列加算
+// 参考：aoj3165_hupc2020
+// 使い方：作用素に {その位置を更新した回数cnt, 差し引きしたい量sub} を持たせる。
+struct Node {
+    ll val, left;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll cnt, sub;
+    bool operator==(const Func &f) const {
+        return cnt == f.cnt and sub == f.sub;
+    }
+};
+auto f = [](const Node &a, const Node &b) -> Node { 
+    return { min(a.val, b.val), min(a.left, b.left) };
+};
+auto g = [](const Node &a, const Func &b) -> Node {
+    return { a.val+b.cnt*a.left+b.sub, a.left }; 
+};
+auto h = [](const Func &a, const Func &b) -> Func {
+    return { a.cnt+b.cnt, a.sub+b.sub };
+};
+const Node T = {INF, INF};
+const Func E = {0, 0};
+
+// 区間和取得・区間等差数列加算
+// 参考：aoj3165_hupc2020
+// ・軽くしか試してないけどこれも多分大丈夫そう。
+struct Node {
+    ll val, left;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll cnt, sub;
+    bool operator==(const Func &f) const {
+        return cnt == f.cnt and sub == f.sub;
+    }
+};
+auto f = [](const Node &a, const Node &b) -> Node { 
+    return { a.val+b.val, min(a.left, b.left) };
+};
+auto g = [](const Node &a, const Func &b) -> Node {
+    return { a.val+b.cnt*a.left+b.sub, a.left }; 
+};
+auto h = [](const Func &a, const Func &b) -> Func {
+    return { a.cnt+b.cnt, a.sub+b.sub };
+};
+const Node T = {0, INF};
+const Func E = {0, 0};
