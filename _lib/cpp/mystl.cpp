@@ -98,17 +98,6 @@ struct my_queue : public queue<_Tp, _Sequence> {
 #define queue my_queue
 
 
-template<typename _Tp, typename _Sequence=deque<_Tp>>
-struct my_stack : public stack<_Tp, _Sequence> {
-    _Tp pop() {
-        auto res = this->top();
-        stack<_Tp, _Sequence>::pop();
-        return res;
-    }
-};
-#define stack my_stack
-
-
 template<typename _Tp, typename _Alloc=std::allocator<_Tp>>
 struct my_deque : public deque<_Tp, _Alloc> {
     _Tp pop_front() {
@@ -123,6 +112,38 @@ struct my_deque : public deque<_Tp, _Alloc> {
     }
 };
 #define deque my_deque
+
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
+
+
+
+template<typename _Tp, typename _Sequence=deque<_Tp>>
+struct my_stack : public stack<_Tp, _Sequence> {
+    _Tp pop() {
+        auto res = this->top();
+        stack<_Tp, _Sequence>::pop();
+        return res;
+    }
+};
+#define stack my_stack
 
 
 // ※なんかコンストラクタが言うこと聞かないので微妙。。

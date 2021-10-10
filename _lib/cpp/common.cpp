@@ -202,6 +202,45 @@ vector<pair<char, int>> RLE(const string &S) {
 }
 
 
+// 参考：https://rsk0315.hatenablog.com/entry/2021/02/23/163040
+// 乗算のオーバーフロー検知
+bool mul_overflow(ll x, ll y) {
+    ll z;
+    return __builtin_mul_overflow(x, y, &z);
+}
+
+
+vector<ll> split(const string &S, char separator) {
+    int N = S.size();
+    vector<ll> res;
+    string cur;
+    rep(i, N) {
+        if (S[i] == separator) {
+            res.eb(toint(cur));
+            cur = "";
+        } else {
+            cur += S[i];
+        }
+    }
+    if (cur.size()) res.eb(toint(cur));
+    return res;
+}
+
+
+string to_string(const string &S) { return S; }
+string to_string(char c) { return {c}; }
+template<typename T>
+string join(const vector<T> &A, char separator=0) {
+    int N = A.size();
+    string res;
+    rep(i, N) {
+        res += tostr(A[i]);
+        if (separator != 0 and i != N-1) res += separator;
+    }
+    return res;
+}
+
+
 
 
 
@@ -238,19 +277,6 @@ vector<string> split(const string &S, char separator) {
 }
 
 
-string to_string(const string &S) { return S; }
-template<typename T>
-string join(const vector<T> &A, char separator=0) {
-    int N = A.size();
-    string res;
-    rep(i, N) {
-        res += tostr(A[i]);
-        if (separator != 0 and i != N-1) res += separator;
-    }
-    return res;
-}
-
-
 template<typename T, typename F>
 vector<T> mapping(const vector<string> &A, const F &f) {
     int N = A.size();
@@ -278,7 +304,7 @@ ld bisearch_min(ld mn, ld mx, const F &func, ll times) {
 
     ld ok = mx;
     ld ng = mn;
-    rep(_, 0, times) {
+    rep(_, times) {
         ld mid = (ok+ng) / 2;
         if (func(mid)) {
             // 下を探しに行く
@@ -298,7 +324,7 @@ ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
 
     ld ok = mn;
     ld ng = mx;
-    rep(_, 0, times) {
+    rep(_, times) {
         ld mid = (ok+ng) / 2;
         if (func(mid)) {
             // 上を探しに行く
@@ -320,21 +346,13 @@ ll randrange(ll l, ll r) {
 }
 
 
-// 参考：https://rsk0315.hatenablog.com/entry/2021/02/23/163040
-// 乗算のオーバーフロー検知
-bool mul_overflow(ll x, ll y) {
-    ll z;
-    return __builtin_mul_overflow(x, y, &z);
-}
-
-
 // 三分探索(実数)
 template<typename F>
 pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
 
     ld m1 = lo;
     ld m2 = hi;
-    rep(_, 0, times) {
+    rep(_, times) {
         m1 = (lo*2+hi) / 3;
         m2 = (lo+hi*2) / 3;
         ld res1 = func(m1);
@@ -417,14 +435,14 @@ pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
     map<T, int> zipped;
     sort(unzipped.begin(), unzipped.end());
     unzipped.erase(unique(unzipped.begin(), unzipped.end()), unzipped.end());
-    rep(i, 0, unzipped.size()) {
+    rep(i, unzipped.size()) {
         zipped[unzipped[i]] = i;
     }
     return {zipped, unzipped};
 }
 
 
-// なんかこれ速いhashmapらしい
+// 速いhashmap
 #include <ext/pb_ds/assoc_container.hpp>
 using namespace __gnu_pbds;
 struct custom_hash {

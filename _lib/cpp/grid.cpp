@@ -18,8 +18,8 @@ vector<vector<T>> transpose(const vector<vector<T>> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     auto res = list2d(W, H, (T)0);
-    rep(i, 0, H) {
-        rep(j, 0, W) {
+    rep(i, H) {
+        rep(j, W) {
             res[j][i] = grid[i][j];
         }
     }
@@ -29,8 +29,8 @@ vector<string> transpose(const vector<string> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     vector<string> res(W, string(H, '*'));
-    rep(i, 0, H) {
-        rep(j, 0, W) {
+    rep(i, H) {
+        rep(j, W) {
             res[j][i] = grid[i][j];
         }
     }
@@ -43,8 +43,8 @@ vector<string> rot90(const vector<string> &grid) {
     int H = grid.size();
     int W = grid[0].size();
     vector<string> res(W, string(H, '*'));
-    rep(i, 0, H) {
-        rep(j, 0, W) {
+    rep(i, H) {
+        rep(j, W) {
             res[j][H-i-1] = grid[i][j];
         }
     }
@@ -120,7 +120,7 @@ vvl bfs(const vector<string> &grid, const vector<pii> &src, char invalid='#') {
 vector<string> build_grid(int H, int W, char intv, int offset=1) {
 
     vector<string> res(H+offset*2);
-    rep(h, 0, offset) res[h] = string(W+offset*2, intv);
+    rep(h, offset) res[h] = string(W+offset*2, intv);
     rep(h, offset, H+offset) {
         string s;
         cin >> s;

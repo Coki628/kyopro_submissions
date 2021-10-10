@@ -149,10 +149,10 @@ vector<vector<T>> permutations(const vector<T> &A, int N=-1) {
     if (N == -1) N = A.size();
     int M = A.size();
     vector<vector<T>> comb;
-    rep(bit, 0, 1<<M) {
+    rep(bit, 1<<M) {
         if (popcount(bit) != N) continue;
         vector<T> res;
-        rep(i, 0, M) {
+        rep(i, M) {
             if (bit>>i & 1) {
                 res.pb(A[i]);
             }
@@ -484,7 +484,7 @@ mint bell(int N, int K) {
 
     // 前計算しておく
     vector<mint> prev(K+1);
-    rep(i, 0, K+1) {
+    rep(i, K+1) {
         prev[i] = (mint)1/mt.fact[i];
     }
     // 累積和
@@ -493,7 +493,7 @@ mint bell(int N, int K) {
     }
 
     mint ans = 0;
-    rep(i, 0, K+1) {
+    rep(i, K+1) {
         ans += (mint)pow(i, N, MOD)/mt.fact[i]*prev[K-i];
     }
     return ans;
@@ -506,7 +506,7 @@ ll partition(int N, int K) {
     auto dp = list2d(K+1, N+1, 0LL);
     dp[0][0] = 1;
     rep(i, 1, K+1) {
-        rep(j, 0, N+1) {
+        rep(j, N+1) {
             dp[i][j] += dp[i-1][j];
             if (j - i >= 0) {
                 dp[i][j] += dp[i][j-i];

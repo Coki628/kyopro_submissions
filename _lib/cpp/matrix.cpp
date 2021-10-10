@@ -16,10 +16,10 @@ struct MatPow {
         int n2 = A[0].size();
         int m2 = B[0].size();
         auto res = list2d(n1, m2, (T)0);
-        rep(i, 0, n1) {
-            rep(k, 0, n2) {
+        rep(i, n1) {
+            rep(k, n2) {
                 if (A[i][k] == 0) continue;
-                rep(j, 0, m2) {
+                rep(j, m2) {
                     res[i][j] += A[i][k]*B[k][j];
                 }
             }
@@ -30,7 +30,7 @@ struct MatPow {
     vector<vector<T>> mat_pow(vector<vector<T>> mat, ll k) {
         int n = mat.size();
         auto res = list2d(n, n, (T)0);
-        rep(i, 0, n) {
+        rep(i, n) {
             res[i][i] = 1;
         }
         while (k > 0) {
@@ -46,11 +46,11 @@ struct MatPow {
     vector<T> solve(vector<vector<T>> mat, const vector<T> &_init, ll K) {
         int n = mat.size();
         auto init = list2d(n, 1, (T)0);
-        rep(i, 0, n) init[i][0] = _init[i];
+        rep(i, n) init[i][0] = _init[i];
         auto res = mat_pow(mat, K);
         res = mat_dot(res, init);
         vector<T> ret(n, 0);
-        rep(i, 0, n) ret[i] = res[i][0];
+        rep(i, n) ret[i] = res[i][0];
         return ret;
     }
 };
@@ -61,17 +61,17 @@ template<typename T>
 vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
     int N = A.size();
     auto B = list2d<T>(N, N+1, 0);
-    rep(i, 0, N) {
-        rep(j, 0, N) {
+    rep(i, N) {
+        rep(j, N) {
             B[i][j] = A[i][j];
         }
     }
     // 行列Aの後ろにbを並べ同時に処理する
-    rep(i, 0, N) {
+    rep(i, N) {
         B[i][N] = b[i];
     }
 
-    rep(i, 0, N) {
+    rep(i, N) {
         // 注目している変数の係数の絶対値が大きい式をi番目に持ってくる
         int pivot = i;
         rep(j, i, N) {
@@ -89,7 +89,7 @@ vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
         rep(j, i+1, N+1) {
             B[i][j] /= B[i][i];
         }
-        rep(j, 0, N) {
+        rep(j, N) {
             if (i != j) {
                 // j番目の式からi番目の変数を消去
                 rep(k, i+1, N+1) {
@@ -101,7 +101,7 @@ vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
 
     vector<T> res(N);
     // 後ろに並べたbが解になる
-    rep(i, 0, N) {
+    rep(i, N) {
         res[i] = B[i][N];
     }
     return res;

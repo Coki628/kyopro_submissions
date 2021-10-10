@@ -16,7 +16,7 @@ struct UnionFind {
         rank.resize(n);
         sz.resize(n, 1);
         tree.resize(n, 1);
-        rep(i, 0, n) par[i] = i;
+        rep(i, n) par[i] = i;
         groupcnt = n;
     }
 
@@ -27,7 +27,7 @@ struct UnionFind {
         par.resize(n);
         rank.resize(n);
         sz.resize(n, 1);
-        rep(i, 0, n) par[i] = i;
+        rep(i, n) par[i] = i;
         groupcnt = n;
     }
 
@@ -92,7 +92,7 @@ struct UnionFind {
     // 全ての根を取得
     set<int> get_roots() {
         set<int> res;
-        rep(i, 0, n) {
+        rep(i, n) {
             res.insert(find(i));
         }
         return res;
@@ -230,15 +230,15 @@ vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src) {
 template<typename T>
 vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
     ll N = G.size();
-    rep(i, 0, N) G[i][i] = 0;
-    rep(k, 0, N) {
-        rep(i, 0, N) {
-            rep(j, 0, N) {
+    rep(i, N) G[i][i] = 0;
+    rep(k, N) {
+        rep(i, N) {
+            rep(j, N) {
                 chmin(G[i][j], G[i][k] + G[k][j]);
             }
         }
     }
-    rep(i, 0, N) {
+    rep(i, N) {
         if (G[i][i] < 0) {
             return {};
         }
@@ -257,6 +257,7 @@ vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
 // 　　HLD構築前に根と頂点0の関係を全てスワップしておく。
 // 　・パスクエリ[u,v]にて、u->lcaとlca->vでHLD上の列の向きが逆になるので、
 // 　　乗せたセグ木の演算にマージ方向がある場合などは注意して処理する。
+// 　・辺属性にすると、添字0が欠番になる。(親に向かう辺と対応するはずなのでそれはそうか)
 
 // HL分解
 struct HeavyLightDecomposition {
@@ -484,7 +485,7 @@ vector<T> dijkstra(const vector<vector<T>> &G, int src) {
     dist[src] = 0;
     while (1) {
         int v = -1;
-        rep(u, 0, N) {
+        rep(u, N) {
             if (!used[u] and (v == -1 or dist[u] < dist[v])) {
                 v = u;
             }
@@ -493,7 +494,7 @@ vector<T> dijkstra(const vector<vector<T>> &G, int src) {
             break;
         }
         used[v] = true;
-        rep(u, 0, N) {
+        rep(u, N) {
             dist[u] = min(dist[u], dist[v] + G[v][u]);
         }
     }
@@ -514,7 +515,7 @@ struct WeightedUnionFind {
         rank.resize(n);
         // 根への距離を管理
         weight.resize(n);
-        rep(i, 0, n) par[i] = i;
+        rep(i, n) par[i] = i;
     }
 
     // 検索

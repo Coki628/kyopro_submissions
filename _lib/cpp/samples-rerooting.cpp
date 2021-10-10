@@ -20,20 +20,23 @@ ll f2(ll a, ll x) {
 }
 // chmax(dp[u], dp[v]+1);
 
-// GRL_5_A
-pll f1(pll a, pll b) {
+// GRL_5_A,ABC222_f
+// dp[i] := 頂点iを根とした部分木の各頂点への距離の最大値と2番目
+vector<ll> tmp(4);
+auto f1 = [](pll a, pll b) -> pll {
     tmp[0] = a.first;
     tmp[1] = a.second;
     tmp[2] = b.first;
     tmp[3] = b.second;
     sort(ALL(tmp));
     return mkp(tmp[3], tmp[2]);
-}
-pll f2(pll a, ll x) {
-    return mkp(a.first + x, 0);
-}
+};
+auto f2 = [](pll a, ll c) -> pll {
+    return mkp(a.first+c, 0);
+};
 
-// GRL_5_B
+// GRL_5_B,ABC222_f
+// dp[i] := 頂点iを根とした部分木の各頂点への距離の最大値
 auto f1 = [](ll a, ll b) {
     return max(a, b);
 };
@@ -126,7 +129,8 @@ ll f2(ll a, ll x) {
 // DP遷移は書いてなかったけど多分こう
 // dp[u] += max(dp[v]+val[v], 0LL);
 
-// typical90_039
+// typical90_039,ABC220_f
+// dp[i] := 頂点iを根とした部分木の全頂点への距離の総和
 auto f1 = [](Node a, Node b) -> Node {
     a.sz += b.sz;
     a.sm += b.sm;

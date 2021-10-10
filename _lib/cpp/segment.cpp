@@ -232,7 +232,7 @@ struct SegmentTree {
     void build(const vector<Monoid> &A) {
         int n = A.size();
         resize(n);
-        rep(i, 0, n) set(i, A[i]);
+        rep(i, n) set(i, A[i]);
         build();
     }
 
@@ -453,7 +453,7 @@ struct LazySegmentTree {
     void print(int n) {
         rep(i, n) {
             cout << (P)query(i, i+1);
-            if (i == n-1) cout << endl;
+            if (i == n-1) cout << '\n';
             else cout << ' ';
         }
     }
@@ -695,7 +695,7 @@ struct SegmentTreeIndex {
     void build(const vector<Monoid> &A) {
         int n = A.size();
         resize(n);
-        rep(i, 0, n) set(i, A[i]);
+        rep(i, n) set(i, A[i]);
         build();
     }
 
@@ -770,17 +770,17 @@ struct SparseTable {
             h++;
         }
         dat.resize(h);
-        rep(i, 0, h) dat[i].resize(1<<h);
+        rep(i, h) dat[i].resize(1<<h);
         height.resize(N+1);
 
         rep(i, 2, N+1) {
             height[i] = height[i>>1] + 1;
         }
-        rep(i, 0, N) {
+        rep(i, N) {
             dat[0][i] = A[i];
         }
         rep(i, 1, h) {
-            rep(j, 0, N) {
+            rep(j, N) {
                 dat[i][j] = f(dat[i-1][j], dat[i-1][min(j+(1<<(i-1)), N-1)]);
             }
         }
@@ -1082,7 +1082,7 @@ struct LazySegmentTree {
     }
 
     void print(int n) {
-        rep(i, 0, n) {
+        rep(i, n) {
             cout << query(i, i+1);
             if (i == n-1) cout << endl;
             else cout << ' ';
@@ -2035,7 +2035,7 @@ vector<T> slide_min(const F &func, vector<T> &A, ll k, ll w=1, ll v=0) {
 
     ll N = A.size();
     auto res = A;
-    rep(a, 0, w) {
+    rep(a, w) {
         deque<pair<int, T>> que;
         int i = 0;
         while (i*w+a < N) {
