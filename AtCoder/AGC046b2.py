@@ -2,7 +2,7 @@
 参考：https://img.atcoder.jp/agc046/editorial.pdf
 　　　https://atcoder.jp/contests/agc046/submissions/14504388
 ・こっちのが公式解な感じ。
-・数え上げDP
+・数え上げDP、グリッドDP
 ・最後に増やしたのが行or列で耳っぽくDPを分けて、向きが切り替わる時には片側しか増やさないようにする。
 """
 

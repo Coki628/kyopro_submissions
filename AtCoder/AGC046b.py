@@ -2,7 +2,7 @@
 参考：https://twitter.com/shiro537/status/1274349252165029888
 　　　https://atcoder.jp/contests/agc046/submissions/14500684
 ・自力ならず。。
-・数え上げDP
+・数え上げDP、グリッドDP
 ・重複分を引きながら更新していく。
 ・これはうまく作れなかったなー。。
 """
