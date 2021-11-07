@@ -28,7 +28,6 @@ vector<pair<T, int>> factorize(T n) {
 
 // 約数列挙
 vector<ll> divisors(ll n) {
-
     vector<ll> res;
     for (ll i=1; i*i<=n; i++) {
         if (n%i == 0) {
@@ -263,7 +262,6 @@ T arithmetic_sequence_sum(T a, T d, T n) {
 
 // 素数判定：O(√num)
 bool is_prime(ll num) {
-
     if (num < 2) {
         return false;
     }
@@ -290,7 +288,6 @@ bool is_prime(ll num) {
 
 // 素数列挙(エラトステネスの篩)(旧)
 vector<ll> eratosthenes_sieve(ll n) {
-
     vector<bool> table(n+1);
     vector<ll> primes;
     rep(i, 2, n+1) {
@@ -307,7 +304,6 @@ vector<ll> eratosthenes_sieve(ll n) {
 
 // 素因数分解(mapベース)(旧)
 map<ll, ll> factorize(ll x) {
-
     map<ll, ll> res;
     for (ll i=2; i*i<=x; i++) {
         while (x%i == 0) {
@@ -323,7 +319,6 @@ map<ll, ll> factorize(ll x) {
 
 // 高速素因数分解(osa_k法)、前計算
 vector<ll> eratosthenes_sieve(ll n) {
-
     vector<ll> table(n+1);
     table[1] = 1;
     rep(i, 2, n+1) {
@@ -338,7 +333,6 @@ vector<ll> eratosthenes_sieve(ll n) {
 
 // 高速素因数分解(osa_k法)(mapベース)
 map<ll, ll> factorize(vector<ll> &table, ll x) {
-
     map<ll, ll> res;
     while (x != table[x]) {
         res[table[x]]++;
@@ -352,7 +346,6 @@ map<ll, ll> factorize(vector<ll> &table, ll x) {
 
 // 高速素因数分解(osa_k法)(vectorベース)
 vector<pair<ll, int>> factorize(const vector<ll> &minfactor, ll x) {
-
     vector<pair<ll, int>> res;
     while (x > 1) {
         int p = minfactor[x];

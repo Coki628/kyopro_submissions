@@ -441,8 +441,9 @@ vector<vector<T>> combinations_with_replacement(const vector<T> &A, int N) {
 
 
 // nCr(modなし)(計算量：O(n*r))
-ll nCr(int n, int r) {
-    auto dp = list2d(n+1, r+1, 0LL);
+template<typename T=ll>
+T nCr(int n, int r) {
+    auto dp = list2d(n+1, r+1, (T)0);
     dp[0][0] = 1;
     rep(i, 1, n+1) {
         dp[i][0] = 1;
@@ -451,6 +452,15 @@ ll nCr(int n, int r) {
         }
     }
     return dp[n][r];
+}
+
+
+// nCr(modなし)(計算量：O(r))
+template<typename T=ll>
+T nCr(int n, int r) {
+    T res = 1;
+    rep(i, r) res *= (T)(n-i)/(T)(i+1);
+    return res;
 }
 
 

@@ -279,7 +279,7 @@ struct SegmentTree {
         return a - sz;
     }
 
-    // 区間[a,N)でcheckの条件を満たすような最小位置を返す(なければ-1)
+    // 範囲[a,N)でcheckの条件を満たすような最小位置を返す(なければ-1)
     template<typename C>
     int find_first(int a, const C &check) {
         Monoid L = M1;
@@ -299,7 +299,7 @@ struct SegmentTree {
         return -1;
     }
 
-    // 区間[0,b)でcheckの条件を満たすような最大位置を返す(なければ-1)
+    // 範囲[0,b)でcheckの条件を満たすような最大位置を返す(なければ-1)
     template<typename C>
     int find_last(int b, const C &check) {
         Monoid R = M1;

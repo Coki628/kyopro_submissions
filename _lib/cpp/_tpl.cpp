@@ -14,9 +14,11 @@ using ull = unsigned long long;
 using ld = long double;
 using pll = pair<ll, ll>;
 using pii = pair<int, int>;
+using pil = pair<int, ll>;
 using vvl = vector<vector<ll>>;
 using vvi = vector<vector<int>>;
 using vvpll = vector<vector<pll>>;
+using vvpil = vector<vector<pil>>;
 #define name4(i, a, b, c, d, e, ...) e
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
 #define rep1(i, a) for (ll i = 0, _aa = a; i < _aa; i++)
@@ -143,7 +145,7 @@ const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const string ascii_letters = ascii_lowercase + ascii_uppercase;
 string replace(string str, const string& replace, const string& with) { if(!replace.empty()) { size_t pos = 0; while ((pos = str.find(replace, pos)) != string::npos) { str.replace(pos, replace.length(), with); pos += with.length(); } } return str; }
 string zfill(string str, int len) { string zeros; int n = str.size(); rep(i, len-n) zeros += '0'; return zeros+str; }
-string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0'; x >>= 1; } reverse(ALL(res)); if(res == "") res += '0'; return res; }
+string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0'; x >>= 1; } reverse(ALL(res)); if (res == "") res += '0'; return res; }
 
 void solve() {
     

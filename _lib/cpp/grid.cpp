@@ -72,6 +72,20 @@ vector<string> rot90(const vector<string> &grid) {
 
 
 
+// グリッドをK倍に拡大 
+vector<string> scale(const vector<string> &grid, ll K) {
+    int H = grid.size();
+    int W = grid[0].size();
+    vector<string> res(H*K, string(W*K, '*'));
+    rep(i, H*K) {
+        rep(j, W*K) {
+            res[i][j] = grid[i/K][j/K];
+        }
+    }
+    return res;
+}
+
+
 // 8方向
 const vector<pii> directions8 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 

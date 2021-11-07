@@ -463,8 +463,9 @@ def mat_pow(mat, init, K, MOD):
         m2 = len(B[0])
         res = list2d(n1, m2, 0)
         for i in range(n1):
-            for j in range(m2):
-                for k in range(n2):
+            for k in range(m2):
+                if A[i][k] == 0: continue
+                for j in range(n2):
                     res[i][j] += A[i][k] * B[k][j]
                     res[i][j] %= MOD
         return res

@@ -1,3 +1,5 @@
+#include "_tpl.cpp"
+
 // 一発全インクルード
 #include <bits/stdc++.h>
 using namespace std;
@@ -145,7 +147,13 @@ int main() {
     // vector<char> A(ALL(S));
     // string T(ALL(A));
 
-    // pushとかinsertの代わりにemplaceって使えるみたい
+    // pushとかinsertの代わりにemplaceって使える(emplace_backみたいな)
+
+    // vector<char> <=> string 変換
+    // vector<char> v = {'a', 'b', 'c'};
+    // string s = "abc";
+    // print(string(ALL(v)));
+    // print(vector<char>(ALL(s)));
 
     return 0;
 }

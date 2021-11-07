@@ -56,7 +56,7 @@ struct MatPow {
 };
 
 
-// 連立方程式の解(ガウス・ジョルダン法) ※未verify
+// 掃き出し法 ※未verify
 template<typename T>
 vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
     int N = A.size();
@@ -107,8 +107,11 @@ vector<T> gauss_jordan(const vector<vector<T>> &A, const vector<T> &b) {
     return res;
 }
 
+// メモ
+// ・計算量：O(RC^2) これは行が10万あっても列がビットとか少ない時は通用するってこと。
+// ・連立方程式の解ではない使い方もある。(zone2021_f) そういう時はextendedがfalseになる。
 
-// 連立方程式の解(ガウス・ジョルダン法)(2値用)
+// 掃き出し法(2値用)
 template<int BITLEN>
 pair<int, vector<bitset<BITLEN>>> gauss_jordan(int N, int M, const vector<bitset<BITLEN>> &A, bool extended=true) {
     assert(N == A.size());

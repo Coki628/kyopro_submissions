@@ -45,9 +45,9 @@ template<typename T=ll> vector<T> LIST(ll N) { vector<T> A(N); rep(i, 0, N) cin 
 void print() { cout << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
 template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
-template<typename T> void print(vector<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
-template<typename T> void print(deque<T> A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
-template<typename T> void print(set<T> S) { vector<T> A(S.begin(), S.end()); print(A); }
+template<typename T> void print(const vector<T> &A) { rep(i, 0, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
+template<typename T> void print(const deque<T> &A) { vector<T> V(A.begin(), A.end()); print(V); }
+template<typename T> void print(const set<T> &S) { vector<T> A(S.begin(), S.end()); print(A); }
 #define debug(x) (cout << #x << ": ", print(x));
 
 void Yes() { print("Yes"); }
@@ -97,6 +97,21 @@ vector<T> accumulate(vector<T> &A, bool indexed=0) {
 //     rep(i, 1, N) res[i] = func(res[i-1], A[i]);
 //     return res;
 // }
+
+string to_string(const string &S) { return S; }
+string to_string(char c) { return {c}; }
+template<typename T>
+string join(const vector<T> &A, char separator=0) {
+    int N = A.size();
+    string res;
+    rep(i, N) {
+        res += tostr(A[i]);
+        if (separator != 0 and i != N-1) res += separator;
+    }
+    return res;
+}
+
+ll modulo(ll a, ll b) { return ((a % b) + b) % b; }
 
 void solve() {
     // splitとjoin

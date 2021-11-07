@@ -131,6 +131,9 @@ ll f2(ll a, ll x) {
 
 // typical90_039,ABC220_f
 // dp[i] := 頂点iを根とした部分木の全頂点への距離の総和
+struct Node {
+    ll sz, sm;
+};
 auto f1 = [](Node a, Node b) -> Node {
     a.sz += b.sz;
     a.sm += b.sm;
@@ -173,3 +176,16 @@ pll f2(pll a, ll x) {
 }
 // dp[u].first += dp[v].first + 1;
 // dp[u].second += dp[v].second + (dp[v].first+1)*x;
+
+// cf1593_e
+// ・これ、遠い方は距離の最大値でやったことあったけど、近い方はちょっと工夫が必要だった。
+// 　詳細は該当の問題を参照。
+// dp[i] := 頂点iを根とした部分木の根から一番近い葉への距離
+auto f1 = [](ll a, ll b) {
+    return min(a, b);
+};
+auto f2 = [](ll a, bool is_leaf) -> ll {
+    if (is_leaf) return 1;
+    else return a+1;
+};
+// chmin(dp[u], is_leaf[v] ? 1 : dp[v]+1);
