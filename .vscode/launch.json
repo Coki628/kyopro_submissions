@@ -19,7 +19,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/cpp.exe",
+            "program": "${fileDirname}/a.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

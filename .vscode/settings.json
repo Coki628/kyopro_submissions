@@ -1,5 +1,5 @@
 {
-    "python.linting.pylintEnabled": true,
+    "python.linting.pylintEnabled": false,
     // for ubuntu
     // "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
     // for windows

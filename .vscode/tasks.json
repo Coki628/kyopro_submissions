@@ -1,5 +1,19 @@
 {
     "version": "2.0.0",
+    // 参考：https://stackoverflow.com/questions/49237792/vs-code-task-and-python-virtual-environment
+    // タスク実行前にpython環境をセットする
+    "windows": {
+        "options": {
+            "shell": {
+                "executable": "cmd.exe",
+                "args": [
+                    "/C",
+                    "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\activate.bat",
+                    "&"
+                ]
+            }
+        }
+    },
     "tasks": [
         {
             "label": "build",
@@ -15,13 +29,28 @@
                 "${fileDirname}\\${fileBasename}",
                 "-std=c++17",
                 "-o",
-                "${fileDirname}\\cpp.exe"
+                "${fileDirname}\\a.exe"
+            ],
+        },
+        {
+            "label": "oj-test",
+            "type": "shell",
+            "command": "cd",
+            "args": [
+                "${fileDirname}",
+                "&",
+                "oj",
+                "test"
             ],
             "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        }
+              "kind": "build",
+            // この指定があるやつがctrl+shift+Bで実行される
+              "isDefault": true
+            },
+            "dependsOn": [
+              "build"
+            ],
+        },
     ]
 }
 // 参考：http://koturn.hatenablog.com/entry/2018/07/29/180000
