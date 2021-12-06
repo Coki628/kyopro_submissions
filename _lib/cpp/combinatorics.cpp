@@ -459,7 +459,7 @@ T nCr(int n, int r) {
 template<typename T=ll>
 T nCr(int n, int r) {
     T res = 1;
-    rep(i, r) res *= (T)(n-i)/(T)(i+1);
+    rep(i, r) res = res*(T)(n-i)/(T)(i+1);
     return res;
 }
 

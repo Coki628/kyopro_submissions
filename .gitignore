@@ -1,3 +1,7 @@
 *.exe
 TopCoder/*/*.html
 TopCoder/*/*.sample
+
+# test cases
+*.in
+*.out

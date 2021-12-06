@@ -287,12 +287,11 @@ bool is_prime(ll num) {
 
 
 // 素数列挙(エラトステネスの篩)(旧)
-vector<ll> eratosthenes_sieve(ll n) {
-    vector<bool> table(n+1);
-    vector<ll> primes;
+vector<bool> eratosthenes_sieve(ll n) {
+    vector<bool> table(n+1), primes(n+1);
     rep(i, 2, n+1) {
         if (table[i] == 0) {
-            primes.pb(i);
+            primes[i] = true;
             for (ll j=i+i; j<=n; j+=i) {
                 table[j] = 1;
             }

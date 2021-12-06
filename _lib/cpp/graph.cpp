@@ -269,6 +269,7 @@ vector<vector<T>> warshall_floyd(vector<vector<T>> G) {
 // 　・パスクエリ[u,v]にて、u->lcaとlca->vでHLD上の列の向きが逆になるので、
 // 　　乗せたセグ木の演算にマージ方向がある場合などは注意して処理する。
 // 　・辺属性にすると、添字0が欠番になる。(親に向かう辺と対応するはずなのでそれはそうか)
+// 　　なお辺属性に値を割り当てる時は、depで深い方の頂点にってやるといい。(ABC133fとか参照)
 
 // HL分解
 struct HeavyLightDecomposition {
@@ -289,7 +290,7 @@ public:
         dfs_hld(0, -1, t);
     }
 
-    /* k: 0-indexed */
+    // 頂点vからk回遡った頂点を返す
     int la(int v, int k) {
         while(1) {
             int u = head[v];

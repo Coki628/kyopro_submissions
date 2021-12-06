@@ -2301,13 +2301,12 @@ struct SegmentTree2D {
         while (j >>= 1) {
             dat[i][j] = f(dat[i][2*j], dat[i][2*j+1]);
         }
-        j = y + W;
         while (i >>= 1) {
+            j = y + W;
             dat[i][j] = f(dat[2*i][j], dat[2*i+1][j]);
             while (j >>= 1) {
                 dat[i][j] = f(dat[i][2*j], dat[i][2*j+1]);
             }
-            j = y + W;
         }
     }
 };

@@ -74,7 +74,7 @@ ll pow(int x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
 ll pow(int x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
 ll pow(ll x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
 ll pow(ll x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
-ll pow(ll x, ll n, int mod) { ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
+ll pow(ll x, ll n, int mod) { x %= mod; ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
 int popcount(ll S) { return __builtin_popcountll(S); }
 int bit_length(ll x) { return x != 0 ? floor(log2((ld)x))+1 : 0; }
 template<typename T> int bisect_left(const vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
@@ -116,11 +116,6 @@ vector<string> rot90(const vector<string> &grid) { int H = grid.size(); int W = 
 
 // from mystl.cpp
 template<typename _Key, typename _Tp, typename _Compare=less<_Key>, typename _Alloc=allocator<pair<const _Key, _Tp>>> struct defaultdict : public map<_Key, _Tp, _Compare, _Alloc> { const _Tp init; defaultdict() : init(_Tp()) {}; defaultdict(_Tp init) : init(init) {} _Tp& operator[](const _Key& k) { if (this->count(k)) { return map<_Key, _Tp, _Compare, _Alloc>::operator[](k); } else { return map<_Key, _Tp, _Compare, _Alloc>::operator[](k) = init; } } _Tp& operator[](_Key&& k) { if (this->count(k)) { return map<_Key, _Tp, _Compare, _Alloc>::operator[](k); } else { return map<_Key, _Tp, _Compare, _Alloc>::operator[](k) = init; } } };
-template<typename _Key, typename _Compare=less<_Key>, typename _Alloc=allocator<_Key>> struct my_set : public set<_Key, _Compare, _Alloc> { _Key front() { return *this->begin(); } _Key pop_front() { auto res = this->front(); this->erase(this->begin()); return res; } _Key back() { return *this->rbegin(); } _Key pop_back() { auto res = this->back(); this->erase(prev(this->end())); return res; } };
-template<typename _Key, typename _Compare=less<_Key>, typename _Alloc=allocator<_Key>> struct my_multiset : public multiset<_Key, _Compare, _Alloc> { _Key front() { return *this->begin(); } _Key pop_front() { auto res = this->front(); this->erase(this->begin()); return res; } _Key back() { return *this->rbegin(); } _Key pop_back() { auto res = this->back(); this->erase(prev(this->end())); return res; } };
-template<typename _Tp, typename _Sequence=vector<_Tp>, typename _Compare=less<typename _Sequence::value_type>> struct my_priority_queue : public priority_queue<_Tp, _Sequence, _Compare> { _Tp pop() { auto res = this->top(); priority_queue<_Tp, _Sequence, _Compare>::pop(); return res; } };
-template<typename _Tp, typename _Sequence=deque<_Tp>> struct my_queue : public queue<_Tp, _Sequence> { _Tp pop() { auto res = this->front(); queue<_Tp, _Sequence>::pop(); return res; } };
-template<typename _Tp, typename _Alloc=std::allocator<_Tp>> struct my_deque : public deque<_Tp, _Alloc> { _Tp pop_front() { auto res = this->front(); deque<_Tp, _Alloc>::pop_front(); return res; } _Tp pop_back() { auto res = this->back(); deque<_Tp, _Alloc>::pop_back(); return res; } };
 
 // from numbers.cpp
 ll gcd(ll a, ll b) { return __gcd(a, b); }

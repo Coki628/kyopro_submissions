@@ -1,3 +1,11 @@
+参考：https://oucrc.net/articles/e6vkrz4uqtt/
+　　　https://hamukichi.hatenablog.jp/entry/2020/06/02/225148#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%A8%E5%85%A5%E5%87%BA%E5%8A%9B%E4%BE%8B%E3%81%AB%E3%82%88%E3%82%8B%E3%83%86%E3%82%B9%E3%83%88
+　　　http://tatamo.81.la/blog/2018/12/07/atcoder-cli-installation-guide/
+　　　https://github.com/online-judge-tools/oj/blob/master/README.ja.md
+導入
+pip install online-judge-tools
+npm install -g atcoder-cli
+
 ・コンテストフォルダ作成
 acc new abc088
 ・問題フォルダでmain.cppを書き足して問題を解く。
@@ -5,3 +13,31 @@ acc new abc088
 ・問題フォルダでoj testを実行
 ・問題フォルダで提出を実行
 acc submit
+
+参考：https://hamukichi.hatenablog.jp/entry/2020/09/17/230818#fn-dafbc722
+・ランダムテスト実行
+pip install online-judge-template-generator
+oj-prepare https://atcoder.jp/contests/abc177
+cd abc177_a
+(解答コードを書く)
+ビルドしてoj test
+ここまででサンプル確認
+以下、ランダムテスト
+generate.pyを編集
+・制約小さくしたり数字いじる。
+oj generate-input "python generate.py"
+・条件に合うケースがデフォルトで100個生成される。
+(愚直解を書く)
+生成したランダムケースの正解を生成
+oj generate-output
+(デフォルトはa.exeが使われる)
+これでもっかいoj testやればこれらも含めて全チェックしてくれる。
+
+備考
+問題個別もできる。これだとフォルダは生成されないので、適切な階層を作ってからそこで実行
+→_ojって場所を作ったので、ここをテスト用の領域にしたらよさそう。
+oj-prepare https://atcoder.jp/contests/joig2021-open/tasks/joig2021_b
+これなら1個生成
+oj generate-input "python generate.py" 1
+愚直解Python指定
+oj generate-output -c "python naive.py"

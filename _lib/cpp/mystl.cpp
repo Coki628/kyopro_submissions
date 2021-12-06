@@ -1,5 +1,8 @@
 /*
 ・ライブラリ：STLカスタマイズ
+・my_系全体的なTODOとして、
+　・引数付きで初期化できない
+　・コピーできない
 */
 
 #include "_tpl.cpp"
@@ -31,6 +34,25 @@ struct defaultdict : public map<_Key, _Tp, _Compare, _Alloc> {
         }
     }
 };
+
+
+
+
+
+
+
+
+
+
+////////// end template included here //////////
+
+
+
+
+
+
+
+
 
 
 template<typename _Key, typename _Compare=less<_Key>, typename _Alloc=allocator<_Key>>
@@ -112,27 +134,6 @@ struct my_deque : public deque<_Tp, _Alloc> {
     }
 };
 #define deque my_deque
-
-
-
-
-
-
-
-
-
-
-
-////////// end template included here //////////
-
-
-
-
-
-
-
-
-
 
 
 template<typename _Tp, typename _Sequence=deque<_Tp>>

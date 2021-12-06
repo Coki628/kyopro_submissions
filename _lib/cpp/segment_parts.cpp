@@ -437,3 +437,10 @@ auto h = [](const Func &a, const Func &b) -> Func {
 };
 const Node T = {0, INF};
 const Func E = {0, 0};
+
+// 区間最小値取得・区間or
+auto f = [](ll a, ll b) -> ll { return min(a, b); };
+auto g = [](ll a, ll b) -> ll { return a | b; };
+auto h = [](ll a, ll b) -> ll { return a | b; };
+const ll T = INF;
+const ll E = 0;

@@ -14,7 +14,8 @@
         // for windows
         // "python.defaultInterpreterPath": "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\python.exe",
         "files.exclude": {
-            "**/cpp.exe": true
+            "**/cpp.exe": true,
+            "**/a.exe": true
         },
         "files.associations": {
             "algorithm": "cpp",
@@ -97,7 +98,9 @@
             "numbers": "cpp",
             "ranges": "cpp",
             "span": "cpp",
-            "stop_token": "cpp"
+            "stop_token": "cpp",
+            "queue": "cpp",
+            "stack": "cpp"
         },
         // "editor.renderControlCharacters": true
     }

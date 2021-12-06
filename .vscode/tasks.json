@@ -31,6 +31,11 @@
                 "-o",
                 "${fileDirname}\\a.exe"
             ],
+            "group": {
+                "kind": "build",
+                // この指定があるやつがctrl+shift+Bで実行される
+                "isDefault": true
+            },
         },
         {
             "label": "oj-test",
@@ -42,11 +47,6 @@
                 "oj",
                 "test"
             ],
-            "group": {
-              "kind": "build",
-            // この指定があるやつがctrl+shift+Bで実行される
-              "isDefault": true
-            },
             "dependsOn": [
               "build"
             ],
