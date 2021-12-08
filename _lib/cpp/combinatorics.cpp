@@ -15,6 +15,18 @@ struct ModInt {
 
     ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {}
 
+    ModInt &operator++() {
+        x++;
+        if (x == mod) x = 0;
+        return *this;
+    }
+
+    ModInt &operator--() {
+        if (x == 0) x = mod;
+        x--;
+        return *this;
+    }
+
     ModInt &operator+=(const ModInt &p) {
         if((x += p.x) >= mod) x -= mod;
         return *this;
@@ -33,6 +45,18 @@ struct ModInt {
     ModInt &operator/=(const ModInt &p) {
         *this *= p.inverse();
         return *this;
+    }
+
+    ModInt operator++(int) {
+        ModInt result = *this;
+        ++*this;
+        return result;
+    }
+
+    ModInt operator--(int) {
+        ModInt result = *this;
+        --*this;
+        return result;
     }
 
     ModInt operator-() const { return ModInt(-x); }
@@ -82,7 +106,9 @@ struct ModInt {
 
     static int get_mod() { return mod; }
 
+    // mintから戻したい場面があったらコメント外す
     // operator int() const { return x; }
+    // operator ll() const { return x; }
 };
 using mint = ModInt<MOD>;
 
