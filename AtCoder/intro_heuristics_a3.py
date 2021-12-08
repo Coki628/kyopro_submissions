@@ -1,8 +1,10 @@
 """
+参考：https://img.atcoder.jp/intro-heuristics/editorial.pdf
 ・マラソン、局所探索法(山登り法)
-・C問題で作った更新用の関数を流用する。初期値はランダム生成。変更も完全にランダム。
-・これでも貪欲でやったものよりはスコア上がった。ここからさらに最適化する。
-・この時点で7900万点くらい。
+・変更方法を1点更新だけから、2点スワップとどちらかやるようにした。
+　この時点で1億1200万点くらい。
+・初期値生成をランダムから貪欲解に変更。時間チェックを100回に1回に。
+　どちらもスコアはほぼ変化なし。
 """
 
 import sys
@@ -44,26 +46,40 @@ S[0] = [0] * M
 for i in range(1, D+1):
     S[i]  = LIST()
 
-def check(T):
-    score = 0
-    for a in range(M):
-        for i in range(1, len(adjli[a])):
-            curd = adjli[a][i-1]
-            nxtd = adjli[a][i]
-            cnt = nxtd - curd
-            score += S[curd][a]
-            score -= C[a] * get_sum(0, 1, cnt)
+def check(i, score, t, last):
+    score += S[i][t]
+    for j in range(M):
+        last[j] += 1
+    last[t] = 0
+    for j in range(M):
+        score -= C[j] * last[j]
     return score
 
-# 初期状態をランダムで作成
+# 初期状態を貪欲で生成
 last = [0] * M
-T = [0] + [randrange(0, M) for i in range(D)]
+T = [0]
 adjli = [[0] for i in range(M)]
+score = 0
+for i in range(D):
+    mx = -INF
+    idx = -1
+    for t in range(M):
+        res = check(i, score, t, last[:])
+        if res > mx:
+            mx = res
+            idx = t
+    t = idx
+    score += S[i][t]
+    for j in range(M):
+        last[j] += 1
+    last[t] = 0
+    for j in range(M):
+        score -= C[j] * last[j]
+    T.append(t)
 for d, t in enumerate(T[1:], 1):
     adjli[t].append(d)
 for i in range(M):
     adjli[i].append(D+1)
-score = check(T)
 
 # day日目のコンテストをaからbに変更する
 def change(day, a, b):
@@ -98,21 +114,48 @@ def change(day, a, b):
 
     return res
 
-# 時間ギリギリまでランダムな交換を試す
-while time() - start < TL:
-    d, q = randrange(1, D+1), randrange(0, M)
-    if T[d] == q:
-        continue
+# d1日目とd2日目のコンテストを入れ替える
+def swap(d1, d2):
+    res = 0
+    res += change(d1, T[d1], T[d2])
+    res += change(d2, T[d2], T[d1])
+    return res
 
-    tmp = deepcopy(adjli)
-    res = change(d, T[d], q)
-    # 結果がよければ適用
-    if res > 0:
-        score += res
-        T[d] = q
-    # 悪ければ状態を戻す
+# 時間ギリギリまでランダムな交換を試す
+cnt = 0
+while cnt%100 != 0 or time() - start < TL:
+    cnt += 1
+    # 1点更新と2点スワップのどちらかをやる
+    p = randrange(0, 2)
+    if p:
+        d, q = randrange(1, D+1), randrange(0, M)
+        if T[d] == q:
+            continue
+
+        tmp = deepcopy(adjli)
+        res = change(d, T[d], q)
+        # 結果がよければ適用
+        if res > 0:
+            score += res
+            T[d] = q
+        # 悪ければ状態を戻す
+        else:
+            adjli = tmp
     else:
-        adjli = tmp
+        # 離れる最大日数
+        mxdiff = 16
+        d1 = randrange(1, D+1)
+        d2 = randrange(d1, min(d1+mxdiff, D+1))
+        if d1 == d2:
+            continue
+
+        tmp = deepcopy(adjli)
+        res = swap(d1, d2)
+        if res > 0:
+            score += res
+            T[d1], T[d2] = T[d2], T[d1]
+        else:
+            adjli = tmp
 
 for t in T[1:]:
     print(t+1)
