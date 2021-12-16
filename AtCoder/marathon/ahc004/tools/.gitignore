@@ -1,0 +1,7 @@
+# input files
+in/
+# output files
+out/
+
+# rust
+target/
