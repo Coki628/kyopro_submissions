@@ -7,6 +7,9 @@
 　CF環境に依存した何かで時間計測がダメっぽい。
 　中の判定処理とかはコメントアウトしても変わらなかったので、
 　そこはボトルネックではなさそう。
+・ちゃんと動くようにした。時間計測が役に立たないので、
+　おおよその合計操作回数を予測しておいて、それをNで按分した回数を、その回の最大操作回数とした。
+　まあどっちにしてもWAなんだけどね。。
 */
 
 #pragma region mytemplate
@@ -184,18 +187,19 @@ struct Timer {
     }
 };
 
+const ll OP_TOTAL = 2000000;
 ll total = 0;
 vvl V;
 
-void prep(ll i) {
+void prep(ll t) {
     ll N;
     #ifdef DEBUG
         // for testing
         N = 6;
-        V[i] = {6,5,4,3,2,1};
+        V[t] = {6,5,4,3,2,1};
     #else
         cin >> N;
-        V[i] = LIST(N);
+        V[t] = LIST(N);
     #endif
     total += N;
 }
@@ -215,26 +219,15 @@ void solve(ll t) {
             cnt++;
         }
     }
-    if (cnt == 1 or cnt == 2) {
-        NO();
-        return;
-    }
     if (cnt == 0 or cnt == 3) {
         YES();
         return;
     }
 
-    ll TL = 1900000*N/total;
-    auto elapsed = timer.get_diff();
-    ll opcnt = 0;
-    while (cnt) {
-        if (opcnt%1 == 0) {
-            elapsed = timer.get_diff();
-            if (elapsed >= TL) break;
-        }
-        opcnt++;
+    ll oplimit = OP_TOTAL*N/total;
+    while (cnt >= 3 and oplimit) {
+        oplimit--;
 
-        assert(cnt >= 3);
         ll x = randrange(1, cnt+1);
         ll y = -1, z = -1;
         while (1) {
@@ -274,6 +267,18 @@ void solve(ll t) {
             A[i] = tmp;
         }
     }
+
+    assert(cnt != 1);
+    if (cnt == 2) {
+        auto C = Counter(A, N);
+        ll i = bit.bisearch_fore(0, N-1, 1);
+        ll j = bit.bisearch_fore(0, N-1, 2);
+        if (C[A[i]] >= 2 or C[A[j]] >= 2) {
+            YES();
+            return;
+        }
+    }
+
     #ifdef DEBUG
     #else
         if (cnt) NO();
@@ -294,14 +299,14 @@ int main() {
     cin >> T;
     V.resize(T);
     Timer total_timer;
-    rep(i, T) {
-        prep(i);
+    rep(t, T) {
+        prep(t);
     }
     #ifdef DEBUG
         debug(total);
     #endif
-    rep(i, T) {
-        solve(i);
+    rep(t, T) {
+        solve(t);
     }
     #ifdef DEBUG
         debug(total_timer.get_diff());
