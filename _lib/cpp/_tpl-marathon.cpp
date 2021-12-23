@@ -47,10 +47,13 @@ template<typename T=ll> vector<T> LIST(ll N) { vector<T> A(N); rep(i, N) cin >> 
 
 void print() { cout << '\n'; }
 template<typename T> void print(T out) { cout << out << '\n'; }
-template<typename T1, typename T2> void print(pair<T1, T2> out) { cout << out.first << ' ' << out.second << '\n'; }
-template<typename T> void print(const vector<T> &A) { rep(i, A.size()) { cout << A[i]; if (i != A.size()-1) cout << ' '; } cout << '\n'; }
-template<typename T> void print(const deque<T> &A) { vector<T> V(A.begin(), A.end()); print(V); }
-template<typename T> void print(const set<T> &S) { vector<T> A(S.begin(), S.end()); print(A); }
+template<typename T1, typename T2> void print(const pair<T1, T2> &p) { cout << p.first << ' ' << p.second << '\n'; }
+template<typename T1, typename T2, typename T3> void print(const tuple<T1, T2, T3> &tp) { cout << get<0>(tp) << ' ' << get<1>(tp) << ' ' << get<2>(tp) << '\n'; }
+template<typename T1, typename T2, typename T3, typename T4> void print(const tuple<T1, T2, T3, T4> &tp) { cout << get<0>(tp) << ' ' << get<1>(tp) << ' ' << get<2>(tp) << ' ' << get<3>(tp) << '\n'; }
+template<typename T> void print(const vector<T> &V) { rep(i, V.size()) { cout << V[i]; if (i != V.size()-1) cout << ' '; } cout << '\n'; }
+template<typename T, size_t SZ> void print(const array<T, SZ> &arr) { rep(i, arr.size()) { cout << arr[i]; if (i != arr.size()-1) cout << ' '; } cout << '\n'; }
+template<typename T> void print(const deque<T> &que) { vector<T> V(ALL(que)); print(V); }
+template<typename T> void print(const set<T> &se) { vector<T> V(ALL(se)); print(V); }
 #define debug(x) (cout << #x << ": ", print(x));
 
 void Yes() { print("Yes"); }
@@ -59,6 +62,12 @@ void YES() { print("YES"); }
 void NO() { print("NO"); }
 
 ll ceil(ll a, ll b) { if (a >= 0) return (a+b-1) / b; else return a / b; }
+template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
+template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
+
+const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+string zfill(string str, int len) { string zeros; int n = str.size(); rep(i, len-n) zeros += '0'; return zeros+str; }
 
 #pragma endregion
 
@@ -69,8 +78,38 @@ ll randrange(ll l, ll r) {
     return rand(mt);
 }
 
-void solve() {
+// 環境に依存せずミリ秒単位で時間取得するクラス
+struct Timer {
+
+    chrono::_V2::system_clock::time_point start_time;
     
+    Timer() {
+        start_time = this->now();
+    }
+
+    chrono::_V2::system_clock::time_point now() {
+        return chrono::high_resolution_clock::now();
+    }
+
+    int64_t get_diff() {
+        return chrono::duration_cast<chrono::milliseconds>(this->now() - start_time).count();
+    }
+};
+
+void solve() {
+    #ifdef __LOCAL
+        // 入力ファイル読み込み
+        string filename = "tools/in/"+zfill(tostr(t), 4)+".txt";
+        freopen(filename.c_str(), "r", stdin);
+        // 出力ファイル準備
+        filename = "tools/out/"+zfill(tostr(t), 4)+".txt";
+        ofstream ofs(filename.c_str());
+        if (!ofs) {
+            print(-1);
+            return;
+        }
+    #endif
+
 }
 
 int main() {
@@ -78,13 +117,17 @@ int main() {
     ios::sync_with_stdio(false);
     cout << fixed << setprecision(15);
 
-    // single test case
-    solve();
-
-    // multi test cases
-    // int T;
-    // cin >> T;
-    // while (T--) solve();
+    #ifdef __LOCAL
+        // 実施テスト番号
+        vector<ll> T = {
+            0,
+        };
+        for (ll t : T) {
+            solve(t);
+        }
+    #else
+        solve();
+    #endif
 
     return 0;
 }
