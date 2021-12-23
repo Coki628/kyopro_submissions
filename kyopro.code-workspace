@@ -4,6 +4,10 @@
             "path": "."
         },
         {
+            // oj設定用
+            "path": "C:\\Users\\srcn4\\AppData\\Local\\online-judge-tools\\online-judge-tools"
+        },
+        {
             // atcoder-cli設定用
             "path": "C:\\Users\\srcn4\\AppData\\Roaming\\atcoder-cli-nodejs"
         }

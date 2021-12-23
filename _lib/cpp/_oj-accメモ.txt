@@ -59,3 +59,19 @@ oj testしたい時はctrl+shift+B
 
 atcoder-cliの設定
 参考：http://tatamo.81.la/blog/2018/12/07/atcoder-cli-tutorial/
+
+oj-prepare
+デフォルトでは設定ファイルが(Windowsの場合)見つかりにくい場所にある。
+C:\Users\srcn4\AppData\Local\online-judge-tools\online-judge-tools
+ここでは個別の設定ができないが、オプション引数で別の設定ファイルを指定できるので、
+oj-prepare --config-file C:\Users\srcn4\AppData\Local\online-judge-tools\online-judge-tools\prepare.config.cf.toml https://codeforces.com/contest/1619
+みたいにすることで、こどふぉ用テンプレを読み込めた。
+設定ファイル内で階層も指定すれば、atcoder-cliと同じフォルダ構成にもできた。
+
+oj-template
+ランダムテスト用にgenerate.pyも欲しい所だが、毎回全ての問題に要る訳じゃない。
+必要な時だけ使いたい。
+oj-prepareの設定ファイルに組み込むと、常に生成されてしまう。
+そこで、
+oj-template -t generate.py https://atcoder.jp/contests/abc232/tasks/abc232_a > generate.py
+のようにすることで、個別生成ができた。
