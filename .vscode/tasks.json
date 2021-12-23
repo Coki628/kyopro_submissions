@@ -20,6 +20,8 @@
             "type": "shell",
             "command": "g++",
             "args": [
+                // ローカルデバッグ用マクロを定義
+                "-D=__LOCAL",
                 "-g3",
                 "-O0",
                 "-D_GLIBCXX_DEBUG",
