@@ -41,3 +41,21 @@ oj-prepare https://atcoder.jp/contests/joig2021-open/tasks/joig2021_b
 oj generate-input "python generate.py" 1
 愚直解Python指定
 oj generate-output -c "python naive.py"
+
+include読み込み
+pip install online-judge-verify-helper
+oj-bundle 読み込みたいファイルパス > 出力ファイルパス
+ってやる。
+何もない所に出力したら文字コードがバグったので、Winだったら予めUTF-8で空ファイルは作っておいた方がよさそう。
+そうやったらうまくいった。
+
+とりあえず
+ac.bat コンテスト名
+で準備ができるようにしてある。
+デバッグしたければ普通にF5
+oj testしたい時はctrl+shift+B
+で今開いてる問題を実行できるようにしてある。
+この時どちらでも_dist/main.cppに提出用のを書き込むようにしてある。
+
+atcoder-cliの設定
+参考：http://tatamo.81.la/blog/2018/12/07/atcoder-cli-tutorial/

@@ -33,11 +33,24 @@
                 "-o",
                 "${fileDirname}\\a.exe"
             ],
-            "group": {
-                "kind": "build",
-                // この指定があるやつがctrl+shift+Bで実行される
-                "isDefault": true
-            },
+        },
+        {
+            // 提出用ファイルdist.cppの生成
+            "label": "oj-bundle",
+            "type": "shell",
+            "command": "oj-bundle",
+            "args": [
+                "${fileDirname}/${fileBasename}",
+                ">",
+                "_dist/main.cpp",
+                "&",
+                // 整形処理
+                "python",
+                "_dist/finalize.py"
+            ],
+            "dependsOn": [
+                "build"
+            ],
         },
         {
             "label": "oj-test",
@@ -50,8 +63,13 @@
                 "test"
             ],
             "dependsOn": [
-              "build"
+              "oj-bundle"
             ],
+            "group": {
+                "kind": "build",
+                // この指定があるやつがctrl+shift+Bで実行される
+                "isDefault": true
+            },
         },
     ]
 }

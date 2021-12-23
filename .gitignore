@@ -1,7 +1,15 @@
 *.exe
+
+# TopCoder
 TopCoder/*/*.html
 TopCoder/*/*.sample
 
 # test cases
 *.in
 *.out
+
+# atcoder-cli
+**/contest.acc.json
+
+# oj-bundle
+_dist/main.cpp
