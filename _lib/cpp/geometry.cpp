@@ -52,6 +52,7 @@ struct Point {
     T norm() { return x*x + y*y; }
     T abs() { return sqrt(norm()); }
     T abs(const Point &p) { return hypot(x-p.x, y-p.y); }
+    T abs2(const Point &p) { return pow(x-p.x, 2)+pow(y-p.y, 2); }
     T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
     void print() { cout << x << ' ' << y << '\n'; }
 };

@@ -155,5 +155,10 @@ int main() {
     // print(string(ALL(v)));
     // print(vector<char>(ALL(s)));
 
+    // ローカルだけ実行(要コンパイルオプション)
+    // #ifdef __LOCAL
+    //     debug(ans);
+    // #endif
+
     return 0;
 }

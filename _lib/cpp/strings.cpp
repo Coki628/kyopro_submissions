@@ -11,18 +11,6 @@ const string ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const string ascii_letters = ascii_lowercase + ascii_uppercase;
 
 
-string replace(string str, const string& replace, const string& with) {
-    if(!replace.empty()) {
-        size_t pos = 0;
-        while ((pos = str.find(replace, pos)) != string::npos) {
-            str.replace(pos, replace.length(), with);
-            pos += with.length();
-        }
-    }
-    return str;
-}
-
-
 string zfill(string str, int len) {
     string zeros;
     int n = str.size();
@@ -64,6 +52,18 @@ string bin(ll x) {
 
 
 
+
+
+string replace(string str, const string& replace, const string& with) {
+    if(!replace.empty()) {
+        size_t pos = 0;
+        while ((pos = str.find(replace, pos)) != string::npos) {
+            str.replace(pos, replace.length(), with);
+            pos += with.length();
+        }
+    }
+    return str;
+}
 
 
 // 回文判定

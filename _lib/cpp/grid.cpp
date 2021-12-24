@@ -90,6 +90,10 @@ vector<string> scale(const vector<string> &grid, ll K) {
 const vector<pii> directions8 = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 
+// 斜め移動用(右下→右上→左上→左下みたいにダイヤ型に進む)
+const vector<pii> directions = {{1, 1}, {-1, 1}, {-1, -1}, {1, -1}};
+
+
 // グリッドBFS
 vvl bfs(const vector<string> &grid, const vector<pii> &src, char invalid='#') {
 

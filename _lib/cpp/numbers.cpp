@@ -431,3 +431,9 @@ vector<T> gcd_convolution(vector<T> F, vector<T> G) {
 
     return H;
 }
+
+
+// N以下の自然数でa+b=xを作る通り数
+ll calc(ll N, ll x) {
+    return max(min(x-1, N*2+1-x), 0LL);
+}

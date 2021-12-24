@@ -171,9 +171,9 @@ struct ModTools {
 // 順列全列挙
 template<typename T>
 vector<vector<T>> permutations(const vector<T> &A, int N=-1) {
-
     if (N == -1) N = A.size();
     int M = A.size();
+    assert(N <= M);
     vector<vector<T>> comb;
     rep(bit, 1<<M) {
         if (popcount(bit) != N) continue;
@@ -337,13 +337,25 @@ struct ArbitraryModInt {
 // using mint = ArbitraryModInt;
 
 
+// 参考：https://betrue12.hateblo.jp/entry/2020/02/23/173513
 // 任意Mod数え上げnCr
-template<typename T>
 struct AnyModTools {
 
-    vector<pair<T, int>> factorize(T n) {
-        vector<pair<T, int>> ret;
-        for(T i=2; i*i<=n; i++) {
+    const int64_t mod;
+    // 素数冪を (p, c) で表現したもの
+    vector<pair<int64_t, int>> primes;
+    // 素数冪 p^c の実際の値
+    vector<int64_t> ppow;
+    // 階乗を (x, y) 形式で表現したもの
+    vector<vector<pair<int64_t, int>>> fact;
+
+    AnyModTools(int64_t mod, int MX) : mod(mod) {
+        create_composite_mod_table(++MX, mod);
+    }
+
+    vector<pair<int64_t, int>> factorize(int64_t n) {
+        vector<pair<int64_t, int>> ret;
+        for(int64_t i=2; i*i<=n; i++) {
             int cnt = 0;
             while(n % i == 0) {
                 n /= i;
@@ -356,8 +368,8 @@ struct AnyModTools {
     }
 
     // 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
-    T extgcd(T a, T b, T& x, T& y) {
-        T d = a;
+    int64_t extgcd(int64_t a, int64_t b, int64_t& x, int64_t& y) {
+        int64_t d = a;
         if(b != 0){
             d = extgcd(b, a%b, y, x);
             y -= (a/b) * x;
@@ -368,22 +380,10 @@ struct AnyModTools {
     }
 
     // MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
-    T inv_mod(T a, T mod) {
-        T x, y;
+    int64_t inv_mod(int64_t a, int64_t mod) {
+        int64_t x, y;
         extgcd(a, mod, x, y);
         return (mod + x%mod) % mod;
-    }
-
-    const int64_t mod;
-    // 素数冪を (p, c) で表現したもの
-    vector<pair<int64_t, int>> primes;
-    // 素数冪 p^c の実際の値
-    vector<int64_t> ppow;
-    // 階乗を (x, y) 形式で表現したもの
-    vector<vector<pair<int64_t, int>>> fact;
-
-    AnyModTools(int64_t mod, int MX) : mod(mod) {
-        create_composite_mod_table(++MX, mod);
     }
 
     void add(int64_t& a, int64_t b, int64_t mod) {
