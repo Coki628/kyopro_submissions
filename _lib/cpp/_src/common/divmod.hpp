@@ -1,4 +1,5 @@
-#include "../../template.hpp"
+#pragma once
+#include "../base.hpp"
 
 template<typename T>
 pair<T, T> divmod(T a, T b) {

@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 
 template<typename T>
 vector<T> sorted(vector<T> A, bool reverse=false) {

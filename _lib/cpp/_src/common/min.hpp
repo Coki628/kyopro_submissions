@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 #include "chmin.hpp"
 
 template<typename T> T min(const vector<T> &A) {

@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 ll pow(ll x, ll n) {
     ll res = 1;

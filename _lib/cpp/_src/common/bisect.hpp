@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 
 template<typename T>
 int bisect_left(const vector<T> &A, T val, int lo=0) {

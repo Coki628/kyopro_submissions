@@ -1,5 +1,5 @@
 #pragma once
-#include "../../template.hpp"
+#include "../base.hpp"
 
 ll toint(string s) {
     assert(s.size() < 20);

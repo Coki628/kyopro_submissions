@@ -10,6 +10,13 @@ constexpr long long INF = 1e18;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
 
+#include "../../../_lib/cpp/_dist/base.hpp"
+
+#include "../../../_lib/cpp/_dist/macros.hpp"
+
+#include "../../../_lib/cpp/_dist/combinatorics/ModInt.hpp"
+using mint = ModInt<MOD>;
+
 #include "../../../_lib/cpp/template.hpp"
 
 void solve() {

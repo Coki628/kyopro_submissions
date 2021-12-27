@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 #include "to_string.hpp"
 
 template<typename T>

@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) {
     return vector<vector<T>>(N, vector<T>(M, init));

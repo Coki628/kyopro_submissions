@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 template<typename T>
 map<T, ll> Counter(const vector<T> &A) {

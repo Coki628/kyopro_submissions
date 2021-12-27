@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 #include "toint.hpp"
 
 vector<ll> split(const string &S, char separator) {

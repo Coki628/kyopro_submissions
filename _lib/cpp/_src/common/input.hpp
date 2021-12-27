@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 template<typename T=ll> vector<T> LIST(ll N) {
     vector<T> A(N);

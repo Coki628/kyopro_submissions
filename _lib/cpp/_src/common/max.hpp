@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 #include "chmax.hpp"
 
 template<typename T> T max(const vector<T> &A) {

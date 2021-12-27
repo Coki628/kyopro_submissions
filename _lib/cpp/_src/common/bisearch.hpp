@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 // (mn,mx]の範囲で条件を満たす最小値を見つける二分探索
 template<typename F>

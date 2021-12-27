@@ -1,5 +1,5 @@
 #pragma once
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 void print() {
     cout << '\n';

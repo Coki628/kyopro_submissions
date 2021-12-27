@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../base.hpp"
 
 template<typename T> T sum(const vector<T> &A) {
     return accumulate(ALL(A), (T)0);
