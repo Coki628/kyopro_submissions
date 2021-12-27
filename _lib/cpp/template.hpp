@@ -45,8 +45,6 @@
 #include "_dist/grid/constants/directions.hpp"
 #include "_dist/grid/gridtoid.hpp"
 #include "_dist/grid/idtogrid.hpp"
-#include "_dist/grid/transpose.hpp"
-#include "_dist/grid/rot90.hpp"
 
 // from mystl
 #include "_dist/mystl/defaultdict.hpp"
@@ -56,10 +54,7 @@
 #include "_dist/numbers/lcm.hpp"
 #include "_dist/numbers/factorize.hpp"
 #include "_dist/numbers/divisors.hpp"
-#include "_dist/numbers/ntod.hpp"
-#include "_dist/numbers/dton.hpp"
 #include "_dist/numbers/isqrt.hpp"
-#include "_dist/numbers/digit_sum.hpp"
 
 // from segment
 #include "_dist/segment/Accumulate.hpp"
@@ -70,6 +65,5 @@
 #include "_dist/string/constants/digits.hpp"
 #include "_dist/string/constants/ascii_lowercase.hpp"
 #include "_dist/string/constants/ascii_uppercase.hpp"
-#include "_dist/string/constants/ascii_letters.hpp"
 #include "_dist/string/zfill.hpp"
 #include "_dist/string/bin.hpp"
