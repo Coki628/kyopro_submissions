@@ -33,7 +33,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "oj-bundle",
+            "preLaunchTask": "build",
             "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe"
         }
     ]

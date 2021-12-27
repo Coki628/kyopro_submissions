@@ -1,0 +1,5 @@
+contest_directory = "{contest_id}"
+problem_directory = "{problem_id}"
+
+[templates]
+"1.cpp" = "tpl.cpp"

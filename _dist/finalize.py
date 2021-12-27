@@ -3,7 +3,6 @@
 """
 
 import os
-import re
 
 path_r = '{0}/_dist/main.cpp'.format(os.getcwd())
 path_w = '{0}/_dist/main.cpp'.format(os.getcwd())

@@ -33,6 +33,9 @@
                 "-o",
                 "${fileDirname}\\a.exe"
             ],
+            "dependsOn": [
+                "oj-bundle"
+            ],
         },
         {
             // 提出用ファイルdist.cppの生成
@@ -48,9 +51,6 @@
                 "python",
                 "_dist/finalize.py"
             ],
-            "dependsOn": [
-                "build"
-            ],
         },
         {
             "label": "oj-test",
@@ -63,7 +63,7 @@
                 "test"
             ],
             "dependsOn": [
-              "oj-bundle"
+              "build"
             ],
             "group": {
                 "kind": "build",

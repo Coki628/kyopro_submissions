@@ -27,66 +27,35 @@ using vvpil = vector<vector<pil>>;
 #define elif else if
 #define tostr to_string
 
-template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
-template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
-template<typename T> vector<vector<vector<vector<T>>>> list4d(int N, int M, int L, int O, T init) { return vector<vector<vector<vector<T>>>>(N, vector<vector<vector<T>>>(M, vector<vector<T>>(L, vector<T>(O, init)))); }
-
-template<typename T=ll> vector<T> LIST(ll N) { vector<T> A(N); rep(i, N) cin >> A[i]; return A; }
-
-void print() { cout << '\n'; }
-template<typename T> void print(T out) { cout << out << '\n'; }
-template<typename T1, typename T2> void print(const pair<T1, T2> &p) { cout << p.first << ' ' << p.second << '\n'; }
-template<typename T1, typename T2, typename T3> void print(const tuple<T1, T2, T3> &tp) { cout << get<0>(tp) << ' ' << get<1>(tp) << ' ' << get<2>(tp) << '\n'; }
-template<typename T1, typename T2, typename T3, typename T4> void print(const tuple<T1, T2, T3, T4> &tp) { cout << get<0>(tp) << ' ' << get<1>(tp) << ' ' << get<2>(tp) << ' ' << get<3>(tp) << '\n'; }
-template<typename T> void print(const vector<T> &V) { rep(i, V.size()) { cout << V[i]; if (i != V.size()-1) cout << ' '; } cout << '\n'; }
-template<typename T, size_t SZ> void print(const array<T, SZ> &arr) { rep(i, arr.size()) { cout << arr[i]; if (i != arr.size()-1) cout << ' '; } cout << '\n'; }
-template<typename T> void print(const deque<T> &que) { vector<T> V(ALL(que)); print(V); }
-template<typename T> void print(const set<T> &se) { vector<T> V(ALL(se)); print(V); }
-#define debug(x) (cout << #x << ": ", print(x));
-
-void Yes() { print("Yes"); }
-void No() { print("No"); }
-void YES() { print("YES"); }
-void NO() { print("NO"); }
-
-// from common.cpp
-ll toint(string s) { ll res = 0; for (char c : s) { res *= 10; res += (c - '0'); } return res; }
-int toint(char num) { return num - '0'; }
-char tochar(int num) { return '0' + num; }
-ll floor(ll a, ll b) { if (a < 0) return (a-b+1) / b; else return a / b; }
-ll ceil(ll a, ll b) { if (a >= 0) return (a+b-1) / b; else return a / b; }
-ll modulo(ll a, ll b) { return ((a % b) + b) % b; }
-template<typename T> pll divmod(ll a, T b) { ll d = a / b; ll m = a % b; return {d, m}; }
-template<typename T> bool chmax(T &x, T y) { return (y > x) ? x = y, true : false; }
-template<typename T> bool chmin(T &x, T y) { return (y < x) ? x = y, true : false; }
-template<typename T> T sum(const vector<T> &A) { T res = 0; for (T a: A) res += a; return res; }
-template<typename key, typename val> val sum(const map<key, val> &mp) { val res = 0; for (auto [k, v] : mp) res += v; return res; }
-template<typename T> T max(const vector<T> &A) { return *max_element(ALL(A)); }
-template<typename T> T min(const vector<T> &A) { return *min_element(ALL(A)); }
-ll pow(int x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
-ll pow(int x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
-ll pow(ll x, int n) { ll res = 1; rep(_, n) res *= x; return res; }
-ll pow(ll x, ll n) { ll res = 1; rep(_, n) res *= x; return res; }
-ll pow(ll x, ll n, int mod) { x %= mod; ll res = 1; while (n > 0) { if (n & 1) { res = (res * x) % mod; } x = (x * x) % mod; n >>= 1; } return res; }
-int popcount(ll S) { return __builtin_popcountll(S); }
-int bit_length(ll x) { return x != 0 ? floor(log2((ld)x))+1 : 0; }
-template<typename T> int bisect_left(const vector<T> &A, T val, int lo=0) { return lower_bound(A.begin()+lo, A.end(), val) - A.begin(); }
-template<typename T> int bisect_right(const vector<T> &A, T val, int lo=0) { return upper_bound(A.begin()+lo, A.end(), val) - A.begin(); }
-template<typename T> map<T, ll> Counter(const vector<T> &A) { map<T, ll> res; for (T a : A) res[a]++; return res; }
-template<typename T> vector<ll> Counter(const vector<T> &A, T mx) { vector<ll> res(mx+1); for (T a : A) { res[a]++; } return res; }
-map<char, ll> Counter(const string &S) { map<char, ll> res; for (char c : S) res[c]++; return res; }
-template<typename F> ll bisearch_min(ll mn, ll mx, const F &func) { ll ok = mx, ng = mn; while (ng+1 < ok) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
-template<typename F> ll bisearch_max(ll mn, ll mx, const F &func) { ll ok = mn, ng = mx; while (ok+1 < ng) { ll mid = (ok+ng) / 2; if (func(mid)) ok = mid; else ng = mid; } return ok; }
-template<typename T1, typename T2> pair<vector<T1>, vector<T2>> zip(const vector<pair<T1, T2>> &A) { ll N = A.size(); pair<vector<T1>, vector<T2>> res = {vector<T1>(N), vector<T2>(N)}; rep(i, N) { res.first[i] = A[i].first; res.second[i] = A[i].second; } return res; }
-template<typename T1, typename T2, typename T3> tuple<vector<T1>, vector<T2>, vector<T3>> zip(const vector<tuple<T1, T2, T3>> &A) { int N = A.size(); tuple<vector<T1>, vector<T2>, vector<T3>> res = {vector<T1>(N), vector<T2>(N), vector<T3>(N)}; rep(i, N) { get<0>(res)[i] = get<0>(A[i]); get<1>(res)[i] = get<1>(A[i]); get<2>(res)[i] = get<2>(A[i]); } return res; }
-template<typename T> struct Compress { int N; vector<T> dat; Compress(vector<T> A) { sort(A.begin(), A.end()); A.erase(unique(A.begin(), A.end()), A.end()); N = A.size(); dat = A; } int zip(T x) { return bisect_left(dat, x); } T unzip(int x) { return dat[x]; } int operator[](T x) { return zip(x); } int size() { return dat.size(); } vector<T> zip(const vector<T> &A) { int M = A.size(); vector<T> res(M); rep(i, M) res[i] = zip(A[i]); return res; } };
-template<typename T> vector<pair<T, int>> RLE(const vector<T> &A) { if (A.empty()) return {}; int N = A.size(); vector<pair<T, int>> res; T cur = A[0]; int cnt = 1; rep(i, 1, N) { if (A[i] == A[i-1]) { cnt++; } else { res.pb({cur, cnt}); cnt = 1; cur = A[i]; } } res.pb({cur, cnt}); return res; }
-vector<pair<char, int>> RLE(const string &S) { if (S.empty()) return {}; int N = S.size(); vector<pair<char, int>> res; char cur = S[0]; int cnt = 1; rep(i, 1, N) { if (S[i] == S[i-1]) { cnt++; } else { res.pb({cur, cnt}); cnt = 1; cur = S[i]; } } res.pb({cur, cnt}); return res; }
-bool mul_overflow(ll x, ll y) { ll z; return __builtin_mul_overflow(x, y, &z); }
-vector<ll> split(const string &S, char separator) { int N = S.size(); vector<ll> res; string cur; rep(i, N) { if (S[i] == separator) { res.eb(toint(cur)); cur = ""; } else { cur += S[i]; } } if (cur.size()) res.eb(toint(cur)); return res; }
-string to_string(const string &S) { return S; }
-string to_string(char c) { return {c}; }
-template<typename T> string join(const vector<T> &A, char separator=0) { int N = A.size(); string res; rep(i, N) { res += tostr(A[i]); if (separator != 0 and i != N-1) res += separator; } return res; }
+// from common
+#include "_dist/common/listnd.hpp"
+#include "_dist/common/input.hpp"
+#include "_dist/common/print.hpp"
+#include "_dist/common/yesno.hpp"
+#include "_dist/common/toint.hpp"
+#include "_dist/common/tochar.hpp"
+#include "_dist/common/floor.hpp"
+#include "_dist/common/ceil.hpp"
+#include "_dist/common/modulo.hpp"
+#include "_dist/common/divmod.hpp"
+#include "_dist/common/chmin.hpp"
+#include "_dist/common/chmax.hpp"
+#include "_dist/common/sum.hpp"
+#include "_dist/common/min.hpp"
+#include "_dist/common/max.hpp"
+#include "_dist/common/pow.hpp"
+#include "_dist/common/popcount.hpp"
+#include "_dist/common/bit_length.hpp"
+#include "_dist/common/bisect.hpp"
+#include "_dist/common/Counter.hpp"
+#include "_dist/common/bisearch.hpp"
+#include "_dist/common/zip.hpp"
+#include "_dist/common/Compress.hpp"
+#include "_dist/common/RLE.hpp"
+#include "_dist/common/mul_overflow.hpp"
+#include "_dist/common/split.hpp"
+#include "_dist/common/join.hpp"
+#include "_dist/common/sorted.hpp"
 
 // from combinatorics.cpp
 template<int mod> struct ModInt { int x; ModInt() : x(0) {} ModInt(int64_t y) : x(y >= 0 ? y % mod : (mod - (-y) % mod) % mod) {} ModInt &operator++() { x++; if (x == mod) x = 0; return *this; } ModInt &operator--() { if (x == 0) x = mod; x--; return *this; } ModInt &operator+=(const ModInt &p) { if((x += p.x) >= mod) x -= mod; return *this; } ModInt &operator-=(const ModInt &p) { if((x += mod - p.x) >= mod) x -= mod; return *this; } ModInt &operator*=(const ModInt &p) { x = (int) (1LL * x * p.x % mod); return *this; } ModInt &operator/=(const ModInt &p) { *this *= p.inverse(); return *this; } ModInt operator++(int) { ModInt result = *this; ++*this; return result; } ModInt operator--(int) { ModInt result = *this; --*this; return result; } ModInt operator-() const { return ModInt(-x); } ModInt operator+(const ModInt &p) const { return ModInt(*this) += p; } ModInt operator-(const ModInt &p) const { return ModInt(*this) -= p; } ModInt operator*(const ModInt &p) const { return ModInt(*this) *= p; } ModInt operator/(const ModInt &p) const { return ModInt(*this) /= p; } bool operator==(const ModInt &p) const { return x == p.x; } bool operator!=(const ModInt &p) const { return x != p.x; } ModInt inverse() const { int a = x, b = mod, u = 1, v = 0, t; while(b > 0) { t = a / b; swap(a -= t * b, b); swap(u -= t * v, v); } return ModInt(u); } ModInt pow(int64_t n) const { ModInt ret(1), mul(x); while(n > 0) { if(n & 1) ret *= mul; mul *= mul; n >>= 1; } return ret; } friend ostream &operator<<(ostream &os, const ModInt &p) { return os << p.x; } friend istream &operator>>(istream &is, ModInt &a) { int64_t t; is >> t; a = ModInt< mod >(t); return (is); } static int get_mod() { return mod; } };

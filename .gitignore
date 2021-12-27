@@ -1,4 +1,5 @@
 *.exe
+*.pyc
 
 # TopCoder
 TopCoder/*/*.html
@@ -13,3 +14,6 @@ TopCoder/*/*.sample
 
 # oj-bundle
 _dist/main.cpp
+
+# compressed libs
+_lib/cpp/_dist/**

@@ -5,22 +5,33 @@
 """
 
 import os
-import re
 
-path_r = '{0}/in.cpp'.format(os.getcwd())
-path_w = '{0}/out.cpp'.format(os.getcwd())
+def compress(path_r: str, path_w: str):
+    output = []
+    with open(path_r, encoding='utf-8') as f:
+        for line in f.readlines():
+            # 空行
+            if line[0] == '\n':
+                continue
+            # コメント行
+            if line.strip().startswith('//'):
+                continue
+            output.append(line.strip())
 
-out = []
-with open(path_r, encoding='utf-8') as f:
-    for line in f.readlines():
+    for i in range(len(output)):
+        # #define等の前後だけ改行させる
+        if output[i].startswith('#'):
+            output[i] += '\n'
+            if i > 0:
+                output[i-1] = output[i-1][:-1] + '\n'
+        elif i < len(output)-1:
+            output[i] += ' '
 
-        # 空行
-        if line[0] == '\n':
-            continue
-        # コメント行
-        if line.strip().startswith('//'):
-            continue
-        out.append(line.strip())
+    with open(path_w, mode='w', encoding='utf-8') as f:
+        f.write(''.join(output))
 
-with open(path_w, mode='w', encoding='utf-8') as f:
-    f.write(' '.join(out))
+# このファイルが実行された時(importで呼ばれた時はやらない)
+if __name__ == '__main__':
+    path_r = '{0}/in.cpp'.format(os.getcwd())
+    path_w = '{0}/out.cpp'.format(os.getcwd())
+    compress(path_r, path_w)
