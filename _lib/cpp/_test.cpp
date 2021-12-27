@@ -11,16 +11,17 @@ constexpr long long INF = 1e18;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
 
-#include "template.hpp"
+// #include "template.hpp"
+#include "_dist/macros.hpp"
 
-template<typename T>
-vector<T> accumulate(vector<T> &A, bool indexed=0) {
-    int n = A.size();
-    auto res = A;
-    rep(i, n-1) res[i+1] += res[i];
-    if (indexed) res.insert(res.begin(), 0);
-    return res;
-}
+// template<typename T>
+// vector<T> accumulate(vector<T> &A, bool indexed=0) {
+//     int n = A.size();
+//     auto res = A;
+//     rep(i, n-1) res[i+1] += res[i];
+//     if (indexed) res.insert(res.begin(), 0);
+//     return res;
+// }
 
 // template<typename T, typename F>
 // vector<T> accumulate(vector<T> &A, const F &func=[](T a, T b) { return a + b; }) {
