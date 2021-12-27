@@ -58,14 +58,6 @@ ld bisearch_max(ld mn, ld mx, const F &func, ll times) {
 }
 
 
-// [l,r)の範囲で乱数生成
-mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
-ll randrange(ll l, ll r) {
-    uniform_int_distribution<ll> rand(l, r-1);
-    return rand(mt);
-}
-
-
 // 三分探索(実数)
 template<typename F>
 pair<ld, ld> trisearch_min(ld lo, ld hi, const F &func, ll times) {
