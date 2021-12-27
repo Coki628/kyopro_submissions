@@ -23,6 +23,10 @@ template<typename T1, typename T2, typename T3, typename T4> void print(
     cout << get<0>(tp) << ' ' << get<1>(tp) << ' ' << get<2>(tp) << ' ' << get<3>(tp) << '\n';
 }
 
+template<typename T1, typename T2> void print(const vector<pair<T1, T2>> &V) {
+    for (auto& p : V) print(p);
+}
+
 template<typename T> void print(const vector<T> &V) {
     rep(i, V.size()) {
         cout << V[i];

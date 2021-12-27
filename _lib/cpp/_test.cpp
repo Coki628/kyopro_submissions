@@ -11,8 +11,14 @@ constexpr long long INF = 1e18;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
 
-// #include "template.hpp"
+#include "_dist/base.hpp"
+
 #include "_dist/macros.hpp"
+
+// #include "_dist/combinatorics/ModInt.hpp"
+// using mint = ModInt<MOD>;
+
+// #include "template.hpp"
 
 // template<typename T>
 // vector<T> accumulate(vector<T> &A, bool indexed=0) {
@@ -48,6 +54,9 @@ void solve() {
     // auto T4 = join(v2);
     // print(T4);
     // print(join(v2, '\n'));
+
+    // vector<pll> V = {{1, 3}, {3, 2}, {4, 7}};
+    // print(V);
 }
 
 int main() {
