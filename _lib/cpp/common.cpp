@@ -241,6 +241,14 @@ string join(const vector<T> &A, char separator=0) {
 }
 
 
+template<typename T>
+vector<T> sorted(vector<T> A, bool reverse=false) {
+    sort(ALL(A));
+    if (reverse) std::reverse(ALL(A));
+    return A;
+}
+
+
 
 
 
@@ -283,14 +291,6 @@ vector<T> mapping(const vector<string> &A, const F &f) {
     vector<T> res(N);
     rep(i, N) res[i] = f(A[i]);
     return res;
-}
-
-
-template<typename T>
-vector<T> sorted(vector<T> A, bool reverse=false) {
-    sort(ALL(A));
-    if (reverse) std::reverse(ALL(A));
-    return A;
 }
 
 

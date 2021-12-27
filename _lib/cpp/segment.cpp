@@ -1323,6 +1323,7 @@ struct WaveletMatrix {
 
     // count i s.t. (l <= i < r) && (v[i] < upper)
     int range_freq(int l, int r, T upper) {
+        assert(upper >= 0);
         int ret = 0;
         for(int level = MAXLOG - 1; level >= 0; level--) {
         bool f = ((upper >> level) & 1);
@@ -2216,6 +2217,15 @@ struct RangeSet {
             cout<<"["<<p.first<<", "<<p.second<<"] ";
         }
         cout<<"\n";
+    }
+
+    vector<pair<T, T>> get_ranges() {
+        vector<pair<T, T>> res;
+        for (auto& [l, r] : st) {
+            if (l == -TINF or r == TINF) continue;
+            res.emplace_back(l, r);
+        }
+        return res;
     }
 };
 
