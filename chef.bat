@@ -7,7 +7,7 @@ set project_root=C:\Users\srcn4\repos\kyopro
 
 cd codechef
 @REM 全問題取得
-if %2 == "" (
+if "%2"=="" (
     @REM 全問題を取得
     call oj-prepare --config-file %project_root%\_lib\cpp\oj-configs\prepare.config.cf.toml https://www.codechef.com/contest/%1
     @REM 問題Aを開きたいけど問題IDが通し番号じゃないので分からない

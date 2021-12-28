@@ -7,7 +7,7 @@ set project_root=C:\Users\srcn4\repos\kyopro
 
 cd AtCoder
 @REM 全問題取得
-if %2 == "" (
+if "%2"=="" (
     @REM 全問題を取得
     call oj-prepare --config-file %project_root%\_lib\cpp\oj-configs\prepare.config.ac.toml https://atcoder.jp/contests/%1
     @REM A問題を開く
