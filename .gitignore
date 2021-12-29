@@ -13,6 +13,7 @@ TopCoder/*/*.sample
 **/contest.acc.json
 
 # oj-bundle
+_dist/tmp.cpp
 _dist/main.cpp
 
 # compressed libs

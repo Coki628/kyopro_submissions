@@ -16,7 +16,8 @@
     },
     "tasks": [
         {
-            "label": "build",
+            // oj-test用ビルド
+            "label": "test_build",
             "type": "shell",
             "command": "g++",
             "args": [
@@ -26,8 +27,33 @@
                 "-O0",
                 "-D_GLIBCXX_DEBUG",
                 "-Wall",
-                // windowsでビルドこけるのでコメントアウト
+                // windowsでコンパイルこけるのでコメントアウト
                 // "-fsanitize=undefined",
+                // oj-bundle済の提出用ファイル
+                "_dist\\main.cpp",
+                "-std=c++17",
+                "-o",
+                "${fileDirname}\\a.exe"
+            ],
+            "dependsOn": [
+                "oj-bundle"
+            ],
+        },
+        {
+            // デバッグ用ビルド
+            "label": "debug_build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                // ローカルデバッグ用マクロを定義
+                "-D=__LOCAL",
+                "-g3",
+                "-O0",
+                "-D_GLIBCXX_DEBUG",
+                "-Wall",
+                // windowsでコンパイルこけるのでコメントアウト
+                // "-fsanitize=undefined",
+                // デバッグしたいのでoj-bundle前の元ファイル
                 "${fileDirname}\\${fileBasename}",
                 "-std=c++17",
                 "-o",
@@ -38,18 +64,24 @@
             ],
         },
         {
-            // 提出用ファイルdist.cppの生成
+            // 提出用ファイル_dist/main.cppの生成
             "label": "oj-bundle",
             "type": "shell",
-            "command": "oj-bundle",
+            "command": "python",
             "args": [
-                "${fileDirname}/${fileBasename}",
+                // src -> dist 変換
+                "_dist/prepare.py",
+                "${fileDirname}\\",
+                "${fileBasename}",
+                "&",
+                "oj-bundle",
+                "_dist\\tmp.cpp",
                 ">",
-                "_dist/main.cpp",
+                "_dist\\main.cpp",
                 "&",
                 // 整形処理
                 "python",
-                "_dist/finalize.py"
+                "_dist\\finalize.py"
             ],
         },
         {
@@ -63,7 +95,7 @@
                 "test"
             ],
             "dependsOn": [
-              "build"
+              "test_build"
             ],
             "group": {
                 "kind": "build",
