@@ -1,4 +1,4 @@
-#include "../../template.hpp"
+#include "../macros.hpp"
 
 // 座標圧縮(二分探索ベース)
 template<typename T>

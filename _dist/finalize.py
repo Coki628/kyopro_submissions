@@ -23,9 +23,6 @@ with open(path_r, encoding='utf-8') as f:
         # oj-bundleの行表示を非表示
         if line.startswith('#line '):
             continue
-        # mintの後ろの改行調整
-        if lines[i-1].startswith('using mint ='):
-            continue
         out.append(line)
 
 with open(path_w, mode='w', encoding='utf-8') as f:
