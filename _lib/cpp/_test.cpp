@@ -6,28 +6,22 @@
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
 
+#define CONSTANTS
+#include "_src/base.hpp"
+
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
+constexpr ld EPS = 1e-10;
+constexpr ld PI = M_PI;
 
-#include "_dist/base.hpp"
+#include "_src/macros.hpp"
 
-#include "_dist/macros.hpp"
+#include "_src/combinatorics/ModInt.hpp"
+using mint = ModInt<MOD>;
 
-// #include "_dist/combinatorics/ModInt.hpp"
-// using mint = ModInt<MOD>;
-
-// #include "template.hpp"
-
-// template<typename T>
-// vector<T> accumulate(vector<T> &A, bool indexed=0) {
-//     int n = A.size();
-//     auto res = A;
-//     rep(i, n-1) res[i+1] += res[i];
-//     if (indexed) res.insert(res.begin(), 0);
-//     return res;
-// }
+#include "_src/template.hpp"
 
 // template<typename T, typename F>
 // vector<T> accumulate(vector<T> &A, const F &func=[](T a, T b) { return a + b; }) {
