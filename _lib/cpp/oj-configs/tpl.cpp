@@ -5,19 +5,22 @@
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
 
+#define CONSTANTS
+#include "../../../_lib/cpp/_src/base.hpp"
+
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
+constexpr ld EPS = 1e-10;
+constexpr ld PI = M_PI;
 
-#include "../../../_lib/cpp/_dist/base.hpp"
+#include "../../../_lib/cpp/_src/macros.hpp"
 
-#include "../../../_lib/cpp/_dist/macros.hpp"
-
-#include "../../../_lib/cpp/_dist/combinatorics/ModInt.hpp"
+#include "../../../_lib/cpp/_src/combinatorics/ModInt.hpp"
 using mint = ModInt<MOD>;
 
-#include "../../../_lib/cpp/template.hpp"
+#include "../../../_lib/cpp/_src/template.hpp"
 
 void solve() {
     

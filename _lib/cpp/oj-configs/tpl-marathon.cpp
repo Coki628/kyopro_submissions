@@ -5,25 +5,28 @@
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
 
+#define CONSTANTS
+#include "../../../_lib/cpp/_src/base.hpp"
+
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
 constexpr int MOD = 1000000007;
 // constexpr int MOD = 998244353;
+constexpr ld EPS = 1e-10;
+constexpr ld PI = M_PI;
 
-#include "../../../_lib/cpp/_dist/base.hpp"
+#include "../../../_lib/cpp/_src/macros.hpp"
 
-#include "../../../_lib/cpp/_dist/macros.hpp"
-
-#include "../../../_lib/cpp/_dist/common/listnd.hpp"
-#include "../../../_lib/cpp/_dist/common/input.hpp"
-#include "../../../_lib/cpp/_dist/common/print.hpp"
-#include "../../../_lib/cpp/_dist/common/ceil.hpp"
-#include "../../../_lib/cpp/_dist/common/chmin.hpp"
-#include "../../../_lib/cpp/_dist/common/chmax.hpp"
-#include "../../../_lib/cpp/_dist/common/randrange.hpp"
-#include "../../../_lib/cpp/_dist/common/Timer.hpp"
-#include "../../../_lib/cpp/_dist/grid/constants/directions.hpp"
-#include "../../../_lib/cpp/_dist/string/zfill.hpp"
+#include "../../../_lib/cpp/_src/common/listnd.hpp"
+#include "../../../_lib/cpp/_src/common/input.hpp"
+#include "../../../_lib/cpp/_src/common/print.hpp"
+#include "../../../_lib/cpp/_src/common/ceil.hpp"
+#include "../../../_lib/cpp/_src/common/chmin.hpp"
+#include "../../../_lib/cpp/_src/common/chmax.hpp"
+#include "../../../_lib/cpp/_src/common/randrange.hpp"
+#include "../../../_lib/cpp/_src/common/Timer.hpp"
+#include "../../../_lib/cpp/_src/grid/constants/directions.hpp"
+#include "../../../_lib/cpp/_src/string/zfill.hpp"
 
 void solve() {
     #ifdef __LOCAL
