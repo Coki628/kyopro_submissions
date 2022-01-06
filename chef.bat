@@ -1,5 +1,5 @@
-@REM chef.bat コンテスト番号
-@REM chef.bat コンテスト番号 問題
+@REM chef.bat コンテスト名
+@REM chef.bat コンテスト名 問題
 @echo off
 
 @REM 環境に合わせて変更
