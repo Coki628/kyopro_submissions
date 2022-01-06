@@ -27,6 +27,8 @@ generate.pyを編集
 ・制約小さくしたり数字いじる。
 oj generate-input "python generate.py"
 ・条件に合うケースがデフォルトで100個生成される。
+↓これなら1個生成
+oj generate-input "python generate.py" 1
 (愚直解を書く)
 生成したランダムケースの正解を生成
 oj generate-output
@@ -37,8 +39,6 @@ oj generate-output
 問題個別もできる。これだとフォルダは生成されないので、適切な階層を作ってからそこで実行
 →_ojって場所を作ったので、ここをテスト用の領域にしたらよさそう。
 oj-prepare https://atcoder.jp/contests/joig2021-open/tasks/joig2021_b
-これなら1個生成
-oj generate-input "python generate.py" 1
 愚直解Python指定
 oj generate-output -c "python naive.py"
 
@@ -75,3 +75,12 @@ oj-prepareの設定ファイルに組み込むと、常に生成されてしま�
 そこで、
 oj-template -t generate.py https://atcoder.jp/contests/abc232/tasks/abc232_a > generate.py
 のようにすることで、個別生成ができた。
+
+☆ランダムテスト作成手順個別☆
+oj-template -t generate.py 問題URL > generate.py
+(generate.pyを編集)
+oj generate-input "python generate.py" 作成ケース数
+(愚直解を書いて実行。これでa.exeが愚直解のものになる。)
+oj generate-output
+ここまでやるとランダムケースと答えが生成されているので、
+後はoj testを実行すればいい。
