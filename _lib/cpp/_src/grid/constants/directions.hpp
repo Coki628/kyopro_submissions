@@ -1,4 +1,5 @@
-#include "../../macros.hpp"
+#pragma once
+#include "dir4.hpp"
 
-// 4方向
-const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+// 後方互換用
+#define directions dir4

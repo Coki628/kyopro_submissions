@@ -24,3 +24,10 @@ using vvpil = vector<vector<pil>>;
 #define UNIQUE(A) sort(ALL(A)), A.erase(unique(ALL(A)), A.end())
 #define elif else if
 #define tostr to_string
+
+#ifndef CONSTANTS
+    constexpr long long INF = 1e18;
+    constexpr int MOD = 1000000007;
+    constexpr ld EPS = 1e-10;
+    constexpr ld PI = M_PI;
+#endif

@@ -1,4 +1,5 @@
 #include "../macros.hpp"
+#include "../common/listnd.hpp"
 
 // グリッド転置
 template<typename T>

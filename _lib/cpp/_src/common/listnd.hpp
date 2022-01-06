@@ -1,3 +1,4 @@
+#pragma once
 #include "../base.hpp"
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) {

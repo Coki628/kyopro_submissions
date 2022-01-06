@@ -30,10 +30,22 @@ struct Compress {
         return dat.size();
     }
 
-    vector<T> zip(const vector<T> &A) {
+    vector<ll> zip(const vector<T> &A) {
         int M = A.size();
-        vector<T> res(M);
+        vector<ll> res(M);
         rep(i, M) res[i] = zip(A[i]);
         return res;
     }
 };
+
+// 座標圧縮(mapベース)(旧)
+// template<typename T>
+// pair<map<T, int>, vector<T>> compress(vector<T> unzipped) {
+//     map<T, int> zipped;
+//     sort(unzipped.begin(), unzipped.end());
+//     unzipped.erase(unique(unzipped.begin(), unzipped.end()), unzipped.end());
+//     rep(i, unzipped.size()) {
+//         zipped[unzipped[i]] = i;
+//     }
+//     return {zipped, unzipped};
+// }
