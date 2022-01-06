@@ -20,15 +20,11 @@
             "label": "test_build",
             "type": "shell",
             "command": "g++",
+            // 参考：https://atcoder.jp/contests/APG4b/rules?lang=ja
             "args": [
-                // ローカルデバッグ用マクロを定義
-                "-D=__LOCAL",
-                "-g3",
-                "-O0",
-                "-D_GLIBCXX_DEBUG",
+                "-O2",
                 "-Wall",
-                // windowsでコンパイルこけるのでコメントアウト
-                // "-fsanitize=undefined",
+                "-Wextra",
                 // oj-bundle済の提出用ファイル
                 "_dist\\main.cpp",
                 "-std=c++17",
@@ -69,7 +65,11 @@
             "type": "shell",
             "command": "python",
             "args": [
+                // _distに最新の_srcを反映
+                "compresscpplib.py",
+                "&",
                 // src -> dist 変換
+                "python",
                 "_dist/prepare.py",
                 "${fileDirname}\\",
                 "${fileBasename}",
