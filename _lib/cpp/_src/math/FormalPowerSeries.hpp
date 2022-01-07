@@ -1,6 +1,7 @@
 #pragma once
 #include "../base.hpp"
 #include "../common/print.hpp"
+#include "ArbitraryModConvolution.hpp"
 
 /**
  * @brief Formal Power Series

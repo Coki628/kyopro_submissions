@@ -39,8 +39,8 @@ struct ModTools {
     Mint nCr(int n, int r) {
         if (n < r or r < 0) return 0;
         r = min(r, n-r);
-        T num = fact[n];
-        T den = factinv[r] * factinv[n-r];
+        Mint num = fact[n];
+        Mint den = factinv[r] * factinv[n-r];
         return num * den;
     }
 
