@@ -280,6 +280,11 @@ struct FormalPowerSeries : vector< T > {
         return p;
     }
 };
-template< typename Mint >
-using FPS = FormalPowerSeries< Mint >;
-template<typename T> void print(const FPS<T> &F) { vector<T> A(F.begin(), F.end()); print(A); }
+template<typename Mint>
+using FPS = FormalPowerSeries<Mint>;
+
+template<typename T>
+void print(const FPS<T> &F) {
+    vector<T> A(F.begin(), F.end());
+    print(A);
+}
