@@ -9,10 +9,10 @@
                 "args": [
                     "/C",
                     "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\activate.bat",
-                    "&"
-                ]
-            }
-        }
+                    "&",
+                ],
+            },
+        },
     },
     "tasks": [
         {
@@ -28,8 +28,11 @@
                 // oj-bundle済の提出用ファイル
                 "_dist\\main.cpp",
                 "-std=c++17",
+                // ACLのパス
+                "-I",
+                "${env:HOMEPATH}\\repos\\ac-library",
                 "-o",
-                "${fileDirname}\\a.exe"
+                "${fileDirname}\\a.exe",
             ],
             "dependsOn": [
                 "oj-bundle"
@@ -52,11 +55,14 @@
                 // デバッグしたいのでoj-bundle前の元ファイル
                 "${fileDirname}\\${fileBasename}",
                 "-std=c++17",
+                // ACLのパス
+                "-I",
+                "${env:HOMEPATH}\\repos\\ac-library",
                 "-o",
-                "${fileDirname}\\a.exe"
+                "${fileDirname}\\a.exe",
             ],
             "dependsOn": [
-                "oj-bundle"
+                "oj-bundle",
             ],
         },
         {
@@ -68,20 +74,24 @@
                 // _distに最新の_srcを反映
                 "compresscpplib.py",
                 "&",
-                // src -> dist 変換
+                // includeの _src -> _dist 変換
                 "python",
                 "_dist/prepare.py",
                 "${fileDirname}\\",
                 "${fileBasename}",
                 "&",
                 "oj-bundle",
-                "_dist\\tmp.cpp",
+                "${fileDirname}\\_tmp.cpp",
+                // ACLのパス
+                "-I",
+                "${env:HOMEPATH}\\repos\\ac-library",
                 ">",
                 "_dist\\main.cpp",
                 "&",
-                // 整形処理
+                // 後始末と整形処理
                 "python",
-                "_dist\\finalize.py"
+                "_dist\\finalize.py",
+                "${fileDirname}\\_tmp.cpp",
             ],
         },
         {
@@ -92,18 +102,18 @@
                 "${fileDirname}",
                 "&",
                 "oj",
-                "test"
+                "test",
             ],
             "dependsOn": [
-              "test_build"
+              "test_build",
             ],
             "group": {
                 "kind": "build",
                 // この指定があるやつがctrl+shift+Bで実行される
-                "isDefault": true
+                "isDefault": true,
             },
         },
-    ]
+    ],
 }
 // 参考：http://koturn.hatenablog.com/entry/2018/07/29/180000
 // g++ -g3 -O0 -D_FORTIFY_SOURCE=2 -D_GLIBCXX_DEBUG -ftrapv -fstack-protector-all -fno-omit-frame-pointer -fsanitize=address main.cpp -o

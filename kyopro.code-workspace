@@ -13,6 +13,10 @@
         }
     ],
     "settings": {
+        // 括弧の色付け
+        "editor.bracketPairColorization.enabled": true,
+        // 半角スペース表示
+        "editor.renderWhitespace": "all",
         // for ubuntu
         // "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
         // for windows
@@ -124,8 +128,7 @@
             "xmemory": "cpp",
             "xmemory0": "cpp",
             "xstddef": "cpp",
-            "xtr1common": "cpp"
+            "xtr1common": "cpp",
         },
-        // "editor.renderControlCharacters": true
     }
 }

@@ -1,8 +1,15 @@
 """
+・tmp.cppファイルを削除する。
 ・oj-bundleの出力を自分好みに整形する。
 """
 
 import os
+import sys
+
+args = sys.argv
+
+# tmp.cppファイルの削除
+os.remove(args[1])
 
 path_r = '{0}/_dist/main.cpp'.format(os.getcwd())
 path_w = '{0}/_dist/main.cpp'.format(os.getcwd())
@@ -22,6 +29,9 @@ with open(path_r, encoding='utf-8') as f:
             continue
         # oj-bundleの行表示を非表示
         if line.startswith('#line '):
+            continue
+        # 連続する空行をスキップ
+        if out and line == out[-1] == '\n':
             continue
         out.append(line)
 

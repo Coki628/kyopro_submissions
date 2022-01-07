@@ -2,21 +2,19 @@
 ・oj-bundleに読み込ませる前処理
 """
 
-import os
 import sys
 
 args = sys.argv
 
 path_r = args[1] + args[2]
-path_w = '{0}/_dist/tmp.cpp'.format(os.getcwd())
+path_w = args[1] + '_tmp.cpp'
 
 out = []
 with open(path_r, encoding='utf-8') as f:
     lines = f.readlines()
     for i, line in enumerate(lines):
-        # 相対パス変更及び src -> dist
-        if line.startswith('#include '):
-            line = line.replace('../../../', '../')
+        # src -> dist
+        if line.startswith('#include'):
             line = line.replace('_src', '_dist')  
         out.append(line)
 
