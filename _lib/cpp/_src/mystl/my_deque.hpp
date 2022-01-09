@@ -1,16 +1,23 @@
 #include "../base.hpp"
+#include "../common/print.hpp"
 
-template<typename _Tp, typename _Alloc=std::allocator<_Tp>>
-struct my_deque : public deque<_Tp, _Alloc> {
+template<typename _Tp>
+struct my_deque : deque<_Tp> {
+    using deque<_Tp>::deque;
     _Tp pop_front() {
-        auto res = this->front();
-        deque<_Tp, _Alloc>::pop_front();
+        _Tp res = this->front();
+        deque<_Tp>::pop_front();
         return res;
     }
     _Tp pop_back() {
-        auto res = this->back();
-        deque<_Tp, _Alloc>::pop_back();
+        _Tp res = this->back();
+        deque<_Tp>::pop_back();
         return res;
     }
 };
-#define deque my_deque
+
+template<typename T>
+void print(const my_deque<T> &que) {
+    vector<T> V(que.begin(), que.end());
+    print(V);
+}

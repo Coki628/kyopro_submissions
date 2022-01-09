@@ -1,12 +1,14 @@
 #include "../base.hpp"
+#include "../common/print.hpp"
 
-template<typename _Key, typename _Compare=less<_Key>, typename _Alloc=allocator<_Key>>
-struct my_set : public set<_Key, _Compare, _Alloc> {
+template<typename _Key>
+struct my_set : set<_Key> {
+    using set<_Key>::set;
     _Key front() {
         return *this->begin();
     }
     _Key pop_front() {
-        auto res = this->front();
+        _Key res = this->front();
         this->erase(this->begin());
         return res;
     }
@@ -14,8 +16,14 @@ struct my_set : public set<_Key, _Compare, _Alloc> {
         return *this->rbegin();
     }
     _Key pop_back() {
-        auto res = this->back();
+        _Key res = this->back();
         this->erase(prev(this->end()));
         return res;
     }
 };
+
+template<typename T>
+void print(const my_set<T> &se) {
+    vector<T> V(se.begin(), se.end());
+    print(V);
+}

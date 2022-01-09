@@ -6,7 +6,7 @@ struct my_vector : vector<_Tp> {
     // コンストラクタの継承
     using vector<_Tp>::vector;
     _Tp pop() {
-        auto res = this->back();
+        _Tp res = this->back();
         this->pop_back();
         return res;
     }
