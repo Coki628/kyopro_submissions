@@ -14,7 +14,7 @@ vector<T> LIS(const vector<T> &A, bool equal=false) {
         if (compare(A[i], res.back())) {
             res.pb(A[i]);
         } else {
-            res[bisect(res, A[i])] = A[i];
+            res[bisect(res, A[i], 0)] = A[i];
         }
     }
     return res;
