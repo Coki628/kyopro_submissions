@@ -17,6 +17,8 @@
         "editor.bracketPairColorization.enabled": true,
         // 半角スペース表示
         "editor.renderWhitespace": "all",
+        // コンソール表示行数増やす
+        "terminal.integrated.scrollback": 50000,
         // for ubuntu
         // "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
         // for windows

@@ -38,7 +38,7 @@ void solve() {
     // string S = "123:12:23";
     // auto v1 = mapping<ll>(split(S, ':'), [](string s) { return toint(s); });
     // print(v1);
-    // auto T1 = join(v1);  
+    // auto T1 = join(v1);
     // auto T2 = join(v1, ',');
     // print(T1);
     // print(T2);

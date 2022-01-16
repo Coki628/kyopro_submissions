@@ -1,3 +1,4 @@
+#pragma once
 #include "../macros.hpp"
 
 string zfill(string str, int len) {

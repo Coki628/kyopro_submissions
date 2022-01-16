@@ -48,6 +48,11 @@ void print(const array<T, SZ> &arr) {
     cout << '\n';
 }
 
+template<typename T, size_t SZ>
+void print(const vector<array<T, SZ>> &V) {
+    for (auto& arr : V) print(arr);
+}
+
 template<typename T>
 void print(const deque<T> &que) {
     vector<T> V(ALL(que));

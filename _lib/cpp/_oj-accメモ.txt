@@ -81,9 +81,11 @@ oj-template -t generate.py https://atcoder.jp/contests/abc232/tasks/abc232_a > g
 
 ☆ランダムテスト作成手順個別☆
 oj-template -t generate.py 問題URL > generate.py
-(generate.pyを編集)
+generate.pyを編集
 oj generate-input "python generate.py" 作成ケース数
-(愚直解を書いて実行。これでa.exeが愚直解のものになる。)
+→この時既に作成済のランダムケースがあったら、そこに追加で指定ケース分増やされる。
+愚直解を書いて実行。これでa.exeが愚直解のものになる。
 oj generate-output
 ここまでやるとランダムケースと答えが生成されているので、
 後はoj testを実行すればいい。
+落ちたケースだけ残して次回以降も動くようにするといいかも。

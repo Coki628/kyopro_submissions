@@ -135,7 +135,7 @@ const Node T = Node();
 
 
 ///// 遅延セグ木用の各種素材 /////
-// 区間最小値取得・区間更新
+// 区間更新・区間最小値取得
 auto f = [](ll a, ll b) -> ll { return min(a, b); };
 auto g = [](ll a, ll b) -> ll { return b; };
 auto h = [](ll a, ll b) -> ll { return b; };
@@ -143,7 +143,7 @@ const ll T = INF;
 // 要素が取りうる範囲外の値にする
 const ll E = -1;
 
-// 区間最大値取得・区間更新
+// 区間更新・区間最大値取得
 auto f = [](ll a, ll b) -> ll { return max(a, b); };
 auto g = [](ll a, ll b) -> ll { return b; };
 auto h = [](ll a, ll b) -> ll { return b; };
@@ -151,7 +151,7 @@ const ll T = 0;
 // 要素が取りうる範囲外の値にする
 const ll E = INF;
 
-// 区間和取得・区間加算
+// 区間加算・区間和取得
 struct Node {
     ll val, sz;
     operator ll() const { return val; }
@@ -162,14 +162,14 @@ auto h = [](ll a, ll b) -> ll { return a + b; };
 const Node T = {0, 0};
 const ll E = 0;
 
-// 区間最小値取得・区間加算
+// 区間加算・区間最小値取得
 auto f = [](ll a, ll b) -> ll { return min(a, b); };
 auto g = [](ll a, ll b) -> ll { return a + b; };
 auto h = [](ll a, ll b) -> ll { return a + b; };
 const ll T = INF;
 const ll E = 0;
 
-// 区間和取得・区間更新
+// 区間更新・区間和取得
 struct Node {
     ll val, sz;
     operator ll() const { return val; }
@@ -181,7 +181,7 @@ const Node T = {0, 0};
 // 要素が取りうる範囲外の値にする
 const ll E = INF;
 
-// 区間和取得・区間加算・区間更新
+// 区間加算・区間更新・区間和取得
 // 参考：nikkei2019final_d, ARC115_e
 struct Node {
     ll val, sz;
@@ -215,7 +215,7 @@ auto h = [](Func a, Func b) -> Func {
 const Node T = {0, 0};
 const Func E = {0, 0, 0};
 
-// 区間最大値取得・区間加算・区間更新
+// 区間加算・区間更新・区間最大値取得
 struct Func {
     ll add, assign;
     bool update;
@@ -244,7 +244,7 @@ auto h = [](Func a, Func b) -> Func {
 const ll T = 0;
 const Func E = {0, 0, 0};
 
-// 区間和取得・区間乗算・区間更新
+// 区間乗算・区間更新・区間和取得
 // 参考：tkppc6-1_f
 struct Func {
     mint mul, assign;
@@ -274,7 +274,7 @@ auto h = [](Func a, Func b) -> Func {
 const mint T = 0;
 const Func E = {1, 0, 0};
 
-// 区間和取得・区間01反転
+// 区間01反転・区間和取得
 // 参考：s8pc2_h, joisc2012day3-1
 struct Node {
     ll cnt0, cnt1;
@@ -299,7 +299,7 @@ auto h = [](bool a, bool b) -> bool { return a^b; };
 const Node T = {0, 0};
 const bool E = false;
 
-// 区間和取得・区間を1次関数で更新(ax+b)
+// 区間を1次関数で更新(ax+b)・区間和取得
 // 参考：aclpc_k
 struct Node {
     mint val, sz;
@@ -322,7 +322,7 @@ auto h = [](Func f1, Func f2) -> Func {
 const Node T = {0, 0};
 const Func E = {1, 0};
 
-// 区間2値転倒数取得・区間01反転
+// 区間01反転・区間2値転倒数取得
 // 参考：aclpc_l
 struct Node {
     ll cnt0, cnt1, inv;
@@ -361,7 +361,7 @@ struct Node {
     ll val, prv;
     operator ll() const { return val; }
 };
-// 区間最大値取得・区間更新
+// 区間更新・区間最大値取得
 auto f = [](Node a, Node b) -> Node {
     if (a.val >= b.val) {
         return a;
@@ -375,7 +375,7 @@ const Node T = {-INF, -1};
 // 要素が取りうる範囲外の値にする
 const Node E = {INF, -1};
 
-// 区間最小値取得・区間等差数列更新
+// 区間等差数列更新・区間最小値取得
 // 参考：ABC177f
 // 使い方：更新時に左端の分を引く
 struct Node {
@@ -388,7 +388,7 @@ auto h = [](ll a, ll b) -> ll { return b; };
 const Node T = {INF, INF};
 const ll E = INF;
 
-// 区間最小値取得・区間等差数列加算
+// 区間等差数列加算・区間最小値取得
 // 参考：aoj3165_hupc2020
 // 使い方：作用素に {その位置を更新した回数cnt, 差し引きしたい量sub} を持たせる。
 struct Node {
@@ -413,7 +413,7 @@ auto h = [](const Func &a, const Func &b) -> Func {
 const Node T = {INF, INF};
 const Func E = {0, 0};
 
-// 区間和取得・区間等差数列加算
+// 区間等差数列加算・区間和取得
 // 参考：aoj3165_hupc2020
 // ・軽くしか試してないけどこれも多分大丈夫そう。
 struct Node {
@@ -438,7 +438,7 @@ auto h = [](const Func &a, const Func &b) -> Func {
 const Node T = {0, INF};
 const Func E = {0, 0};
 
-// 区間最小値取得・区間or
+// 区間or・区間最小値取得
 auto f = [](ll a, ll b) -> ll { return min(a, b); };
 auto g = [](ll a, ll b) -> ll { return a | b; };
 auto h = [](ll a, ll b) -> ll { return a | b; };
