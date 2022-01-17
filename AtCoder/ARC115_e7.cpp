@@ -2,6 +2,8 @@
 ・遅延セグ木、Functionなしラムダ版のverifyと速度チェック
 ・1.67秒→0.97秒。めっちゃ良くなった。やっぱ速度厳しめなやつほど変わるな。
 ・うしさん版も使ってみた。
+・座圧のlogをメイン処理でやらないで前処理した。
+　あと座圧ライブラリの型が違ってるの直した。
 */
 
 // #pragma GCC target("avx2")
@@ -312,7 +314,7 @@ struct Compress {
 
     vector<T> zip(vector<T> &A) {
         int M = A.size();
-        vector<int> res(M);
+        vector<T> res(M);
         rep(i, M) res[i] = zip(A[i]);
         return res;
     }
@@ -359,6 +361,7 @@ void solve() {
     A.insert(A.begin(), 0);
     Compress<ll> cp(A);
     ll M = cp.size();
+    A = cp.zip(A);
 
     vector<ll> B(M);
     rep(i, 0, M-1) {
@@ -370,12 +373,12 @@ void solve() {
 
     auto seg = get_Lazy_segment_tree(f, g, h, T, E);
     seg.build(B2);
-    seg.update(0, cp[A[1]], {1, 0, 0});
+    seg.update(0, A[1], {1, 0, 0});
     rep(i, 2, N+1) {
         mint sm = seg.query(0, M);
         // if (i%2 == 1) print(sm*-1);
         // else print(sm);
-        ll mi = cp[A[i]];
+        ll mi = A[i];
         // 今回遷移がある位置(区間加算で総和を引く)
         seg.update(0, mi, {-sm, 0, 0});
         // 今回遷移がない位置(区間更新で0にする)
