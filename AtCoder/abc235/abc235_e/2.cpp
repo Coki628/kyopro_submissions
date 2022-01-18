@@ -5,6 +5,7 @@
 ・MSTに新しい辺を1つ追加する時、そのサイクルに含まれる一番重い辺がMSTから外れる。
 　これを判定すればいい。
 ・なんか公式解はクエリ先読みでクエリの辺も混ぜてソートみたいな賢い解法をやってた。
+・セグ木をSparse Tableにしてみた。やっぱlog1つ外れるから結構速くなる。AC0.72秒→0.30秒。
 */
 
 // #pragma GCC target("avx2")
@@ -29,6 +30,7 @@ using mint = ModInt<MOD>;
 #include "../../../_lib/cpp/_src/template.hpp"
 
 #include "../../../_lib/cpp/_src/graph/HeavyLightDecomposition.hpp"
+#include "../../../_lib/cpp/_src/segment/SparseTable.hpp"
 
 void solve() {
     ll N, M, Q;
@@ -53,16 +55,19 @@ void solve() {
         }
     }
 
-    auto seg = get_segment_tree(N, [](ll a, ll b) -> ll { return max(a, b); }, -INF);
     HeavyLightDecomposition hld(nodes);
     hld.build();
 
+    vector<ll> tmp(N);
     ll u, v;
-    for (auto edge : mst) {
-        tie(u, v, c) = edge;
-        // a == b の時は更新処理されないようにする
-        hld.add(u, v, [&](ll a, ll b) { if (a != b) seg.update(a, c); }, true);
+    for (auto [u, v, c] : mst) {
+        if (hld.dep[u] < hld.dep[v]) {
+            tmp[hld.in[v]] = c;
+        } else {
+            tmp[hld.in[u]] = c;
+        }
     }
+    auto st = get_sparse_table(tmp, [](ll a, ll b) -> ll { return max(a, b); }, -INF);
 
     rep(_, Q) {
         ll u, v, w;
@@ -71,7 +76,7 @@ void solve() {
         // [u,v]パス上の辺から最大コストを取得
         ll mx = hld.query(
             u, v, -INF,
-            [&](ll a, ll b) { return seg.query(a, b); },
+            [&](ll a, ll b) { return st.query(a, b); },
             [](ll a, ll b) { return max(a, b); }, true
         );
         if (w < mx) Yes();
