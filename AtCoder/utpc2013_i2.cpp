@@ -457,7 +457,6 @@ int main() {
         vector<pll> segs2;
         segs2.pb({0, segs[0].first});
         rep(i, 0, M-1) {
-            auto [pos, flag] = segs[i];
             segs2.pb({segs[i].second, segs[i+1].first});
         }
         segs2.pb({segs[M-1].second, N});
