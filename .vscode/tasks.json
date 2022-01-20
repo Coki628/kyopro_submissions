@@ -28,6 +28,9 @@
                 // oj-bundle済の提出用ファイル
                 "_dist\\main.cpp",
                 "-std=c++17",
+                // ライブラリのパス
+                "-I",
+                "${workspaceFolder}\\_lib\\cpp\\_dist",
                 // ACLのパス
                 "-I",
                 "${env:HOMEPATH}\\repos\\ac-library",
@@ -55,6 +58,9 @@
                 // デバッグしたいのでoj-bundle前の元ファイル
                 "${fileDirname}\\${fileBasename}",
                 "-std=c++17",
+                // ライブラリのパス
+                "-I",
+                "${workspaceFolder}\\_lib\\cpp\\_dist",
                 // ACLのパス
                 "-I",
                 "${env:HOMEPATH}\\repos\\ac-library",
@@ -82,6 +88,9 @@
                 "&",
                 "oj-bundle",
                 "${fileDirname}\\_tmp.cpp",
+                // ライブラリのパス
+                "-I",
+                "${workspaceFolder}\\_lib\\cpp\\_dist",
                 // ACLのパス
                 "-I",
                 "${env:HOMEPATH}\\repos\\ac-library",

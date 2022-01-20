@@ -6,7 +6,7 @@
 // #pragma GCC optimize("unroll-loops")
 
 #define CONSTANTS
-#include "../../../_lib/cpp/_src/base.hpp"
+#include "base.hpp"
 
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
@@ -15,12 +15,12 @@ constexpr int MOD = 1000000007;
 constexpr long double EPS = 1e-10;
 constexpr long double PI = M_PI;
 
-#include "../../../_lib/cpp/_src/macros.hpp"
+#include "macros.hpp"
 
-#include "../../../_lib/cpp/_src/combinatorics/ModInt.hpp"
+#include "combinatorics/ModInt.hpp"
 using mint = ModInt<MOD>;
 
-#include "../../../_lib/cpp/_src/template.hpp"
+#include "template.hpp"
 
 void solve() {
     
