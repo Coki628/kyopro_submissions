@@ -1,6 +1,6 @@
 oj用設定ファイル
 prepare.config.xxx.toml
-記入例：# 記入例：https://github.com/online-judge-tools/template-generator/blob/master/README.ja.md
+記入例：https://github.com/online-judge-tools/template-generator/blob/master/README.ja.md
 
 oj用テンプレートファイル
 tpl-xx.cpp
