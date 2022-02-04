@@ -5,32 +5,24 @@
 // 　・初期化後、忘れずにbuildを呼ぶこと。
 // 　・パスクエリはadd,queryで処理
 // 　・1点取得/更新はhld.in[x]で可能。add,queryは呼ばなくていい。
-// 　・部分木クエリは[hld.in[x],hld.out[x])で処理
-// 　・根付き木は頂点0が根である前提。他の頂点を根にしたい場合、
-// 　　HLD構築前に根と頂点0の関係を全てスワップしておく。
-// 　・パスクエリ[u,v]にて、u->lcaとlca->vでHLD上の列の向きが逆になるので、
-// 　　乗せたセグ木の演算にマージ方向がある場合などは注意して処理する。
 // 　・辺属性にすると、添字0が欠番になる。(親に向かう辺と対応するはずなのでそれはそうか)
 // 　　なお辺属性に値を割り当てる時は、depで深い方の頂点にってやるといい。(ABC133fとか参照)
+// 　・部分木クエリは[hld.in[x],hld.out[x])で処理。
+// 　　なお部分木クエリも辺属性の時はedge=trueのように左端を+1する。
+// 　　あと「部分木じゃない部分」も取れる。[0,hld.in[x])と[hld.out[x],N) の2区間でOK。
+// 　　これと深さで比較して場合分けすれば、あるパスの手前と向こう側が任意に取れるようになる。
+// 　・根付き木は頂点0が根である前提。他の頂点を根にしたい場合、
+// 　　HLD構築前に根と頂点0の関係を全てスワップしておく。
+// 　　→任意の頂点を根にできるよう改修してみた。前やろうとして失敗したんだけど、
+// 　　headの初期値をrootにしたらうまくいった。
+// 　・パスクエリ[u,v]にて、u->lcaとlca->vでHLD上の列の向きが逆になるので、
+// 　　乗せたセグ木の演算にマージ方向がある場合などは注意して処理する。
 
 // HL分解
 struct HeavyLightDecomposition {
 public:
     vvi g;
-    vector< int > sz, in, out, head, rev, par, dep;
-
-    void build() {
-        sz.assign(g.size(), 0);
-        in.assign(g.size(), 0);
-        out.assign(g.size(), 0);
-        head.assign(g.size(), 0);
-        rev.assign(g.size(), 0);
-        par.assign(g.size(), 0);
-        dep.assign(g.size(), 0);
-        dfs_sz(0, -1, 0);
-        int t = 0;
-        dfs_hld(0, -1, t);
-    }
+    vector<int> sz, in, out, head, rev, par, dep;
 
     // 頂点vからk回遡った頂点を返す
     int la(int v, int k) {
@@ -70,7 +62,7 @@ public:
     }
 
     template< typename Q >
-    void add(int u, int v, const Q &q, bool edge = false) {
+    void update(int u, int v, const Q &q, bool edge = false) {
         for(;; v = par[head[v]]) {
             if(in[u] > in[v]) swap(u, v);
             if(head[u] == head[v]) break;
@@ -98,9 +90,24 @@ public:
         return es;
     }
 
-    explicit HeavyLightDecomposition(vvi &g) : g(g) {}
+    explicit HeavyLightDecomposition(vvi &g, int root=0) : g(g) {
+        build(root);
+    }
 
 private:
+    void build(int root=0) {
+        sz.assign(g.size(), 0);
+        in.assign(g.size(), 0);
+        out.assign(g.size(), 0);
+        head.assign(g.size(), root);
+        rev.assign(g.size(), 0);
+        par.assign(g.size(), 0);
+        dep.assign(g.size(), 0);
+        dfs_sz(root, -1, 0);
+        int t = 0;
+        dfs_hld(root, -1, t);
+    }
+
     void dfs_sz(int idx, int p, int d) {
         dep[idx] = d;
         par[idx] = p;

@@ -24,20 +24,22 @@ constexpr long double PI = M_PI;
 #include "grid/constants/directions.hpp"
 #include "string/zfill.hpp"
 
-void solve(int t=-1) {
+ld solve(int testcase=-1) {
     #ifdef __LOCAL
         // 入力ファイル読み込み
-        string filename = "tools/in/"+zfill(tostr(t), 4)+".txt";
+        string filename = "tools/in/"+zfill(tostr(testcase), 4)+".txt";
         freopen(filename.c_str(), "r", stdin);
         // 出力ファイル準備
-        filename = "tools/out/"+zfill(tostr(t), 4)+".txt";
+        filename = "tools/out/"+zfill(tostr(testcase), 4)+".txt";
         ofstream ofs(filename.c_str());
         if (!ofs) {
             print(-1);
-            return;
+            exit(0);
         }
     #endif
 
+    ld score = 0;
+    return score;
 }
 
 int main() {
@@ -50,9 +52,16 @@ int main() {
         vector<ll> T = {
             0,
         };
+        // 100件実施
+        // vector<ll> T;
+        // rep(i, 100) {
+        //     T.eb(i);
+        // }
+        ld score = 0;
         for (ll t : T) {
-            solve(t);
+            score += solve(t);
         }
+        debug(score);
     #else
         solve();
     #endif

@@ -8,6 +8,8 @@ TopCoder/*/*.sample
 # test cases
 *.in
 *.out
+in/
+out/
 
 # atcoder-cli
 **/contest.acc.json
@@ -17,4 +19,7 @@ _dist/tmp.cpp
 _dist/main.cpp
 
 # compressed libs
-_lib/cpp/_dist/**
+_lib/cpp/_dist/
+
+# rust
+**/tools/target/

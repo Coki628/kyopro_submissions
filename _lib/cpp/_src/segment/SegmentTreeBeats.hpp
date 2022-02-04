@@ -267,13 +267,13 @@ public:
     }
     SegmentTreeBeats(int n) : SegmentTreeBeats(vector<ll>(n, 0)) {}
  
-    void update_min(int a, int b, ll x) { _update_min(x, a, b, root, 0, n0); }
+    void chmin(int a, int b, ll x) { _update_min(x, a, b, root, 0, n0); }
  
-    void update_max(int a, int b, ll x) { _update_max(x, a, b, root, 0, n0); }
+    void chmax(int a, int b, ll x) { _update_max(x, a, b, root, 0, n0); }
  
-    void add_val(int a, int b, ll x) { _add_val(x, a, b, root, 0, n0); }
+    void add(int a, int b, ll x) { _add_val(x, a, b, root, 0, n0); }
  
-    void update_val(int a, int b, ll x) { _update_val(x, a, b, root, 0, n0); }
+    void update(int a, int b, ll x) { _update_val(x, a, b, root, 0, n0); }
  
     ll query_max(int a, int b) { return _query_max(a, b, root, 0, n0); }
  
@@ -289,12 +289,20 @@ public:
         return query_sum(i, i+1);
     }
 
-    void update(int i, ll x) {
-        update_val(i, i+1, x);
+    void chmin(int i, ll x) {
+        chmin(i, i+1, x);
+    }
+
+    void chmax(int i, ll x) {
+        chmax(i, i+1, x);
     }
 
     void add(int i, ll x) {
-        add_val(i, i+1, x);
+        add(i, i+1, x);
+    }
+
+    void update(int i, ll x) {
+        update(i, i+1, x);
     }
 
     void print(int n) {

@@ -8,7 +8,6 @@
 #include "common/yesno.hpp"
 #include "common/toint.hpp"
 #include "common/tochar.hpp"
-#include "common/floor.hpp"
 #include "common/ceil.hpp"
 #include "common/modulo.hpp"
 #include "common/divmod.hpp"
@@ -30,11 +29,13 @@
 #include "common/split.hpp"
 #include "common/join.hpp"
 #include "common/sorted.hpp"
+#include "common/reversed.hpp"
 
 // from combinatorics
 #include "combinatorics/ModTools.hpp"
 #include "combinatorics/permutations.hpp"
 #include "combinatorics/combinations.hpp"
+#include "combinatorics/nC2.hpp"
 #include "combinatorics/factorial.hpp"
 
 // from graph

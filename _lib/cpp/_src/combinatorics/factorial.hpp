@@ -1,4 +1,4 @@
-// 階乗(modなし)
+// 階乗：O(N)
 template<typename T>
 T factorial(int x) {
     T res = 1;

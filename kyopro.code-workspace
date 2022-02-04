@@ -132,5 +132,12 @@
             "xstddef": "cpp",
             "xtr1common": "cpp",
         },
+        "search.exclude": {
+            "*.in": true,
+            "*.out": true,
+            "test/": true,
+            "in/": true,
+            "out/": true
+        },
     }
 }

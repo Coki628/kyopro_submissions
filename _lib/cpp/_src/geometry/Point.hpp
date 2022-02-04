@@ -26,3 +26,8 @@ struct Point {
     T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
     void print() { cout << x << ' ' << y << '\n'; }
 };
+
+template<typename T>
+void print(Point<T> p) {
+    cout << p.x << ' ' << p.y << '\n';
+}

@@ -90,13 +90,13 @@ with open(path_r, encoding='utf-8') as f:
                 # 引数の形に合わせてrepマクロに変換
                 if len(args) == 1:
                     end = args[0]
-                    line = 'rep({0}, 0, {1}) {{'.format(counter, end)
+                    line = 'rep({0}, {1}) {{'.format(counter, end)
                 elif len(args) == 2:
                     start, end = args
                     line = 'rep({0}, {1}, {2}) {{'.format(counter, start, end)
-                elif len(args) == 3 and args[0] > args[1]:
+                elif len(args) == 3:
                     start, end, step = args
-                    line = 'rrep({0}, {1}, {2}) {{'.format(counter, start, end)
+                    line = 'rep({0}, {1}, {2}, {3}) {{'.format(counter, start, end, step)
             # enumerateしてない普通のfor a in Aみたいなやつ
             elif not line.count('enumerate'):
                 sep = line.find(' in ')

@@ -15,7 +15,7 @@ struct Timer {
     }
 
     // 経過時間
-    int64_t get_diff() {
+    int64_t get_elapse() {
         return chrono::duration_cast<chrono::milliseconds>(this->now() - start_time).count();
     }
 };
