@@ -39,7 +39,7 @@ struct ModInt {
     }
 
     ModInt &operator/=(const ModInt &p) {
-        *this *= p.inverse();
+        *this *= p.inv();
         return *this;
     }
 
@@ -69,7 +69,7 @@ struct ModInt {
 
     bool operator!=(const ModInt &p) const { return x != p.x; }
 
-    ModInt inverse() const {
+    ModInt inv() const {
         int a = x, b = mod, u = 1, v = 0, t;
         while(b > 0) {
             t = a / b;
@@ -102,7 +102,10 @@ struct ModInt {
 
     static int get_mod() { return mod; }
 
-    // mintから戻したい場面があったらコメント外す
-    // operator int() const { return x; }
-    // operator ll() const { return x; }
+    #ifdef MINT_TO_LL_CAST
+        // mintから戻したい場面があったらコメント外す
+        // operator int() const { return x; }
+        operator ll() const { return x; }
+    #endif
 };
+using mint = ModInt<MOD>;

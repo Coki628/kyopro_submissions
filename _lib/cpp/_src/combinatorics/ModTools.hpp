@@ -1,3 +1,4 @@
+#pragma once
 #include "../macros.hpp"
 
 // Mod数え上げ演算ツール
@@ -5,7 +6,7 @@ template<typename Mint>
 struct ModTools {
 
     int MAX;
-    vector<Mint> fact, factinv;
+    vector<Mint> fact, factinv, inv;
 
     ModTools() {};
 
@@ -18,14 +19,23 @@ struct ModTools {
         MAX = ++mx;
         fact.resize(MAX);
         factinv.resize(MAX);
+        inv.resize(MAX);
         fact[0] = fact[1] = 1;
         rep(i, 2, MAX) {
-            fact[i] = fact[i-1] * i;
+            fact[i] = fact[i-1]*(Mint)i;
         }
-        factinv[MAX-1] = (Mint)1 / fact[MAX-1];
+        factinv[MAX-1] = (Mint)1/fact[MAX-1];
         rep(i, MAX-2, -1, -1) {
-            factinv[i] = factinv[i+1] * (i+1);
+            factinv[i] = factinv[i+1]*(Mint)(i+1);
         }
+        rep(i, MAX-1, 0, -1) {
+            inv[i] = factinv[i]*fact[i-1];
+        }
+    }
+
+    // 準備O(N)、操作O(1)でlogが乗らないmod除算
+    Mint div(Mint a, int b) {
+        return a*inv[b];
     }
 
     Mint factorial(int x) {
@@ -45,6 +55,7 @@ struct ModTools {
     }
 
     Mint nHr(int n, int r) {
+        assert(r+n-1 < MAX);
         return nCr(r+n-1, r);
     }
 

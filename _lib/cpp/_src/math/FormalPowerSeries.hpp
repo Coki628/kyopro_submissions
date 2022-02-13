@@ -23,8 +23,14 @@ struct FormalPowerSeries : vector< T > {
         return ret;
     }
 
+    // 高い次数が0な部分を削る
     void shrink() {
         while(this->size() && this->back() == T(0)) this->pop_back();
+    }
+
+    // 高い次数が0 or degより大きい部分を削る
+    void shrink(int deg) {
+        while(this->size() && this->back() == T(0) or this->size() > deg) this->pop_back();
     }
 
     P operator+(const P &r) const { return P(*this) += r; }
@@ -42,6 +48,10 @@ struct FormalPowerSeries : vector< T > {
     P operator/(const P &r) const { return P(*this) /= r; }
 
     P operator%(const P &r) const { return P(*this) %= r; }
+
+    P operator>>(const int r) const { return P(*this) >>= r; }
+
+    P operator<<(const int r) const { return P(*this) <<= r; }
 
     P &operator+=(const P &r) {
         if(r.size() > this->size()) this->resize(r.size());
@@ -113,18 +123,33 @@ struct FormalPowerSeries : vector< T > {
         return ret;
     }
 
-    P operator>>(int sz) const {
-        if(this->size() <= sz) return {};
-        P ret(*this);
-        ret.erase(ret.begin(), ret.begin() + sz);
-        return ret;
+    // シフトの向きがなんか直感と逆なので注意(数列を右シフトする、じゃなくてsz個次数が下がる、みたいな気持ちなのかも)
+    P &operator>>=(int sz) {
+        if (this->size() <= sz) {
+            this->clear();
+        } else {
+            this->erase(this->begin(), this->begin() + sz);
+        }
+        return *this;
     }
 
-    P operator<<(int sz) const {
-        P ret(*this);
-        ret.insert(ret.begin(), sz, T(0));
-        return ret;
+    P &operator<<=(int sz) {
+        this->insert(this->begin(), sz, T(0));
+        return *this;
     }
+
+    // P operator>>(int sz) const {
+    //     if(this->size() <= sz) return {};
+    //     P ret(*this);
+    //     ret.erase(ret.begin(), ret.begin() + sz);
+    //     return ret;
+    // }
+
+    // P operator<<(int sz) const {
+    //     P ret(*this);
+    //     ret.insert(ret.begin(), sz, T(0));
+    //     return ret;
+    // }
 
     T operator()(T x) const {
         T r = 0, w = 1;
@@ -279,9 +304,43 @@ struct FormalPowerSeries : vector< T > {
         for(int i = 0; i < n; i++) p[i] *= rfact[i];
         return p;
     }
+
+    // sparse (from optさん)
+    P &operator*=(vector<pair<ll, T>> g) {
+        int n = (*this).size();
+        auto [d, c] = g.front();
+        if (d == 0) g.erase(g.begin());
+        else c = 0;
+        rep(i, n-1, -1, -1) {
+            (*this)[i] *= c;
+            for (auto &[j, b] : g) {
+                if (j > i) break;
+                (*this)[i] += (*this)[i-j] * b;
+            }
+        }
+        return *this;
+    }
+    P &operator/=(vector<pair<ll, T>> g) {
+        int n = (*this).size();
+        auto [d, c] = g.front();
+        assert(d == 0 && c != T(0));
+        T ic = c.inv();
+        g.erase(g.begin());
+        rep(i, n) {
+            for (auto &[j, b] : g) {
+                if (j > i) break;
+                (*this)[i] -= (*this)[i-j] * b;
+            }
+            (*this)[i] *= ic;
+        }
+        return *this;
+    }
 };
 template<typename Mint>
 using FPS = FormalPowerSeries<Mint>;
+// Sparse FPS
+template<typename Mint>
+using SFPS = vector<pair<ll, Mint>>;
 
 template<typename T>
 void print(const FPS<T> &F) {
