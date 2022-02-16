@@ -1,8 +1,6 @@
 /*
-・AGC044B
-・計算量が減ってN^3になるってのは覚えてたけど結局自力は無理。
-　なんか、普通にグリッドBFSっぽいんだけど、微妙に違う感じにちょこちょこいじる。
-・これで合うと思うんだけどなぜかWA。。分からんー。
+・dojo set_f_1_6
+・こんなんワンチャン乱択通るんじゃね？ →通りません。。TLE。
 */
 
 #pragma region mytemplate
@@ -40,8 +38,9 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-constexpr int MOD = 1000000007;
-// constexpr int MOD = 998244353;
+// constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
+constexpr ld EPS = 1e-10;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -152,56 +151,69 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-bool seated[507][507];
-int res[507][507];
+// [l,r)の範囲で乱数生成
+mt19937_64 mt(chrono::steady_clock::now().time_since_epoch().count());
+ll randrange(ll l, ll r) {
+    uniform_int_distribution<ll> rand(l, r-1);
+    return rand(mt);
+}
 
-// グリッドダイクストラ(H*Wグリッド, 始点{h, w}) 
-using P = tuple<ll, int, int>;
-void dijkstra(int N, pii src) {
+template<typename T>
+struct Point {
+    T x, y;
+    Point() : x(0), y(0) {}
+    Point(T x, T y) : x(x), y(y) {}
+    Point operator+(const Point &p) { return {x+p.x, y+p.y}; }
+    Point operator-(const Point &p) { return {x-p.x, y-p.y}; }
+    Point operator*(const Point &p) { return {x*p.x, y*p.y}; }
+    Point operator/(const Point &p) { return {x/p.x, y/p.y}; }
+    Point &operator+=(const Point &p) { x += p.x, y += p.y; return *this; }
+    Point &operator-=(const Point &p) { x -= p.x, y -= p.y; return *this; }
+    Point &operator*=(const Point &p) { x *= p.x, y *= p.y; return *this; }
+    Point &operator/=(const Point &p) { x /= p.x, y /= p.y; return *this; }
+    bool operator<(const Point &p) { return mkp(x, y) < mkp(p.x, p.y); }
+    bool operator==(const Point &p) { return std::abs(x-p.x) < EPS and std::abs(y-p.y) < EPS; }
+    bool operator!=(const Point &p) { return std::abs(x-p.x) >= EPS or std::abs(y-p.y) >= EPS; }
+    Point operator*(T k) { return {x*k, y*k}; }
+    Point operator/(T k) { return {x/k, y/k}; }
+    T norm() { return x*x + y*y; }
+    T abs() { return sqrt(norm()); }
+    T abs(const Point &p) { return hypot(x-p.x, y-p.y); }
+    T manhattan(const Point &p) { return std::abs(x-p.x) + std::abs(y-p.y); }
+    void print() { cout << x << ' ' << y << '\n'; }
+};
+template<typename T> struct Segment { Point<T> p1, p2; };
 
-    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-    priority_queue<P, vector<P>, greater<P>> que;
-    auto [sh, sw] = src;
-    que.push({res[sh][sw], sh, sw});
-    while (!que.empty()) {
-        auto [dist, h, w] = que.top(); que.pop();
-        if (res[h][w] < dist) continue;
-        for (auto [dh, dw] : directions) {
-            int nh = h+dh;
-            int nw = w+dw;
-            if (nh < 0 or nw < 0 or nh >= N or nw >= N) continue;
-            if (dist < res[nh][nw]) {
-                res[nh][nw] = dist;
-                // このコストはnh,nwにいる人が出る分にはかからないので、次から付く
-                que.push({dist+seated[nh][nw], nh, nw});
-            }
-        }
-    }
+ll calc(Segment<ll> seg) {
+    return pow(abs(seg.p1.x-seg.p2.x), 2)+pow(abs(seg.p1.y-seg.p2.y), 2);
 }
 
 void solve() {
-    ll N;
-    cin >> N;
-    auto P = LIST(N*N);
-    rep(i, N*N) P[i]--;
+    ll N, D1, D2;
+    cin >> N >> D1 >> D2;
 
-    rep(i, N) {
-        rep(j, N) {
-            // 全て埋まってるものとして初期化
-            res[i][j] = min({i, j, N-i-1, N-j-1});
-            seated[i][j] = true;
+    auto used = list2d(N*2, N*2, false);
+    vector<Point<ll>> ans;
+    ll NN = N*N;
+    while (ans.size() < NN) {
+        ll x = randrange(0, N*2);
+        ll y = randrange(0, N*2);
+        if (used[x][y]) continue;
+        Point<ll> cur({x, y});
+        bool ok = true;
+        for (auto& p : ans) {
+            ll dist = calc({cur, p});
+            if (dist == D1 or dist == D2) {
+                ok = false;
+                break;
+            }
+        }
+        if (ok) {
+            ans.eb(cur);
+            used[x][y] = true;
         }
     }
-    ll ans = 0;
-    for (ll p : P) {
-        auto [h, w] = idtogrid(p, N);
-        // この状態でこの人が出るコストを足す
-        ans += res[h][w];
-        seated[h][w] = false;
-        // この人が出た状態での各所への最短コストを更新
-        dijkstra(N, {h, w});
-    }
-    print(ans);
+    for (auto& p : ans) p.print();
 }
 
 int main() {
@@ -216,6 +228,6 @@ int main() {
     // int T;
     // cin >> T;
     // while (T--) solve();
-
+ 
     return 0;
 }

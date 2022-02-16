@@ -1,11 +1,8 @@
 /*
-参考：https://img.atcoder.jp/agc040/editorial.pdf
-・AGC040C
-・自力ならず。考察むずい。まあでもこれは知ってるかどうかか。
-・abとかbaの消去は奇数(偶数でもいい)番目を逆に変換するとaa,bb消去に落ちる典型
-　ってのあるそうな。(discordでのこさんが言ってた)
-・で、これが分かると、まあもうひと考察要るんだけど、a,bが過半数になるようなものがダメとなって、
-　それはa,bの数を決め打つと、二項係数と冪乗で出る。これを全体から引くと答え。
+・dojo set_f_1_1
+・計算量が減ってN^3になるってのは覚えてたけど結局自力は無理。
+　なんか、普通にグリッドBFSっぽいんだけど、微妙に違う感じにちょこちょこいじる。
+・これで合うと思うんだけどなぜかWA。。分からんー。
 */
 
 #pragma region mytemplate
@@ -43,8 +40,8 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-// constexpr int MOD = 1000000007;
-constexpr int MOD = 998244353;
+constexpr int MOD = 1000000007;
+// constexpr int MOD = 998244353;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -155,16 +152,55 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
+bool seated[507][507];
+int res[507][507];
+
+// グリッドダイクストラ(H*Wグリッド, 始点{h, w}) 
+using P = tuple<ll, int, int>;
+void dijkstra(int N, pii src) {
+
+    const vector<pii> directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    priority_queue<P, vector<P>, greater<P>> que;
+    auto [sh, sw] = src;
+    que.push({res[sh][sw], sh, sw});
+    while (!que.empty()) {
+        auto [dist, h, w] = que.top(); que.pop();
+        if (res[h][w] < dist) continue;
+        for (auto [dh, dw] : directions) {
+            int nh = h+dh;
+            int nw = w+dw;
+            if (nh < 0 or nw < 0 or nh >= N or nw >= N) continue;
+            if (dist < res[nh][nw]) {
+                res[nh][nw] = dist;
+                // このコストはnh,nwにいる人が出る分にはかからないので、次から付く
+                que.push({dist+seated[nh][nw], nh, nw});
+            }
+        }
+    }
+}
+
 void solve() {
     ll N;
     cin >> N;
+    auto P = LIST(N*N);
+    rep(i, N*N) P[i]--;
 
-    ModTools mt(N);
-    mint sub = 0;
-    rep(i, N/2+1, N+1) {
-        sub += mt.nCr(N, i)*mint(2).pow(N-i);
+    rep(i, N) {
+        rep(j, N) {
+            // 全て埋まってるものとして初期化
+            res[i][j] = min({i, j, N-i-1, N-j-1});
+            seated[i][j] = true;
+        }
     }
-    mint ans = mint(3).pow(N)-sub*2;
+    ll ans = 0;
+    for (ll p : P) {
+        auto [h, w] = idtogrid(p, N);
+        // この状態でこの人が出るコストを足す
+        ans += res[h][w];
+        seated[h][w] = false;
+        // この人が出た状態での各所への最短コストを更新
+        dijkstra(N, {h, w});
+    }
     print(ans);
 }
 
@@ -180,6 +216,6 @@ int main() {
     // int T;
     // cin >> T;
     // while (T--) solve();
- 
+
     return 0;
 }

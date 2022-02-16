@@ -1,6 +1,6 @@
 /*
 参考：https://atcoder.jp/contests/agc025/editorial
-・AGC025D
+・dojo set_f_1_6
 ・当然自力は無理。。
 ・二部グラフ、円の方程式、式変形
 ・整数座標のグリッド上で、ある距離にある2点間を繋ぐ辺を全て繋ぐと、それは二部グラフになる。
@@ -14,7 +14,6 @@
 　でもこれでもTLE。。よく考えるとNは*2していて、600^3=2億くらいになるから、3乗でも素直にやるときつい。
 ・通せた！！ペアになる方の座標は前計算しておく必要があった。
 　原点を中心とした円で相対的な候補の座標を前計算して、メインの処理ではそれをdx,dyみたいに使う。
-・誤差も一応疑って、整数のままやる版も途中まで作ってたから一応こっちでもAC確認しといた。
 */
 
 #pragma region mytemplate
@@ -180,15 +179,14 @@ void solve() {
     rep(d, 2) {
         rep(x1, N) {
             ll x2 = x1;
-            // y^2 = r^2-x^2
-            ll yy = D[d]-x1*x1;
-            // √の整数判定
-            ll y1 = isqrt(yy);
-            if (y1*y1 != yy) continue;
-            ll y2 = -y1;
-            XY[d].eb(x1, y1);
-            if (y1 != y2) {
-                XY[d].eb(x2, y2);
+            // y = +-√(r^2-x^2)
+            ld y1 = -sqrt((ld)D[d]-x1*x1);
+            ld y2 = sqrt((ld)D[d]-x2*x2);
+            if (abs(y1-round(y1)) < EPS) {
+                XY[d].eb(x1, round(y1));
+            }
+            if (abs(y2-round(y2)) < EPS and abs(y1-y2) > EPS) {
+                XY[d].eb(x2, round(y2));
             }
         }
     }

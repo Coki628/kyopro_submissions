@@ -1,19 +1,11 @@
 /*
-参考：https://atcoder.jp/contests/agc025/editorial
-・AGC025D
-・当然自力は無理。。
-・二部グラフ、円の方程式、式変形
-・整数座標のグリッド上で、ある距離にある2点間を繋ぐ辺を全て繋ぐと、それは二部グラフになる。
-　つまり、直接繋がったある2点両方と繋がる別の点は存在しない。
-　なんか正三角形だと3点全部が整数座標に来るって無さそうだから、言われたら確かにそうかもとは思う。
-　で、これが分かると、D1,D2両方についてこの二部グラフを構築して、
-　両方でどっちの集合に属するかで4通りのグループにすると、
-　これのどれかは必ず答えに足りるような大きさになってる。
-・なんか2点間距離取るのが愚直4乗だと無理みたいで、3乗になるみたいなんだけどよく分からん。
-・3乗はできた。x座標を決め打つと、円の方程式を式変形してyを一意にできることを使う。
-　でもこれでもTLE。。よく考えるとNは*2していて、600^3=2億くらいになるから、3乗でも素直にやるときつい。
-・通せた！！ペアになる方の座標は前計算しておく必要があった。
-　原点を中心とした円で相対的な候補の座標を前計算して、メインの処理ではそれをdx,dyみたいに使う。
+参考：https://img.atcoder.jp/agc040/editorial.pdf
+・dojo set_f_1_5
+・自力ならず。考察むずい。まあでもこれは知ってるかどうかか。
+・abとかbaの消去は奇数(偶数でもいい)番目を逆に変換するとaa,bb消去に落ちる典型
+　ってのあるそうな。(discordでのこさんが言ってた)
+・で、これが分かると、まあもうひと考察要るんだけど、a,bが過半数になるようなものがダメとなって、
+　それはa,bの数を決め打つと、二項係数と冪乗で出る。これを全体から引くと答え。
 */
 
 #pragma region mytemplate
@@ -53,7 +45,6 @@ constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
 // constexpr int MOD = 1000000007;
 constexpr int MOD = 998244353;
-constexpr ld EPS = 1e-10;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -164,75 +155,17 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-int D[2];
-vector<int> nodes[2][360007];
-
 void solve() {
     ll N;
-    cin >> N >> D[0] >> D[1];
+    cin >> N;
 
-    N *= 2;
-    ll NN = N*N;
-
-    // 原点を中心とした円で候補の座標を前計算
-    vvpll XY(2);
-    rep(d, 2) {
-        rep(x1, N) {
-            ll x2 = x1;
-            // y = +-√(r^2-x^2)
-            ld y1 = -sqrt((ld)D[d]-x1*x1);
-            ld y2 = sqrt((ld)D[d]-x2*x2);
-            if (abs(y1-round(y1)) < EPS) {
-                XY[d].eb(x1, round(y1));
-            }
-            if (abs(y2-round(y2)) < EPS and abs(y1-y2) > EPS) {
-                XY[d].eb(x2, round(y2));
-            }
-        }
+    ModTools mt(N);
+    mint sub = 0;
+    rep(i, N/2+1, N+1) {
+        sub += mt.nCr(N, i)*mint(2).pow(N-i);
     }
-    rep(d, 2) {
-        rep(u, NN) {
-            auto [x1, y1] = idtogrid(u, N);
-            for (auto [dx, dy] : XY[d]) {
-                ll x2 = x1+dx;
-                ll y2 = y1+dy;
-                if (0 <= x2 and x2 < N and 0 <= y2 and y2 < N) {
-                    ll v = gridtoid(x2, y2, N);
-                    nodes[d][u].eb(v);
-                    nodes[d][v].eb(u);
-                }
-            }
-        }
-    }
-
-    auto C = list2d(2, NN, -1);
-    auto dfs = [&](auto&& f, ll d, ll u, bool c) {
-        if (C[d][u] != -1) return;
-        C[d][u] = c;
-        for (ll v : nodes[d][u]) {
-            f(f, d, v, 1-c);
-        }
-    };
-    rep(d, 2) {
-        rep(u, NN) {
-            dfs(dfs, d, u, 0);
-        }
-    }
-
-    rep(bit, 1<<2) {
-        vector<ll> cur;
-        rep(u, NN) {
-            if (C[0][u] == bit>>0 & 1 and C[1][u] == bit>>1 & 1) {
-                cur.eb(u);
-            }
-        }
-        if (cur.size() >= NN/4) {
-            rep(i, NN/4) {
-                print(idtogrid(cur[i], N));
-            }
-            return;
-        }
-    }
+    mint ans = mint(3).pow(N)-sub*2;
+    print(ans);
 }
 
 int main() {

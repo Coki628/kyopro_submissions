@@ -1,17 +1,10 @@
 /*
-参考：https://atcoder.jp/contests/agc025/editorial
-・AGC025D
-・当然自力は無理。。
-・二部グラフ、円の方程式、式変形
-・整数座標のグリッド上で、ある距離にある2点間を繋ぐ辺を全て繋ぐと、それは二部グラフになる。
-　つまり、直接繋がったある2点両方と繋がる別の点は存在しない。
-　なんか正三角形だと3点全部が整数座標に来るって無さそうだから、言われたら確かにそうかもとは思う。
-　で、これが分かると、D1,D2両方についてこの二部グラフを構築して、
-　両方でどっちの集合に属するかで4通りのグループにすると、
-　これのどれかは必ず答えに足りるような大きさになってる。
-・なんか2点間距離取るのが愚直4乗だと無理みたいで、3乗になるみたいなんだけどよく分からん。
-・3乗はできた。x座標を決め打つと、円の方程式を式変形してyを一意にできることを使う。
-　でもこれでもTLE。。よく考えるとNは*2していて、600^3=2億くらいになるから、3乗でも素直にやるときつい。
+・dojo set_f_1_3
+・自力ならず。これも数か月前にやってたのに、まるで覚えてなかった。しかもその時自力通してるじゃんｗ
+・逆操作、プリキュー
+・まあ、その時に書いた通り。それ以上書くことない。
+　今回はindexセグ木よりプリキューのが楽そうだなって代わりに使ったくらい。
+　もうちょいちゃんと時間かけて考えれば、逆操作出たかもしれないけど…。
 */
 
 #pragma region mytemplate
@@ -49,9 +42,8 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-// constexpr int MOD = 1000000007;
-constexpr int MOD = 998244353;
-constexpr ld EPS = 1e-10;
+constexpr int MOD = 1000000007;
+// constexpr int MOD = 998244353;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -162,66 +154,36 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-int D[2];
-vector<int> nodes[2][360007];
-
 void solve() {
     ll N;
-    cin >> N >> D[0] >> D[1];
+    cin >> N;
+    auto A = LIST(N);
+    auto B = LIST(N);
 
-    N *= 2;
-    ll NN = N*N;
-
-    rep(d, 2) {
-        rep(u, NN) {
-            auto [x1, y1] = idtogrid(u, N);
-            rep(x2, N) {
-                ll x3 = x2;
-                // y = +-√(r^2-(x-a)^2)+b
-                double y2 = round(-sqrt((double)D[d]-(x2-x1)*(x2-x1))) + y1;
-                double y3 = round(sqrt((double)D[d]-(x3-x1)*(x3-x1))) + y1;
-                if (0 <= y2 and y2 < N and abs(y2-round(y2)) < EPS) {
-                    ll v = gridtoid(x2, round(y2), N);
-                    nodes[d][u].eb(v);
-                    nodes[d][v].eb(u);
-                }
-                if (0 <= y3 and y3 < N and abs(y3-round(y3)) < EPS and abs(y2-y3) < EPS) {
-                    ll v = gridtoid(x3, round(y3), N);
-                    nodes[d][u].eb(v);
-                    nodes[d][v].eb(u);
-                }
-            }
+    priority_queue<pll, vector<pll>> que;
+    rep(i, N) {
+        if (A[i] != B[i]) {
+            que.push({B[i], i});
         }
     }
-
-    auto C = list2d(2, NN, -1);
-    auto dfs = [&](auto&& f, ll d, ll u, bool c) {
-        if (C[d][u] != -1) return;
-        C[d][u] = c;
-        for (ll v : nodes[d][u]) {
-            f(f, d, v, 1-c);
-        }
-    };
-    rep(d, 2) {
-        rep(u, NN) {
-            dfs(dfs, d, u, 0);
-        }
-    }
-
-    rep(bit, 1<<2) {
-        vector<ll> cur;
-        rep(u, NN) {
-            if (C[0][u] == bit>>0 & 1 and C[1][u] == bit>>1 & 1) {
-                cur.eb(u);
-            }
-        }
-        if (cur.size() >= NN/4) {
-            rep(i, NN/4) {
-                print(idtogrid(cur[i], N));
-            }
+    ll ans = 0;
+    while (que.size()) {
+        auto [b, i] = que.top(); que.pop();
+        ll j = (i-1+N)%N;
+        ll k = (i+1)%N;
+        ll sub = B[j]+B[k];
+        ll diff = B[i]-max({A[i], B[j], B[k]});
+        ll use = ceil(diff, sub);
+        B[i] -= use*sub;
+        ans += use;
+        if (B[i] > A[i]) {
+            que.push({B[i], i});
+        } elif (B[i] < A[i]) {
+            print(-1);
             return;
         }
     }
+    print(ans);
 }
 
 int main() {

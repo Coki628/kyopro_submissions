@@ -1,8 +1,8 @@
 /*
 参考：https://atcoder.jp/contests/agc025/editorial
-・AGC025D
+・dojo set_f_1_6
 ・当然自力は無理。。
-・二部グラフ
+・二部グラフ、円の方程式、式変形
 ・整数座標のグリッド上で、ある距離にある2点間を繋ぐ辺を全て繋ぐと、それは二部グラフになる。
 　つまり、直接繋がったある2点両方と繋がる別の点は存在しない。
 　なんか正三角形だと3点全部が整数座標に来るって無さそうだから、言われたら確かにそうかもとは思う。
@@ -10,6 +10,8 @@
 　両方でどっちの集合に属するかで4通りのグループにすると、
 　これのどれかは必ず答えに足りるような大きさになってる。
 ・なんか2点間距離取るのが愚直4乗だと無理みたいで、3乗になるみたいなんだけどよく分からん。
+・3乗はできた。x座標を決め打つと、円の方程式を式変形してyを一意にできることを使う。
+　でもこれでもTLE。。よく考えるとNは*2していて、600^3=2億くらいになるから、3乗でも素直にやるときつい。
 */
 
 #pragma region mytemplate
@@ -160,22 +162,31 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
+int D[2];
+vector<int> nodes[2][360007];
+
 void solve() {
-    vector<ll> D(2);
     ll N;
     cin >> N >> D[0] >> D[1];
 
     N *= 2;
     ll NN = N*N;
 
-    auto nodes = list2d(2, NN, vector<ll>());
-    rep(u, NN) {
-        auto [x1, y1] = idtogrid(u, N);
-        rep(v, u+1, NN) {
-            auto [x2, y2] = idtogrid(v, N);
-            rep(d, 2) {
-                ll dist = (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
-                if (dist == D[d]) {
+    rep(d, 2) {
+        rep(u, NN) {
+            auto [x1, y1] = idtogrid(u, N);
+            rep(x2, N) {
+                ll x3 = x2;
+                // y = +-√(r^2-(x-a)^2)+b
+                double y2 = round(-sqrt((double)D[d]-(x2-x1)*(x2-x1))) + y1;
+                double y3 = round(sqrt((double)D[d]-(x3-x1)*(x3-x1))) + y1;
+                if (0 <= y2 and y2 < N and abs(y2-round(y2)) < EPS) {
+                    ll v = gridtoid(x2, round(y2), N);
+                    nodes[d][u].eb(v);
+                    nodes[d][v].eb(u);
+                }
+                if (0 <= y3 and y3 < N and abs(y3-round(y3)) < EPS and abs(y2-y3) < EPS) {
+                    ll v = gridtoid(x3, round(y3), N);
                     nodes[d][u].eb(v);
                     nodes[d][v].eb(u);
                 }
