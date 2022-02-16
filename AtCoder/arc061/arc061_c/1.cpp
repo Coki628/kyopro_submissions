@@ -1,7 +1,7 @@
 /*
 参考：https://img.atcoder.jp/data/arc/061/editorial.pdf
 　　　https://betrue12.hateblo.jp/entry/2019/05/25/134323
-・arc061_e
+・dojo set_d_2_4
 ・大変だった。。当然自力ではない。
 ・頂点拡張ダイクストラ、辺の張り方を工夫
 ・路線の種類を状態に持っても、全頂点合わせてせいぜい辺の数くらいしか状態がないはずなので、
