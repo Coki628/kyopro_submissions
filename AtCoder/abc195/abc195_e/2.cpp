@@ -1,13 +1,9 @@
 /*
-参考：https://scrapbox.io/procon-kirokuyou/AGC054_B_-_Greedy_Division_(800)
-　　　https://twitter.com/e869120/status/1409177497833406469/photo/1
-・AGC054B
-・むずい。
-・部分和DP、順列
-・完全に忘れてたけど、これも2か月前くらいに解いてるね。。
-　ほぼその時と同じように悩み、諦め、公式解説PDFは意味分からず、
-　調べて、E8さんの解説PDF見つけて、同じように解釈を進めていっただけ。
-　その時の自分がちゃんと説明を噛み砕いてるので、そっち見て欲しい。
+・dojo set_d_1_2
+・きっちり自力AC！これはまあ本番でも通せたの覚えてたけどね。
+・ゲームDP、メモ化再帰
+・高橋君の勝ち状態をtrueとする。高橋君の手番では戻り値のうちなるべくtrueを選ぶように、
+　青木君の手番ではなるべくfalseを選ぶようにして、その状態の結果を確定させる。
 */
 
 #pragma region mytemplate
@@ -161,34 +157,31 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 void solve() {
     ll N;
     cin >> N;
-    auto W = LIST(N);
+    string S, X;
+    cin >> S >> X;
 
-    ll sm = sum(W);
-    if (sm%2 == 1) {
-        print(0);
-        return;
-    }
-
-    auto dp = list3d<mint>(N+1, N+1, sm+1, 0);
-    dp[0][0][0] = 1;
-    rep(i, N) {
-        rep(j, N+1) {
-            rep(k, sm+1) {
-                if (dp[i][j][k] == 0) continue;
-                dp[i+1][j][k] += dp[i][j][k];
-                if (j+1 <= N and k+W[i] <= sm) {
-                    dp[i+1][j+1][k+W[i]] += dp[i][j][k];
-                }
-            }
+    auto memo = list2d(N+1, 7, -1);
+    auto rec = [&](auto&& f, ll i, ll a) -> bool {
+        if (memo[i][a] != -1) return memo[i][a];
+        if (i == N) {
+            return a%7 == 0;
         }
+        if (X[i] == 'T') {
+            bool res = f(f, i+1, (a*10)%7) | f(f, i+1, (a*10+toint(S[i]))%7);
+            memo[i][a] = res;
+            return res;
+        } else {
+            bool res = f(f, i+1, (a*10)%7) & f(f, i+1, (a*10+toint(S[i]))%7);
+            memo[i][a] = res;
+            return res; 
+        }
+    };
+    auto res = rec(rec, 0, 0);
+    if (res) {
+        print("Takahashi");
+    } else {
+        print("Aoki");
     }
-
-    ModTools mt(N);
-    mint ans = 0;
-    rep(j, N+1) {
-        ans += dp[N][j][sm/2]*mt.factorial(j)*mt.factorial(N-j);
-    }
-    print(ans);
 }
 
 int main() {

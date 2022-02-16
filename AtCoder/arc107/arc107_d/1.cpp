@@ -1,16 +1,36 @@
 /*
-・ABC195E
-・きっちり自力AC！これはまあ本番でも通せたの覚えてたけどね。
-・ゲームDP、メモ化再帰
-・高橋君の勝ち状態をtrueとする。高橋君の手番では戻り値のうちなるべくtrueを選ぶように、
-　青木君の手番ではなるべくfalseを選ぶようにして、その状態の結果を確定させる。
+参考：https://drken1215.hatenablog.com/entry/2020/11/01/175900
+　　　https://kmjp.hatenablog.jp/entry/2020/11/04/0900
+・dojo set_d_1_4
+・自力は無理。難しかった。
+・種類数の数え上げDP、枝刈り
+・通り数ではなく種類数数えるやつなので、まず重複なくやらないといけない。
+　今回は、小さい値に分裂させたら、前の大きい値の分裂はもうやらない、
+　というルールにすることで重複なく数えられる。言われれば、確かにそうかもってなるけどね。。
+・この後状態持つ方法も難しい。まず1/2^0がK個ある状態から始めることを考えて、
+　そこから1/2^0を1～K個使って分裂させて小さい要素を作る。
+　これで最小要素は1/2^1になり、次はこの要素を分裂させる遷移を、と進めて行く。
+　この流れに必要になる状態としては、
+　・今見ている最小要素が1/2^i
+　・要素数がj
+　・最小要素の要素数がk
+　といった具合になる。jは最終的な答えに必要だし、kは次に遷移するために必要になる。
+　このままだと状態N^3の遷移Nできつすぎるが、実はここのiの添字は必要ない。
+　というのも、最小要素は1/2^1だろうと最小要素は1/2^2だろうと、
+　今回は最小要素の要素数が同じなら遷移に違いがないからだ。
+　それこそ、DPの本質の1つとも言える「まとめちゃっていい状態」になる。
+・これでN^2の状態とNの遷移で計算量O(N^3)。厳しいんだけど、
+　生配列にして、kmjpさんの参考に枝刈りやったら通った。
+　だいぶ減ってるとはいえ、3000^3が2秒間に合っちゃうんだな。。
+・なんか累積和っぽくやればこのままでもN^2になったり、
+　公式解の分割数っぽいやつやればそれもN^2になったりするっぽい。まあそのうち…。
 */
 
 #pragma region mytemplate
 
-// #pragma GCC target("avx2")
-// #pragma GCC optimize("O3")
-// #pragma GCC optimize("unroll-loops")
+#pragma GCC target("avx2")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 
 #define _USE_MATH_DEFINES
 #include <bits/stdc++.h>
@@ -154,34 +174,54 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-void solve() {
-    ll N;
-    cin >> N;
-    string S, X;
-    cin >> S >> X;
+// 生配列
+mint dp[3007][3007];
 
-    auto memo = list2d(N+1, 7, -1);
-    auto rec = [&](auto&& f, ll i, ll a) -> bool {
-        if (memo[i][a] != -1) return memo[i][a];
-        if (i == N) {
-            return a%7 == 0;
+void solve() {
+    ll N, K;
+    cin >> N >> K;
+
+    // dp[j][k] := 要素数がj、最後に使った値の数がk
+    // auto dp = list2d<mint>(N+1, N+1, 0);
+    dp[K][K] = 1;
+    rep(j, K, N+1) {
+        rep(k, N+1) {
+            if (dp[j][k] == 0) continue;
+            rep(l, 1, k+1) {
+                // 枝刈り
+                if (j+l > N or l*2 > N) break;
+                dp[j+l][l*2] += dp[j][k];
+            }
         }
-        if (X[i] == 'T') {
-            bool res = f(f, i+1, (a*10)%7) | f(f, i+1, (a*10+toint(S[i]))%7);
-            memo[i][a] = res;
-            return res;
-        } else {
-            bool res = f(f, i+1, (a*10)%7) & f(f, i+1, (a*10+toint(S[i]))%7);
-            memo[i][a] = res;
-            return res; 
-        }
-    };
-    auto res = rec(rec, 0, 0);
-    if (res) {
-        print("Takahashi");
-    } else {
-        print("Aoki");
     }
+    mint ans = 0;
+    rep(k, N+1) {
+        ans += dp[N][k];
+    }
+    print(ans);
+
+    // dp[i][j][k] := 一番小さい値が1/2^i、要素数がj、最後に使った値の数がk
+    // auto dp = list3d<mint>(N+1, N+1, N+1, 0);
+    // dp[0][K][K] = 1;
+    // rep(i, N) {
+    //     rep(j, N+1) {
+    //         rep(k, N+1) {
+    //             if (dp[i][j][k] == 0) continue;
+    //             rep(l, 1, k+1) {
+    //                 if (j+l <= N and l*2 <= N) {
+    //                     dp[i+1][j+l][l*2] += dp[i][j][k];
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // mint ans = 0;
+    // rep(i, N+1) {
+    //     rep(k, N+1) {
+    //         ans += dp[i][N][k];
+    //     }
+    // }
+    // print(ans);
 }
 
 int main() {

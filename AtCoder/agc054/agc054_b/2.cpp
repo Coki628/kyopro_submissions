@@ -1,28 +1,13 @@
 /*
-参考：https://img.atcoder.jp/data/arc/059/editorial.pdf
-　　　https://drken1215.hatenablog.com/entry/2019/12/28/201900
-・ARC059F
-・むずい。自力は全然方針からして外してた。
-・状態の持ち方が難しいDP
-・2乗OKの制約なので、DPを誘っているようには見えるが、普通にやろうとすると、
-　・i回操作して
-　・今持っている文字列が何か
-　みたいな情報が欲しくなる。
-　これは陽に持つと2^文字列長くらいになるので無理。
-　実は今回の操作では2つあれば良くて、
-　・文字列長
-　・何文字目までSと一致しているか
-　があれば、文字列自体を陽に持たなくていい。
-　今回は末尾を消すという操作があるが、これによって文字列が急に何文字も
-　合っている状態や間違った状態になることはなく、
-　ある位置まで合っていたものはそこまで消すまでは変えれないし、途中が間違っているものに
-　いくら継ぎ足してもやっぱり合っている長さは変化しない。言われると確かになんだけどね。。
-・てかこれ任意のスタックっぽい操作に同じ理屈が通じそうだな。だとしたら汎用性のある話かも。
-・さて、ここまでできて3乗DPで部分点…。
-・満点にはもうひと考察必要。今回、操作自体は01を自由に使うことができるので、
-　最終的に求めたい文字列が何であるにせよ、それらの通り数はどれでも同じになる。
-　そうすると、ありえる2^M通りの文字列からどれか1つが出る通り数なので、
-　最後に割り算すれば求まる。Sとの一致に関する添字が要らなくなるので2乗DPになり、通る。
+参考：https://scrapbox.io/procon-kirokuyou/AGC054_B_-_Greedy_Division_(800)
+　　　https://twitter.com/e869120/status/1409177497833406469/photo/1
+・dojo set_d_1_6
+・むずい。
+・部分和DP、順列
+・完全に忘れてたけど、これも2か月前くらいに解いてるね。。
+　ほぼその時と同じように悩み、諦め、公式解説PDFは意味分からず、
+　調べて、E8さんの解説PDF見つけて、同じように解釈を進めていっただけ。
+　その時の自分がちゃんと説明を噛み砕いてるので、そっち見て欲しい。
 */
 
 #pragma region mytemplate
@@ -60,8 +45,8 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-constexpr int MOD = 1000000007;
-// constexpr int MOD = 998244353;
+// constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -176,52 +161,34 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 void solve() {
     ll N;
     cin >> N;
-    string S;
-    cin >> S;
-    ll M = S.size();
+    auto W = LIST(N);
 
-    // dp[i][j] := i回操作して、文字列長がjとなる通り数
-    auto dp = list2d<mint>(N+1, N+1, 0);
-    dp[0][0] = 1;
+    ll sm = sum(W);
+    if (sm%2 == 1) {
+        print(0);
+        return;
+    }
+
+    auto dp = list3d<mint>(N+1, N+1, sm+1, 0);
+    dp[0][0][0] = 1;
     rep(i, N) {
         rep(j, N+1) {
-            if (dp[i][j] == 0) continue;
-            // B
-            dp[i+1][max(j-1, 0LL)] += dp[i][j];
-            // 0 or 1
-            dp[i+1][j+1] += dp[i][j]*2;
+            rep(k, sm+1) {
+                if (dp[i][j][k] == 0) continue;
+                dp[i+1][j][k] += dp[i][j][k];
+                if (j+1 <= N and k+W[i] <= sm) {
+                    dp[i+1][j+1][k+W[i]] += dp[i][j][k];
+                }
+            }
         }
     }
-    // 任意の01文字列のうち、目的のものが出る通り数
-    mint ans = dp[N][M] / pow(2, M, MOD);
-    print(ans);
 
-    // // dp[i][j][k] := i回操作して、文字列長がj、Sと一致している長さがkの時の通り数
-    // auto dp = list3d<mint>(N+1, N+1, M+1, 0);
-    // dp[0][0][0] = 1;
-    // rep(i, N) {
-    //     rep(j, N+1) {
-    //         rep(k, M+1) {
-    //             if (dp[i][j][k] == 0) continue;
-    //             // B
-    //             dp[i+1][max(j-1, 0LL)][max(min(k, j-1), 0LL)] += dp[i][j][k];
-    //             // 0
-    //             if (k < M and j == k and S[k] == '0') {
-    //                 dp[i+1][j+1][k+1] += dp[i][j][k];
-    //             } else {
-    //                 dp[i+1][j+1][k] += dp[i][j][k];
-    //             }
-    //             // 1
-    //             if (k < M and j == k and S[k] == '1') {
-    //                 dp[i+1][j+1][k+1] += dp[i][j][k];
-    //             } else {
-    //                 dp[i+1][j+1][k] += dp[i][j][k];
-    //             }
-    //         }
-    //     }
-    // }
-    // mint ans = dp[N][M][M];
-    // print(ans);
+    ModTools mt(N);
+    mint ans = 0;
+    rep(j, N+1) {
+        ans += dp[N][j][sm/2]*mt.factorial(j)*mt.factorial(N-j);
+    }
+    print(ans);
 }
 
 int main() {
