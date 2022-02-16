@@ -1,8 +1,8 @@
 /*
-・cf1360_D
+・dojo camp_cfdiv3_1
 ・きっちり自力AC！
-・約数列挙
-・Nの約数のうち、K以下で最大のものをパッケージ毎の本数として使う。
+・詰まるところ、1があったら、右か下にも1があるかどうかだけチェックすればいい。
+　(最終行、最終列は除く。)
 */
 
 // #pragma GCC target("avx2")
@@ -27,15 +27,30 @@ using mint = ModInt<MOD>;
 #include "../../../_lib/cpp/_src/template.hpp"
 
 void solve() {
-    ll N, K;
-    cin >> N >> K;
+    ll N;
+    cin >> N;
+    vector<string> grid(N);
+    rep(i, N) {
+        cin >> grid[i];
+    }
 
-    auto divs = divisors(N);
-    sort(ALL(divs));
-
-    ll cnt = *--upper_bound(ALL(divs), K);
-    ll ans = N/cnt;
-    print(ans);
+    rep(i, N) {
+        rep(j, N) {
+            if (grid[i][j] == '0') continue;
+            bool ok = false;
+            if (i == N-1 or grid[i+1][j] == '1') {
+                ok = true;
+            }
+            if (j == N-1 or grid[i][j+1] == '1') {
+                ok = true;
+            }
+            if (not ok) {
+                NO();
+                return;
+            }
+        }
+    }
+    YES();
 }
 
 int main() {

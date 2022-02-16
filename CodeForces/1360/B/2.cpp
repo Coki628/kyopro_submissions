@@ -1,8 +1,7 @@
 /*
-・cf1360_E
+・dojo camp_cfdiv3_1
 ・きっちり自力AC！
-・詰まるところ、1があったら、右か下にも1があるかどうかだけチェックすればいい。
-　(最終行、最終列は除く。)
+・ソートして一番差分の小さい所。
 */
 
 // #pragma GCC target("avx2")
@@ -29,28 +28,14 @@ using mint = ModInt<MOD>;
 void solve() {
     ll N;
     cin >> N;
-    vector<string> grid(N);
-    rep(i, N) {
-        cin >> grid[i];
-    }
+    auto A = LIST(N);
 
-    rep(i, N) {
-        rep(j, N) {
-            if (grid[i][j] == '0') continue;
-            bool ok = false;
-            if (i == N-1 or grid[i+1][j] == '1') {
-                ok = true;
-            }
-            if (j == N-1 or grid[i][j+1] == '1') {
-                ok = true;
-            }
-            if (not ok) {
-                NO();
-                return;
-            }
-        }
+    sort(ALL(A));
+    ll ans = INF;
+    rep(i, N-1) {
+        chmin(ans, abs(A[i]-A[i+1]));
     }
-    YES();
+    print(ans);
 }
 
 int main() {

@@ -1,7 +1,11 @@
 /*
-・cf1360_B
+・dojo camp_cfdiv3_1
 ・きっちり自力AC！
-・ソートして一番差分の小さい所。
+・偶奇
+・まず偶奇で分けてそこでなるべく組ませるとすると、
+　全部OKか1ペアだけ余る所までは行ける。
+　1ペア余っていたら、もう1つの条件(差分が1)が使えるものがあるかは、
+　2乗が効く制約なので普通に全探索できる。
 */
 
 // #pragma GCC target("avx2")
@@ -30,12 +34,28 @@ void solve() {
     cin >> N;
     auto A = LIST(N);
 
-    sort(ALL(A));
-    ll ans = INF;
-    rep(i, N-1) {
-        chmin(ans, abs(A[i]-A[i+1]));
+    vector<ll> A1, A2;
+    rep(i, N) {
+        if (A[i]%2 == 0) {
+            A1.eb(A[i]);
+        } else {
+            A2.eb(A[i]);
+        }
     }
-    print(ans);
+    if (A1.size()%2 == 0) {
+        YES();
+        return;
+    }
+
+    for (auto a1 : A1) {
+        for (auto a2 : A2) {
+            if (abs(a1-a2) == 1) {
+                YES();
+                return;
+            }
+        }
+    }
+    NO();
 }
 
 int main() {
