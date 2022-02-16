@@ -1,6 +1,6 @@
 /*
 参考：https://img.atcoder.jp/data/arc/055/editorial.pdf
-・arc055_c
+・dojo set_e_3_5
 ・ローリングハッシュ、LCP
 ・切る位置を考える。ABC|ACで切ると、それぞれ接頭辞と接尾辞が一致させたい場所になるので、
 　これをうまく使う。基本的には両方LCP取って、重なった分は余分に作れる。
