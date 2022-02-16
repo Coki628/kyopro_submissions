@@ -1,8 +1,8 @@
 /*
-・abc176_e
-・自力AC
-・でもこれはいまいち。時間かけてしまった。
-　平面走査っぽさは感じつつも、どうするか結構悩んだ上で無事AC。
+・dojo set_d_3_5
+・自力ならず。。自力はここまで。
+・一晩考えて必死で考察して、「偶奇で分けて区間和が等しくなる所」
+　ってことまでは分かったけど、それが高速化できず…。
 */
 
 // #pragma GCC target("avx2")
@@ -27,27 +27,24 @@ using mint = ModInt<MOD>;
 #include "../../../_lib/cpp/_src/template.hpp"
 
 void solve() {
-    ll H, W, M;
-    cin >> H >> W >> M;
-    vvl adj(H);
-    auto seg = get_segment_tree([](ll a, ll b) { return max(a, b); }, -INF);
-    seg.build(vector<ll>(W, 0));
-    rep(i, M) {
-        ll h, w;
-        cin >> h >> w;
-        h--; w--;
-        adj[h].eb(w);
-        seg.update(w, seg[w]+1);
+    ll N;
+    cin >> N;
+    vector<ll> A1(N), A2(N);
+    rep(i, N) {
+        if (i%2 == 0) {
+            cin >> A1[i];
+        } else {
+            cin >> A2[i];
+        }
     }
 
+    Accumulate<ll> acc1(A1), acc2(A2);
     ll ans = 0;
-    rep(h, H) {
-        for (ll w : adj[h]) {
-            seg.update(w, seg[w]-1);
-        }
-        chmax(ans, seg.all()+(ll)adj[h].size());
-        for (ll w : adj[h]) {
-            seg.update(w, seg[w]+1);
+    rep(i, N) {
+        rep(j, i+2, N+1) {
+            if (acc1.query(i, j) == acc2.query(i, j)) {
+                ans++;
+            }
         }
     }
     print(ans);
