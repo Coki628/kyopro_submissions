@@ -1,11 +1,16 @@
 /*
-参考：https://atcoder.jp/contests/agc002/submissions/27944478
-・AGC002D
-・UnionFind、平方分割、クエリ先読み
-・頑張って解読した。方針としては、√M回くらいに1回、グラフの状態を保持して、
-　その結果毎にクエリを振り分ける。これで辺追加時に見るクエリの回数か、
-　そのクエリを見る辺追加時の回数のどちらかは抑えられるので、間に合う。
-・なんだけど、これはちょっと定数倍足りなくてTLE。。
+・dojo set_e_1_4
+・自力ならず。。
+・グラフ構築、2冪
+・2冪にすれば最大ビットに絡む所以外はできる。問題はそこをどうするか。
+・3年前に解いた時にも同じ所で考察詰まって終わってたぽい。成長してなくて悲しい…。
+・うまくバイパスするのは考えたんだけど、例えば残りあと1,2が欲しかったとして、
+　1ビット目に繋げば1だけだし、2ビット目に繋げば1,2,3が取れてしまって無理、みたいに詰まった。
+・で、色々読み解くと、残り必要な数をビットで考えて、
+　ビットが立ってる所で値は辺コストで調節して繋ぐ、みたいにする。(伝えるの難しい)
+・実装も地味に添字とか逆からになったりでやりづらい。
+　(結局、昔解いた時のやつめっちゃ見ながら書くみたいになってしまった。)
+　なんていうか、こういう系は解けるようになる気がしないんだよな。。
 */
 
 #pragma region mytemplate
@@ -30,10 +35,10 @@ using vvpll = vector<vector<pll>>;
 using vvpil = vector<vector<pil>>;
 #define name4(i, a, b, c, d, e, ...) e
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
-#define rep1(i, a) for (int i = 0, _aa = a; i < _aa; i++)
-#define rep2(i, a, b) for (int i = a, _bb = b; i < _bb; i++)
-#define rep3(i, a, b, c) for (int i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
-#define rrep(i, a, b) for (int i=(a); i>(b); i--)
+#define rep1(i, a) for (ll i = 0, _aa = a; i < _aa; i++)
+#define rep2(i, a, b) for (ll i = a, _bb = b; i < _bb; i++)
+#define rep3(i, a, b, c) for (ll i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
+#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
 #define pb push_back
 #define eb emplace_back
 #define mkp make_pair
@@ -155,72 +160,32 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-int roots[320][100007], szs[320][100007];
-vector<array<int, 4>> qs[320];
-
 void solve() {
-    ll N, M;
-    cin >> N >> M;
- 
-    vector<pii> edges;
-    rep(t, 1, M+1) {
-        ll u, v;
-        cin >> u >> v;
-        u--; v--;
-        edges.eb(u, v);
+    ll L;
+    cin >> L;
+
+    ll a = 1;
+    while ((a<<1LL) <= L) {
+        a <<= 1LL;
+    }
+    ll N = bit_length(a);
+    vector<tuple<ll, ll, ll>> edges;
+    rep(i, N-1) {
+        edges.eb(i+1, i+2, 0);
+        edges.eb(i+1, i+2, 1LL<<i);
     }
 
-    // 辺の追加M回をD回ずつのバケットに分ける
-    int D = ceil(sqrt(M));
-    UnionFind uf(N);
-    rep(t, M) {
-        auto [u, v] = edges[t];
-        // D回に1回、その時のグラフの状態を記録する
-        if (t%D == 0) {
-            rep(u, N) {
-                roots[t/D][u] = uf.find(u);
-                szs[t/D][u] = uf.size(u);
-            }
-        }
-        uf.merge(u, v);
-    }
-
-    ll Q;
-    cin >> Q;
-    rep(i, Q) {
-        int x, y, z;
-        cin >> x >> y >> z;
-        x--; y--;
-        // どのバケットの時点で条件を満たすかでクエリを振り分ける
-        rep(j, 1, D) {
-            ll sz = roots[j][x] == roots[j][y] ? szs[j][x] : szs[j][x]+szs[j][y];
-            if (sz >= z) {
-                qs[j-1].pb({i, x, y, z});
-                break;
-            // 満たさなくても最後のバケットで必ず拾う
-            } elif (j == D-1) {
-                qs[(M-1)/D].pb({i, x, y, z});
-            }
+    ll need = L-a;
+    rep(i, N) {
+        if (need>>i & 1) {
+            edges.eb(i+1, N, L-need);
+            need -= 1LL<<i;
         }
     }
-
-    uf = UnionFind(N);
-    vector<ll> ans(Q, -1);
-    rep(t, M) {
-        auto [u, v] = edges[t];
-        uf.merge(u, v);
-        // ここの範囲を担当するバケットのクエリだけ見る
-        for (auto [i, x, y, z] : qs[t/D]) {
-            if (ans[i] != -1) continue;
-            ll sz = uf.same(x, y) ? uf.size(x) : uf.size(x)+uf.size(y);
-            if (sz >= z) {
-                ans[i] = t+1;
-            }
-        }
-    }
-    rep(i, Q) {
-        assert(ans[i] != -1);
-        print(ans[i]);
+    cout << N << ' ';
+    print(edges.size());
+    rep(i, edges.size()) {
+        print(edges[i]);
     }
 }
 

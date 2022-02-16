@@ -1,12 +1,15 @@
 /*
-参考：https://drken1215.hatenablog.com/entry/2018/09/15/193722
-・AGC002D
-・自力ならず。
-・部分永続UF、二分探索
-・とても久しぶりに使った。そういやこんなんあったなって感じだ。
-・並列二分探索や、平方分割でも解けるそう。
-　平方分割解はやろうとしたんだけど、
-　なんか人の実装見てもどうやるかうまく掴めなかったので保留。。
+参考：https://atcoder.jp/contests/agc002/submissions/13585749
+・dojo set_e_1_5
+・UnionFind、平方分割、クエリ先読み
+・頑張って解読した。方針としては、√M回くらいに1回、グラフの状態を保持して、
+　その結果毎にクエリを振り分ける。これで辺追加時に見るクエリの回数か、
+　そのクエリを見る辺追加時の回数のどちらかは抑えられるので、間に合う。
+・drogskolさんもこの問題の平方分割に言及していたのでコード見たら、
+　なんかやたら速かったので何が違うのか頑張って解読した。
+　だいたいやってる方針は一緒なんだけど、グラフの状態を保持というよりは、
+　クエリの結果自体を√M回くらいに1回チェックして、これによって振り分ける。
+　確かにこの方が余計な処理がなくて無駄がない。これだとすごい速くて、1秒かからないでACする。
 */
 
 #pragma region mytemplate
@@ -156,90 +159,75 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-// 部分永続UF
-struct PartiallyPersistentUnionFind {
-
-    int n;
-    vector<int> par, last;
-    vector<vector<pair<int, int>>> history;
-
-    PartiallyPersistentUnionFind(int n) : n(n) {
-        // xが根のときはxを含むグループのサイズ(の-1倍)、そうでないときは親ノード
-        par.resize(n, -1);
-        // 最後に「根」ではなくなった瞬間の時刻
-        last.resize(n, -1);
-        history.resize(n);
-        for (auto &vec : history) vec.emplace_back(-1, -1);
-    }
-
-    PartiallyPersistentUnionFind() {}
-
-    // 根の検索(グループ番号)
-    int find(int t, int x) {
-        // 根ならその番号を返す
-        if (last[x] == -1 || t < last[x]) {
-            return x;
-        } else {
-            return find(t, par[x]);
-        }
-    }
-
-    // 時刻tにa,bを併合
-    bool merge(int t, int a, int b) {
-        // 根を探す
-        int x = find(t, a);
-        int y = find(t, b);
-        if (x == y) {
-            return false;
-        }
-        // 要素数の少ない方を付け替える(マージテク)
-        if (par[x] > par[y]) {
-            swap(x, y);
-        }
-        // xにyを付ける
-        par[x] += par[y];
-        par[y] = x;
-        last[y] = t;
-        history[x].emplace_back(t, par[x]);
-        return true;
-    }
-
-    // 時刻tに同じ集合に属するか判定
-    bool same(int t, int a, int b) {
-        return find(t, a) == find(t, b);
-    }
-
-    // 時刻tに頂点xを含む連結成分のサイズ
-    int size(int t, int x) {
-        x = find(t, x);
-        return -prev(lower_bound(history[x].begin(), history[x].end(), make_pair(t, 0)))->second;
-    }
-};
-
 void solve() {
     ll N, M;
     cin >> N >> M;
-
-    PartiallyPersistentUnionFind uf(N);
+ 
+    vector<pii> edges;
     rep(t, 1, M+1) {
         ll u, v;
         cin >> u >> v;
         u--; v--;
-        uf.merge(t, u, v);
+        edges.eb(u, v);
     }
 
     ll Q;
     cin >> Q;
+    vector<ll> X(Q), Y(Q), Z(Q);
     rep(i, Q) {
-        ll x, y, z;
-        cin >> x >> y >> z;
-        x--; y--;
+        int x, y, z;
+        cin >> X[i] >> Y[i] >> Z[i];
+        X[i]--; Y[i]--;
+    }
 
-        ll res = bisearch_min(0, M, [&](ll m) {
-            ll sz = uf.same(m, x, y) ? uf.size(m, x) : uf.size(m, x)+uf.size(m, y);
-            return sz >= z;
-        });
-        print(res);
+    // 辺の追加M回をD回ずつのバケットに分ける
+    int D = ceil(sqrt(M));
+    UnionFind uf(N);
+    vector<bool> used(Q);
+    vvl qs(D);
+    rep(t, M) {
+        auto [u, v] = edges[t];
+        // D回に1回、その時点でのクエリの結果を確認する
+        if (t > 0 and t%D == 0) {
+            rep(i, Q) {
+                if (used[i]) continue;
+                ll x = X[i], y = Y[i], z = Z[i];
+                ll sz = uf.same(x, y) ? uf.size(x) : uf.size(x)+uf.size(y);
+                // 条件を満たしたらこの手前のバケットに振り分ける 
+                if (sz >= z) {
+                    qs[t/D-1].pb(i);
+                    used[i] = true;
+                }
+            }
+        }
+        // 満たさなくても最後のバケットで必ず拾う
+        if (t == M-1) {
+            rep(i, Q) {
+                if (used[i]) continue;
+                qs[t/D].pb(i);
+            }
+        }
+        uf.merge(u, v);
+    }
+
+    uf = UnionFind(N);
+    vector<ll> ans(Q, -1);
+    rep(t, M) {
+        auto [u, v] = edges[t];
+        uf.merge(u, v);
+        // ここの範囲を担当するバケットのクエリだけ見る
+        for (ll i : qs[t/D]) {
+            ll x = X[i], y = Y[i], z = Z[i];
+            if (ans[i] != -1) continue;
+            ll sz = uf.same(x, y) ? uf.size(x) : uf.size(x)+uf.size(y);
+            if (sz >= z) {
+                ans[i] = t+1;
+            }
+        }
+    }
+    rep(i, Q) {
+        assert(ans[i] != -1);
+        print(ans[i]);
     }
 }
 

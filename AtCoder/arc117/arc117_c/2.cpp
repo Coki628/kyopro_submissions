@@ -1,23 +1,13 @@
 /*
-・ABC200E
-・なんとか自力AC！粘った甲斐はあった。。
-・K番目の要素、差分、実験エスパー
-・解けなかったのは覚えてた。方針は思い出せず。結果的に当時のupsolveと結構違う感じで解いてた。
-・とりあえずK番目の数が持つ総和を求めたい。
-　和は大きくてもせいぜい3Nなので、1つずつを高速に求められれば和毎の通り数を列挙できる。
-　2乗ならそれらしい値が出たがこれでは間に合わない。
-　結果の列を眺めると、やたら規則的に見える。差分を取ってみる。
-　1ずつ増えて、2ずつ減って、1ずつ増える。
-　切り替わるタイミングもちょうどN回目とかになっている。これに合わせる。
-　最悪に実験エスパーな感じだが求まるは求まった。
-・前解いた時のやつ見ると、実際はここはDPで求めるのがよかった。
-　部分和DPっぽいけど要素が3個しかなくて遷移は多い、みたいなやつにできる。
-　言われたら納得だけど、全然覚えてなかったわ…。
-・ここまで来るとだいたいいい感じで、前に
-　「N以下の自然数でa+b=xを作る通り数」っていうニッチだけど割とたまに出てきて
-　どうするか悩むやつを関数化してあったので、これを使う。
-　するとsmが分かってれば、a固定でbcの通り数が分かり、
-　K個に達する所でbも固定して1<=c<=Nなcを1個ずつ数えていけばOK。
+・dojo set_e_1_1
+・自力ならず。。これはかなり覚えてたのに、悔しい。
+・(6-a-b)%3 を使おうとしたんだけど、(-a-b)%3 にすればよかったんだね。
+　6があるせいで偶奇で符号反転した時とかにグチャグチャになった。
+　あと寄与数をnCrで数えるやつも、その経路の通り数みたいなやつに、
+　余計に移動回数みたいの掛けちゃってて、そもそもそこの数え上げもダメになってた。
+　この辺数え上げるノウハウみたいのが、昔よりは入ってきてるんだけど、
+　やっぱりまだ結構とっ散らかってるんだよね。。
+・詳しい解説は昔の自分のコードと公式PDF見て。
 */
 
 #pragma region mytemplate
@@ -167,74 +157,131 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-// N以下の自然数でa+b=xを作る通り数
-ll calc(ll N, ll x) {
-    return max(min(x-1, N*2+1-x), 0LL);
-}
+// 任意Mod数え上げnCr
+struct AnyModTools {
+
+    const int64_t mod;
+    // 素数冪を (p, c) で表現したもの
+    vector<pair<int64_t, int>> primes;
+    // 素数冪 p^c の実際の値
+    vector<int64_t> ppow;
+    // 階乗を (x, y) 形式で表現したもの
+    vector<vector<pair<int64_t, int>>> fact;
+
+    AnyModTools(int64_t mod, int MX) : mod(mod) {
+        create_composite_mod_table(++MX, mod);
+    }
+
+    vector<pair<int64_t, int>> factorize(int64_t n) {
+        vector<pair<int64_t, int>> ret;
+        for(int64_t i=2; i*i<=n; i++) {
+            int cnt = 0;
+            while(n % i == 0) {
+                n /= i;
+                cnt++;
+            }
+            if(cnt) ret.emplace_back(i, cnt);
+        }
+        if(n > 1) ret.emplace_back(n, 1);
+        return ret;
+    }
+
+    // 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
+    int64_t extgcd(int64_t a, int64_t b, int64_t& x, int64_t& y) {
+        int64_t d = a;
+        if(b != 0){
+            d = extgcd(b, a%b, y, x);
+            y -= (a/b) * x;
+        }else{
+            x = 1; y = 0;
+        }
+        return d;
+    }
+
+    // MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
+    int64_t inv_mod(int64_t a, int64_t mod) {
+        int64_t x, y;
+        extgcd(a, mod, x, y);
+        return (mod + x%mod) % mod;
+    }
+
+    void add(int64_t& a, int64_t b, int64_t mod) {
+        a = (a+b) % mod;
+    }
+    void mul(int64_t& a, int64_t b, int64_t mod) {
+        a = a*b % mod;
+    }
+
+    // 素因数分解をして素数冪ごとにfactを前計算：O(√M+N*(Mの素因数の種類数))
+    void create_composite_mod_table(int N, int64_t M) {
+        primes = factorize(M);
+        int sz = primes.size();
+        ppow.resize(sz, 1);
+        fact.resize(sz);
+        for(int pi=0; pi<sz; pi++){
+            int64_t p = primes[pi].first, cnt = primes[pi].second;
+            while(cnt--) ppow[pi] *= p;
+
+            auto& f = fact[pi];
+            f.resize(N+1);
+            f[0] = {1, 0};
+            for(int i=1; i<=N; i++){
+                f[i] = f[i-1];
+                int n = i;
+                while(n%p == 0){
+                    n /= p;
+                    f[i].second++;
+                }
+                mul(f[i].first, n, ppow[pi]);
+            }
+        }
+    }
+
+    // 素因数毎の二項係数を計算
+    int64_t comb_mod(int n, int k, int pi) {
+        auto &a = fact[pi][n], &b = fact[pi][k], &c = fact[pi][n-k];
+        int64_t p = primes[pi].first, cnt = primes[pi].second;
+        int64_t pp = ppow[pi];
+        int pw = a.second - b.second - c.second;
+        if(pw >= cnt) return 0;
+
+        int64_t v = a.first;
+        mul(v, inv_mod(b.first, pp), pp);
+        mul(v, inv_mod(c.first, pp), pp);
+        while(pw--) mul(v, p, pp);
+        return v;
+    }
+
+    // 二項係数nCrの計算：O(modの素因数の種類数)
+    int64_t nCr(int n, int k) {
+        int64_t res = 1;
+        rep(i, primes.size()) {
+            mul(res, comb_mod(n, k, i), mod);
+        }
+        return res;
+    }
+};
 
 void solve() {
-    ll N, K;
-    cin >> N >> K;
+    ll N;
+    cin >> N;
+    string S;
+    cin >> S;
+    const int mod = 3;
 
-    ll N3 = N*3;
-    ll add = 0;
-    vector<ll> C(N3+1), C2(N3+1);
-    rep(sm, 3, N3+1) {
-        // ll cnt = 0;
-        // rep(a, 1, N+1) {
-        //     ll bc = sm-a;
-        //     cnt += calc(N, bc);
-        // }
-        // C[sm] += cnt;
+    AnyModTools amt(mod, N);
+    map<char, ll> mp = {
+        {'B', 0}, {'W', 1}, {'R', 2},
+    };
+    vector<char> rev = {'B', 'W', 'R'};
 
-        if (2 <= sm and sm < N+3) {
-            add++;
-        } elif (N+3 <= sm and sm < N*2+3) {
-            add -= 2;
-        } elif (N*2+3 <= sm) {
-            add++;
-        }
-        C2[sm] = C2[sm-1]+add;
+    ll res = 0;
+    rep(i, N) {
+        res += mp[S[i]]*amt.nCr(N-1, i);
     }
-
-    // assert(C == C2);
-    // vector<ll> B;
-    // rep(i, N3) {
-    //     B.eb(C[i+1]-C[i]);
-    // }
-    // debug(B);
-    // debug(C);
-    // debug(C2);
-
-    // C2[i] := 総和がiになる通り数、を累積和してi以上になる通り数にする
-    auto acc = C2;
-    rep(i, N3) {
-        acc[i+1] += acc[i];
-    }
-    // K番目の要素の総和
-    ll sm = bisect_left(acc, K);
-    // print(sm);
-    ll cnt = acc[sm-1];
-    rep(a, 1, N+1) {
-        ll bc = sm-a;
-        ll nxt = calc(N, bc);
-        if (cnt+nxt >= K) {
-            ll need = K-cnt;
-            rep(b, 1, N+1) {
-                ll c = bc-b;
-                if (c > N) continue;
-                if (c <= 0) break;
-                need--;
-                if (need == 0) {
-                    vector<ll> ans = {a, b, c};
-                    print(ans);
-                    return;
-                }
-            }
-        } else {
-            cnt += nxt;
-        }
-    }
+    if (N%2 == 0) res = -res;
+    char ans = rev[modulo(res, mod)];
+    print(ans);
 }
 
 int main() {

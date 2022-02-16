@@ -1,7 +1,23 @@
 /*
-・AGC002D
-・これはTLE。クエリ先読みしてマージテクっぽいことしてみたけどダメ。
-　やっぱ平方分割なりしないとダメっぽい。
+・dojo set_e_1_3
+・なんとか自力AC！粘った甲斐はあった。。
+・K番目の要素、差分、実験エスパー
+・解けなかったのは覚えてた。方針は思い出せず。結果的に当時のupsolveと結構違う感じで解いてた。
+・とりあえずK番目の数が持つ総和を求めたい。
+　和は大きくてもせいぜい3Nなので、1つずつを高速に求められれば和毎の通り数を列挙できる。
+　2乗ならそれらしい値が出たがこれでは間に合わない。
+　結果の列を眺めると、やたら規則的に見える。差分を取ってみる。
+　1ずつ増えて、2ずつ減って、1ずつ増える。
+　切り替わるタイミングもちょうどN回目とかになっている。これに合わせる。
+　最悪に実験エスパーな感じだが求まるは求まった。
+・前解いた時のやつ見ると、実際はここはDPで求めるのがよかった。
+　部分和DPっぽいけど要素が3個しかなくて遷移は多い、みたいなやつにできる。
+　言われたら納得だけど、全然覚えてなかったわ…。
+・ここまで来るとだいたいいい感じで、前に
+　「N以下の自然数でa+b=xを作る通り数」っていうニッチだけど割とたまに出てきて
+　どうするか悩むやつを関数化してあったので、これを使う。
+　するとsmが分かってれば、a固定でbcの通り数が分かり、
+　K個に達する所でbも固定して1<=c<=Nなcを1個ずつ数えていけばOK。
 */
 
 #pragma region mytemplate
@@ -39,8 +55,8 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-constexpr int MOD = 1000000007;
-// constexpr int MOD = 998244353;
+// constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -151,64 +167,74 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
+// N以下の自然数でa+b=xを作る通り数
+ll calc(ll N, ll x) {
+    return max(min(x-1, N*2+1-x), 0LL);
+}
+
 void solve() {
-    ll N, M;
-    cin >> N >> M;
+    ll N, K;
+    cin >> N >> K;
 
-    vector<pii> edges;
-    rep(t, 1, M+1) {
-        ll u, v;
-        cin >> u >> v;
-        u--; v--;
-        edges.eb(u, v);
-    }
+    ll N3 = N*3;
+    ll add = 0;
+    vector<ll> C(N3+1), C2(N3+1);
+    rep(sm, 3, N3+1) {
+        // ll cnt = 0;
+        // rep(a, 1, N+1) {
+        //     ll bc = sm-a;
+        //     cnt += calc(N, bc);
+        // }
+        // C[sm] += cnt;
 
-    ll Q;
-    cin >> Q;
-    vector<vector<tuple<ll, ll, ll>>> qs(N);
-    rep(i, Q) {
-        ll x, y, z;
-        cin >> x >> y >> z;
-        x--; y--;
-        qs[x].eb(i, y, z);
-        qs[y].eb(i, x, z);
-    }
-
-    ll t = 1;
-    UnionFind uf(N);
-    vector<ll> ans(Q, -1);
-    for (auto [u, v] : edges) {
-        ll ru = uf.find(u);
-        ll rv = uf.find(v);
-        if (not uf.same(u, v)) {
-            ll r = uf.merge(u, v);
-            if (r == ru) {
-                if (qs[rv].size() > qs[r].size()) {
-                    swap(qs[rv], qs[r]);
-                }
-                for (auto [i, w, z] : qs[rv]) {
-                    if (ans[i] != -1) continue;
-                    qs[r].eb(i, w, z);
-                }
-            } else {
-                if (qs[ru].size() > qs[r].size()) {
-                    swap(qs[rv], qs[r]);
-                }
-                for (auto [i, w, z]  : qs[ru]) {
-                    if (ans[i] != -1) continue;
-                    qs[r].eb(i, w, z);
-                }
-            }
-            for (auto [i, w, z] : qs[r]) {
-                ll sz = uf.same(u, w) ? uf.size(u) : uf.size(u)+uf.size(w);
-                if (sz >= z and ans[i] == -1) {
-                    ans[i] = t;
-                }
-            }
+        if (2 <= sm and sm < N+3) {
+            add++;
+        } elif (N+3 <= sm and sm < N*2+3) {
+            add -= 2;
+        } elif (N*2+3 <= sm) {
+            add++;
         }
-        t++;
+        C2[sm] = C2[sm-1]+add;
     }
-    rep(i, Q) print(ans[i]);
+
+    // assert(C == C2);
+    // vector<ll> B;
+    // rep(i, N3) {
+    //     B.eb(C[i+1]-C[i]);
+    // }
+    // debug(B);
+    // debug(C);
+    // debug(C2);
+
+    // C2[i] := 総和がiになる通り数、を累積和してi以上になる通り数にする
+    auto acc = C2;
+    rep(i, N3) {
+        acc[i+1] += acc[i];
+    }
+    // K番目の要素の総和
+    ll sm = bisect_left(acc, K);
+    // print(sm);
+    ll cnt = acc[sm-1];
+    rep(a, 1, N+1) {
+        ll bc = sm-a;
+        ll nxt = calc(N, bc);
+        if (cnt+nxt >= K) {
+            ll need = K-cnt;
+            rep(b, 1, N+1) {
+                ll c = bc-b;
+                if (c > N) continue;
+                if (c <= 0) break;
+                need--;
+                if (need == 0) {
+                    vector<ll> ans = {a, b, c};
+                    print(ans);
+                    return;
+                }
+            }
+        } else {
+            cnt += nxt;
+        }
+    }
 }
 
 int main() {

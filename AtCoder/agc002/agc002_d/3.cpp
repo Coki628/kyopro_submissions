@@ -1,10 +1,11 @@
 /*
-・ARC074F
-・最大流、最小カット
-・全然ダメだったな。。解法覚えてるのに合わず。前やったやつと比べてみたら、
-　行列繋ぐ辺が片方にしか張られてなかった。行き来できるなら2本張らないとダメね。。
-　あと、合わせて書いてあったINF以上があるからイコールだとダメってやつも
-　多分見てなかったらしっかり踏んでたし、もう全然覚えてないね…。
+参考：https://atcoder.jp/contests/agc002/submissions/27944478
+・dojo set_e_1_5
+・UnionFind、平方分割、クエリ先読み
+・頑張って解読した。方針としては、√M回くらいに1回、グラフの状態を保持して、
+　その結果毎にクエリを振り分ける。これで辺追加時に見るクエリの回数か、
+　そのクエリを見る辺追加時の回数のどちらかは抑えられるので、間に合う。
+・なんだけど、これはちょっと定数倍足りなくてTLE。。
 */
 
 #pragma region mytemplate
@@ -29,10 +30,10 @@ using vvpll = vector<vector<pll>>;
 using vvpil = vector<vector<pil>>;
 #define name4(i, a, b, c, d, e, ...) e
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)
-#define rep1(i, a) for (ll i = 0, _aa = a; i < _aa; i++)
-#define rep2(i, a, b) for (ll i = a, _bb = b; i < _bb; i++)
-#define rep3(i, a, b, c) for (ll i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
-#define rrep(i, a, b) for (ll i=(a); i>(b); i--)
+#define rep1(i, a) for (int i = 0, _aa = a; i < _aa; i++)
+#define rep2(i, a, b) for (int i = a, _bb = b; i < _bb; i++)
+#define rep3(i, a, b, c) for (int i = a, _bb = b; (c > 0 && a <= i && i < _bb) or (c < 0 && a >= i && i > _bb); i += c)
+#define rrep(i, a, b) for (int i=(a); i>(b); i--)
 #define pb push_back
 #define eb emplace_back
 #define mkp make_pair
@@ -154,188 +155,73 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-////////// 最大流 //////////
-// --- ACL start --- //
-#include <algorithm>
-#include <cassert>
-#include <limits>
-#include <queue>
-#include <vector>
-namespace atcoder {
-namespace internal {
-template <class T> struct simple_queue {
-    std::vector<T> payload;
-    int pos = 0;
-    void reserve(int n) { payload.reserve(n); }
-    int size() const { return int(payload.size()) - pos; }
-    bool empty() const { return pos == int(payload.size()); }
-    void push(const T& t) { payload.push_back(t); }
-    T& front() { return payload[pos]; }
-    void clear() {
-        payload.clear();
-        pos = 0;
-    }
-    void pop() { pos++; }
-};
-}  // namespace internal
-}  // namespace atcoder
-namespace atcoder {
-template <class Cap> struct mf_graph {
-  public:
-    mf_graph() : _n(0) {}
-    mf_graph(int n) : _n(n), g(n) {}
-    int add_edge(int from, int to, Cap cap) {
-        assert(0 <= from && from < _n);
-        assert(0 <= to && to < _n);
-        assert(0 <= cap);
-        int m = int(pos.size());
-        pos.push_back({from, int(g[from].size())});
-        int from_id = int(g[from].size());
-        int to_id = int(g[to].size());
-        if (from == to) to_id++;
-        g[from].push_back(_edge{to, to_id, cap});
-        g[to].push_back(_edge{from, from_id, 0});
-        return m;
-    }
-    struct edge {
-        int from, to;
-        Cap cap, flow;
-    };
-    edge get_edge(int i) {
-        int m = int(pos.size());
-        assert(0 <= i && i < m);
-        auto _e = g[pos[i].first][pos[i].second];
-        auto _re = g[_e.to][_e.rev];
-        return edge{pos[i].first, _e.to, _e.cap + _re.cap, _re.cap};
-    }
-    std::vector<edge> edges() {
-        int m = int(pos.size());
-        std::vector<edge> result;
-        for (int i = 0; i < m; i++) {
-            result.push_back(get_edge(i));
-        }
-        return result;
-    }
-    void change_edge(int i, Cap new_cap, Cap new_flow) {
-        int m = int(pos.size());
-        assert(0 <= i && i < m);
-        assert(0 <= new_flow && new_flow <= new_cap);
-        auto& _e = g[pos[i].first][pos[i].second];
-        auto& _re = g[_e.to][_e.rev];
-        _e.cap = new_cap - new_flow;
-        _re.cap = new_flow;
-    }
-    Cap flow(int s, int t) {
-        return flow(s, t, std::numeric_limits<Cap>::max());
-    }
-    Cap flow(int s, int t, Cap flow_limit) {
-        assert(0 <= s && s < _n);
-        assert(0 <= t && t < _n);
-        assert(s != t);
-        std::vector<int> level(_n), iter(_n);
-        internal::simple_queue<int> que;
-        auto bfs = [&]() {
-            std::fill(level.begin(), level.end(), -1);
-            level[s] = 0;
-            que.clear();
-            que.push(s);
-            while (!que.empty()) {
-                int v = que.front();
-                que.pop();
-                for (auto e : g[v]) {
-                    if (e.cap == 0 || level[e.to] >= 0) continue;
-                    level[e.to] = level[v] + 1;
-                    if (e.to == t) return;
-                    que.push(e.to);
-                }
-            }
-        };
-        auto dfs = [&](auto self, int v, Cap up) {
-            if (v == s) return up;
-            Cap res = 0;
-            int level_v = level[v];
-            for (int& i = iter[v]; i < int(g[v].size()); i++) {
-                _edge& e = g[v][i];
-                if (level_v <= level[e.to] || g[e.to][e.rev].cap == 0) continue;
-                Cap d =
-                    self(self, e.to, std::min(up - res, g[e.to][e.rev].cap));
-                if (d <= 0) continue;
-                g[v][i].cap += d;
-                g[e.to][e.rev].cap -= d;
-                res += d;
-                if (res == up) return res;
-            }
-            level[v] = _n;
-            return res;
-        };
-        Cap flow = 0;
-        while (flow < flow_limit) {
-            bfs();
-            if (level[t] == -1) break;
-            std::fill(iter.begin(), iter.end(), 0);
-            Cap f = dfs(dfs, t, flow_limit - flow);
-            if (!f) break;
-            flow += f;
-        }
-        return flow;
-    }
-    std::vector<bool> min_cut(int s) {
-        std::vector<bool> visited(_n);
-        internal::simple_queue<int> que;
-        que.push(s);
-        while (!que.empty()) {
-            int p = que.front();
-            que.pop();
-            visited[p] = true;
-            for (auto e : g[p]) {
-                if (e.cap && !visited[e.to]) {
-                    visited[e.to] = true;
-                    que.push(e.to);
-                }
-            }
-        }
-        return visited;
-    }
-  private:
-    int _n;
-    struct _edge {
-        int to, rev;
-        Cap cap;
-    };
-    std::vector<std::pair<int, int>> pos;
-    std::vector<std::vector<_edge>> g;
-};
-}  // namespace atcoder
-// --- ACL end --- //
-////////// 最大流 //////////
-using namespace atcoder;
+int roots[320][100007], szs[320][100007];
+vector<array<int, 4>> qs[320];
 
 void solve() {
-    ll H, W;
-    cin >> H >> W;
-    vector<string> grid(H);
-    rep(i, H) cin >> grid[i];
+    ll N, M;
+    cin >> N >> M;
+ 
+    vector<pii> edges;
+    rep(t, 1, M+1) {
+        ll u, v;
+        cin >> u >> v;
+        u--; v--;
+        edges.eb(u, v);
+    }
 
-    ll N = H+W;
-    ll s = N;
-    ll t = N+1;
-    mf_graph<ll> mf(N+2);
-    rep(h, H) {
-        rep(w, W) {
-            if (grid[h][w] == 'S') {
-                mf.add_edge(s, h, INF);
-                mf.add_edge(s, H+w, INF);
-            } elif (grid[h][w] == 'T') {
-                mf.add_edge(h, t, INF);
-                mf.add_edge(H+w, t, INF);
-            } elif (grid[h][w] == 'o') {
-                mf.add_edge(h, H+w, 1);
-                mf.add_edge(H+w, h, 1);
+    // 辺の追加M回をD回ずつのバケットに分ける
+    int D = ceil(sqrt(M));
+    UnionFind uf(N);
+    rep(t, M) {
+        auto [u, v] = edges[t];
+        // D回に1回、その時のグラフの状態を記録する
+        if (t%D == 0) {
+            rep(u, N) {
+                roots[t/D][u] = uf.find(u);
+                szs[t/D][u] = uf.size(u);
+            }
+        }
+        uf.merge(u, v);
+    }
+
+    ll Q;
+    cin >> Q;
+    rep(i, Q) {
+        int x, y, z;
+        cin >> x >> y >> z;
+        x--; y--;
+        // どのバケットの時点で条件を満たすかでクエリを振り分ける
+        rep(j, 1, D) {
+            ll sz = roots[j][x] == roots[j][y] ? szs[j][x] : szs[j][x]+szs[j][y];
+            if (sz >= z) {
+                qs[j-1].pb({i, x, y, z});
+                break;
+            // 満たさなくても最後のバケットで必ず拾う
+            } elif (j == D-1) {
+                qs[(M-1)/D].pb({i, x, y, z});
             }
         }
     }
-    auto res = mf.flow(s, t);
-    print(res < INF ? res : -1);
+
+    uf = UnionFind(N);
+    vector<ll> ans(Q, -1);
+    rep(t, M) {
+        auto [u, v] = edges[t];
+        uf.merge(u, v);
+        // ここの範囲を担当するバケットのクエリだけ見る
+        for (auto [i, x, y, z] : qs[t/D]) {
+            if (ans[i] != -1) continue;
+            ll sz = uf.same(x, y) ? uf.size(x) : uf.size(x)+uf.size(y);
+            if (sz >= z) {
+                ans[i] = t+1;
+            }
+        }
+    }
+    rep(i, Q) {
+        assert(ans[i] != -1);
+        print(ans[i]);
+    }
 }
 
 int main() {

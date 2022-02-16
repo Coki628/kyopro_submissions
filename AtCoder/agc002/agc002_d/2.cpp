@@ -1,13 +1,7 @@
 /*
-・ARC117C
-・自力ならず。。これはかなり覚えてたのに、悔しい。
-・(6-a-b)%3 を使おうとしたんだけど、(-a-b)%3 にすればよかったんだね。
-　6があるせいで偶奇で符号反転した時とかにグチャグチャになった。
-　あと寄与数をnCrで数えるやつも、その経路の通り数みたいなやつに、
-　余計に移動回数みたいの掛けちゃってて、そもそもそこの数え上げもダメになってた。
-　この辺数え上げるノウハウみたいのが、昔よりは入ってきてるんだけど、
-　やっぱりまだ結構とっ散らかってるんだよね。。
-・詳しい解説は昔の自分のコードと公式PDF見て。
+・dojo set_e_1_5
+・これはTLE。クエリ先読みしてマージテクっぽいことしてみたけどダメ。
+　やっぱ平方分割なりしないとダメっぽい。
 */
 
 #pragma region mytemplate
@@ -45,8 +39,8 @@ using vvpil = vector<vector<pil>>;
 #define tostr to_string
 constexpr ll INF = 1e18;
 // constexpr ll INF = LONG_LONG_MAX;
-// constexpr int MOD = 1000000007;
-constexpr int MOD = 998244353;
+constexpr int MOD = 1000000007;
+// constexpr int MOD = 998244353;
 
 template<typename T> vector<vector<T>> list2d(int N, int M, T init) { return vector<vector<T>>(N, vector<T>(M, init)); }
 template<typename T> vector<vector<vector<T>>> list3d(int N, int M, int L, T init) { return vector<vector<vector<T>>>(N, vector<vector<T>>(M, vector<T>(L, init))); }
@@ -157,131 +151,64 @@ string bin(ll x) { string res; while (x) { if (x & 1) res += '1'; else res += '0
 
 #pragma endregion
 
-// 任意Mod数え上げnCr
-struct AnyModTools {
-
-    const int64_t mod;
-    // 素数冪を (p, c) で表現したもの
-    vector<pair<int64_t, int>> primes;
-    // 素数冪 p^c の実際の値
-    vector<int64_t> ppow;
-    // 階乗を (x, y) 形式で表現したもの
-    vector<vector<pair<int64_t, int>>> fact;
-
-    AnyModTools(int64_t mod, int MX) : mod(mod) {
-        create_composite_mod_table(++MX, mod);
-    }
-
-    vector<pair<int64_t, int>> factorize(int64_t n) {
-        vector<pair<int64_t, int>> ret;
-        for(int64_t i=2; i*i<=n; i++) {
-            int cnt = 0;
-            while(n % i == 0) {
-                n /= i;
-                cnt++;
-            }
-            if(cnt) ret.emplace_back(i, cnt);
-        }
-        if(n > 1) ret.emplace_back(n, 1);
-        return ret;
-    }
-
-    // 拡張ユークリッドの互除法(ax+by=gcd(a, b)の解を求める)
-    int64_t extgcd(int64_t a, int64_t b, int64_t& x, int64_t& y) {
-        int64_t d = a;
-        if(b != 0){
-            d = extgcd(b, a%b, y, x);
-            y -= (a/b) * x;
-        }else{
-            x = 1; y = 0;
-        }
-        return d;
-    }
-
-    // MOD逆元(modが素数でなくても、aとmodが互いに素なら可)
-    int64_t inv_mod(int64_t a, int64_t mod) {
-        int64_t x, y;
-        extgcd(a, mod, x, y);
-        return (mod + x%mod) % mod;
-    }
-
-    void add(int64_t& a, int64_t b, int64_t mod) {
-        a = (a+b) % mod;
-    }
-    void mul(int64_t& a, int64_t b, int64_t mod) {
-        a = a*b % mod;
-    }
-
-    // 素因数分解をして素数冪ごとにfactを前計算：O(√M+N*(Mの素因数の種類数))
-    void create_composite_mod_table(int N, int64_t M) {
-        primes = factorize(M);
-        int sz = primes.size();
-        ppow.resize(sz, 1);
-        fact.resize(sz);
-        for(int pi=0; pi<sz; pi++){
-            int64_t p = primes[pi].first, cnt = primes[pi].second;
-            while(cnt--) ppow[pi] *= p;
-
-            auto& f = fact[pi];
-            f.resize(N+1);
-            f[0] = {1, 0};
-            for(int i=1; i<=N; i++){
-                f[i] = f[i-1];
-                int n = i;
-                while(n%p == 0){
-                    n /= p;
-                    f[i].second++;
-                }
-                mul(f[i].first, n, ppow[pi]);
-            }
-        }
-    }
-
-    // 素因数毎の二項係数を計算
-    int64_t comb_mod(int n, int k, int pi) {
-        auto &a = fact[pi][n], &b = fact[pi][k], &c = fact[pi][n-k];
-        int64_t p = primes[pi].first, cnt = primes[pi].second;
-        int64_t pp = ppow[pi];
-        int pw = a.second - b.second - c.second;
-        if(pw >= cnt) return 0;
-
-        int64_t v = a.first;
-        mul(v, inv_mod(b.first, pp), pp);
-        mul(v, inv_mod(c.first, pp), pp);
-        while(pw--) mul(v, p, pp);
-        return v;
-    }
-
-    // 二項係数nCrの計算：O(modの素因数の種類数)
-    int64_t nCr(int n, int k) {
-        int64_t res = 1;
-        rep(i, primes.size()) {
-            mul(res, comb_mod(n, k, i), mod);
-        }
-        return res;
-    }
-};
-
 void solve() {
-    ll N;
-    cin >> N;
-    string S;
-    cin >> S;
-    const int mod = 3;
+    ll N, M;
+    cin >> N >> M;
 
-    AnyModTools amt(mod, N);
-    map<char, ll> mp = {
-        {'B', 0}, {'W', 1}, {'R', 2},
-    };
-    vector<char> rev = {'B', 'W', 'R'};
-
-    ll res = 0;
-    rep(i, N) {
-        res += mp[S[i]]*amt.nCr(N-1, i);
+    vector<pii> edges;
+    rep(t, 1, M+1) {
+        ll u, v;
+        cin >> u >> v;
+        u--; v--;
+        edges.eb(u, v);
     }
-    if (N%2 == 0) res = -res;
-    char ans = rev[modulo(res, mod)];
-    print(ans);
+
+    ll Q;
+    cin >> Q;
+    vector<vector<tuple<ll, ll, ll>>> qs(N);
+    rep(i, Q) {
+        ll x, y, z;
+        cin >> x >> y >> z;
+        x--; y--;
+        qs[x].eb(i, y, z);
+        qs[y].eb(i, x, z);
+    }
+
+    ll t = 1;
+    UnionFind uf(N);
+    vector<ll> ans(Q, -1);
+    for (auto [u, v] : edges) {
+        ll ru = uf.find(u);
+        ll rv = uf.find(v);
+        if (not uf.same(u, v)) {
+            ll r = uf.merge(u, v);
+            if (r == ru) {
+                if (qs[rv].size() > qs[r].size()) {
+                    swap(qs[rv], qs[r]);
+                }
+                for (auto [i, w, z] : qs[rv]) {
+                    if (ans[i] != -1) continue;
+                    qs[r].eb(i, w, z);
+                }
+            } else {
+                if (qs[ru].size() > qs[r].size()) {
+                    swap(qs[rv], qs[r]);
+                }
+                for (auto [i, w, z]  : qs[ru]) {
+                    if (ans[i] != -1) continue;
+                    qs[r].eb(i, w, z);
+                }
+            }
+            for (auto [i, w, z] : qs[r]) {
+                ll sz = uf.same(u, w) ? uf.size(u) : uf.size(u)+uf.size(w);
+                if (sz >= z and ans[i] == -1) {
+                    ans[i] = t;
+                }
+            }
+        }
+        t++;
+    }
+    rep(i, Q) print(ans[i]);
 }
 
 int main() {
