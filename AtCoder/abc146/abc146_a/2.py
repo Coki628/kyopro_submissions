@@ -1,10 +1,8 @@
 """
-・正規表現
-・前やった時そこそこ時間かかったぽいから、今回すんなり通せてよかった。
+・asakatsu20200601a
 """
 
 import sys
-import re
 
 def input(): return sys.stdin.readline().strip()
 def list2d(a, b, c): return [[c] * b for i in range(a)]
@@ -22,16 +20,9 @@ sys.setrecursionlimit(10 ** 9)
 INF = 10 ** 19
 MOD = 10 ** 9 + 7
 
-S = 'keyence'
-N = len(S)
-T = input()
-M = len(T)
+D = { 'SUN': 0,'MON': 1,'TUE': 2,'WED': 3,'THU': 4,'FRI': 5,'SAT': 6 }
 
-for i in range(N+1):
-    S1 = S[:i]
-    S2 = S[i:]
-    exp = '^{0}(.*){1}$'.format(S1, S2)
-    if re.match(exp, T):
-        YES()
-        exit()
-NO()
+S = input()
+
+ans = (7-D[S])
+print(ans)

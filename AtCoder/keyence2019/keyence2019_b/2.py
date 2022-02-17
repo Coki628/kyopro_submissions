@@ -1,5 +1,11 @@
+"""
+・asakatsu20200601c
+・正規表現
+・前やった時そこそこ時間かかったぽいから、今回すんなり通せてよかった。
+"""
+
 import sys
-from collections import Counter
+import re
 
 def input(): return sys.stdin.readline().strip()
 def list2d(a, b, c): return [[c] * b for i in range(a)]
@@ -17,11 +23,16 @@ sys.setrecursionlimit(10 ** 9)
 INF = 10 ** 19
 MOD = 10 ** 9 + 7
 
-S = input()
+S = 'keyence'
 N = len(S)
+T = input()
+M = len(T)
 
-C = Counter(S)
-if max(C['a'], C['b'], C['c']) - min(C['a'], C['b'], C['c']) <= 1:
-    YES()
-else:
-    NO()
+for i in range(N+1):
+    S1 = S[:i]
+    S2 = S[i:]
+    exp = '^{0}(.*){1}$'.format(S1, S2)
+    if re.match(exp, T):
+        YES()
+        exit()
+NO()

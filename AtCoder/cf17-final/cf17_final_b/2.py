@@ -1,4 +1,9 @@
+"""
+・asakatsu20200601c
+"""
+
 import sys
+from collections import Counter
 
 def input(): return sys.stdin.readline().strip()
 def list2d(a, b, c): return [[c] * b for i in range(a)]
@@ -16,9 +21,11 @@ sys.setrecursionlimit(10 ** 9)
 INF = 10 ** 19
 MOD = 10 ** 9 + 7
 
-D = { 'SUN': 0,'MON': 1,'TUE': 2,'WED': 3,'THU': 4,'FRI': 5,'SAT': 6 }
-
 S = input()
+N = len(S)
 
-ans = (7-D[S])
-print(ans)
+C = Counter(S)
+if max(C['a'], C['b'], C['c']) - min(C['a'], C['b'], C['c']) <= 1:
+    YES()
+else:
+    NO()
