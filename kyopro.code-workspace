@@ -4,13 +4,17 @@
             "path": "."
         },
         {
+            // ACL
+            "path": "../ac-library"
+        },
+        {
             // oj設定用
             "path": "C:\\Users\\srcn4\\AppData\\Local\\online-judge-tools\\online-judge-tools"
         },
         {
             // atcoder-cli設定用
             "path": "C:\\Users\\srcn4\\AppData\\Roaming\\atcoder-cli-nodejs"
-        }
+        },
     ],
     "settings": {
         // 括弧の色付け
@@ -26,6 +30,13 @@
         "files.exclude": {
             "**/cpp.exe": true,
             "**/a.exe": true
+        },
+        "search.exclude": {
+            "*.in": true,
+            "*.out": true,
+            "test/": true,
+            "in/": true,
+            "out/": true
         },
         "files.associations": {
             "algorithm": "cpp",
@@ -131,13 +142,6 @@
             "xmemory0": "cpp",
             "xstddef": "cpp",
             "xtr1common": "cpp",
-        },
-        "search.exclude": {
-            "*.in": true,
-            "*.out": true,
-            "test/": true,
-            "in/": true,
-            "out/": true
         },
     }
 }

@@ -60,7 +60,7 @@
                 "-std=c++17",
                 // ライブラリのパス
                 "-I",
-                "${workspaceFolder}\\_lib\\cpp\\_dist",
+                "${workspaceFolder}\\_lib\\cpp\\_src",
                 // ACLのパス
                 "-I",
                 "${env:HOMEPATH}\\repos\\ac-library",
