@@ -6,7 +6,7 @@ struct Eratosthenes {
     int n;
     bool loglog;
     vector<bool> prime;
-    vector<ll> minfactor, cntfactor, cntdivisor, sumdivisor;
+    vector<int> minfactor, cntfactor, cntdivisor, sumdivisor;
     vector<int> mobius;
 
     Eratosthenes(int n, bool loglog=true) : n(n), loglog(loglog) {
@@ -22,7 +22,7 @@ struct Eratosthenes {
         minfactor[1] = 1;
         rep(i, 2, n+1) {
             if (not loglog) {
-                for (ll j=i; j<=n; j+=i) {
+                for (int j=i; j<=n; j+=i) {
                     cntdivisor[j]++;
                     sumdivisor[j] += i;
                 }
@@ -31,7 +31,7 @@ struct Eratosthenes {
             minfactor[i] = i;
             cntfactor[i]++;
             mobius[i] = -1;
-            for (ll j=i+i; j<=n; j+=i) {
+            for (int j=i+i; j<=n; j+=i) {
                 prime[j] = false;
                 minfactor[j] = i;
                 cntfactor[i]++;
@@ -45,15 +45,15 @@ struct Eratosthenes {
         }
     }
 
-    bool is_prime(ll x) {
+    bool is_prime(int x) {
         assert(x <= n);
         return prime[x];
     }
 
     // 高速素因数分解(osa_k法)
-    vector<pair<ll, int>> factorize(ll x) {
+    vector<pii> factorize(int x) {
         assert(x <= n);
-        vector<pair<ll, int>> res;
+        vector<pii> res;
         while (x > 1) {
             int p = minfactor[x];
             int cnt = 0;
@@ -67,11 +67,11 @@ struct Eratosthenes {
     }
 
     // 高速約数列挙(未verify)
-    vector<ll> divisors(int n) {
-        vector<ll> res = {1};
+    vector<int> divisors(int n) {
+        vector<int> res = {1};
         auto fact = factorize(n);
         for (auto [p, cnt] : fact) {
-            ll m = res.size();
+            int m = res.size();
             rep(i, m) {
                 int v = 1;
                 rep(j, cnt) {
@@ -84,18 +84,18 @@ struct Eratosthenes {
     }
 
     // 素因数の種類数(未verify)
-    vector<ll> get_cntfactor() {
+    vector<int> get_cntfactor() {
         return cntfactor;
     }
 
     // 約数の個数(未verify)
-    vector<ll> get_cntdivisor() {
+    vector<int> get_cntdivisor() {
         assert(not loglog);
         return cntdivisor;
     }
 
     // 約数の総和(未verify)
-    vector<ll> get_sumdivisor() {
+    vector<int> get_sumdivisor() {
         assert(not loglog);
         return sumdivisor;
     }

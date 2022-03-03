@@ -102,7 +102,7 @@ struct ModInt {
 
     static int get_mod() { return mod; }
 
-    #ifdef MINT_TO_LL_CAST
+    #ifdef CAST_MINT_TO_LL
         // mintから戻したい場面があったらコメント外す
         // operator int() const { return x; }
         operator ll() const { return x; }

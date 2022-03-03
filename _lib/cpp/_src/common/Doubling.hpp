@@ -10,6 +10,7 @@ struct Doubling {
     const int MXLOG;
     const F f;
 
+    // 通常はこっち
     Doubling(int MXLOG, const vector<T> &A, T init, const F &f) : MXLOG(MXLOG), f(f) {
         N = A.size();
         dat = list2d(MXLOG, N, init);
@@ -23,6 +24,7 @@ struct Doubling {
         }
     }
 
+    // ダブリング配列をライブラリ外で事前構築するコンストラクタ
     Doubling(const vector<vector<T>> &A, const F &f) : MXLOG(A.size()), dat(A), f(f) {}
 
     // stから始めてK個先を返す

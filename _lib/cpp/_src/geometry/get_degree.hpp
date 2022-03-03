@@ -1,4 +1,5 @@
 #include "../macros.hpp"
+#include "degrees.hpp"
 
 // 座標bを軸にして反時計回りに座標aから座標cに向かう角度を取得
 template<typename T>

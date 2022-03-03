@@ -1,8 +1,11 @@
+#pragma once
 #include "Point.hpp"
+#include "cross.hpp"
+#include "dot.hpp"
 
 // 線分p0,p1から線分p0,p2への回転方向
 template<typename T>
-ll ccw(Point<T> p0, Point<T> p1, Point<T> p2) {
+int ccw(Point<T> p0, Point<T> p1, Point<T> p2) {
     Point<T> a = p1-p0;
     Point<T> b = p2-p0;
     // 反時計回り

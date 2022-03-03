@@ -75,6 +75,7 @@ struct FormalPowerSeries : vector< T > {
         return *this = {begin(ret), end(ret)};
     }
 
+    // この除算は本当の「多項式の除算」をやってるぽいので、普段は逆元の方を使う
     P &operator/=(const P &r) {
         if(this->size() < r.size()) {
             this->clear();
@@ -335,6 +336,8 @@ struct FormalPowerSeries : vector< T > {
         }
         return *this;
     }
+    P operator*(const vector<pair<ll, T>>& g) const { return P(*this) *= g; }
+    P operator/(const vector<pair<ll, T>>& g) const { return P(*this) /= g; }
 };
 template<typename Mint>
 using FPS = FormalPowerSeries<Mint>;

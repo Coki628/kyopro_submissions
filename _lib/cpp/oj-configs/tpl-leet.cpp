@@ -20,22 +20,13 @@ constexpr long double PI = M_PI;
 #include "combinatorics/ModInt.hpp"
 #include "template.hpp"
 
-void solve() {
-    
-}
+// put Solution here
 
-int main() {
-    cin.tie(0);
-    ios::sync_with_stdio(false);
-    cout << fixed << setprecision(15);
-
-    // single test case
-    // solve();
-
-    // multi test cases
-    int T;
-    cin >> T;
-    while (T--) solve();
-
-    return 0;
-}
+#ifdef __LOCAL
+    int main() {
+        // Solution sol;
+        // auto res = sol.funcName();
+        // print(res);
+        return 0;
+    }
+#endif
