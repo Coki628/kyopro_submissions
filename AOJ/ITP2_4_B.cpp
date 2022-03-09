@@ -1,6 +1,7 @@
 /*
 参考：https://cpprefjp.github.io/reference/algorithm/rotate.html
 ・AOJコース埋め
+・サイクルシフト
 ・rotate：mの要素が先頭、m-1の要素が末尾となるように、[l,r)の要素の並びを回転させる。
 */
 
