@@ -1,5 +1,6 @@
 /*
 参考：https://atcoder.jp/contests/abc243/editorial
+　　　https://discord.com/channels/920351976712200234/920971145879113761/952750715296682004
 ・自力ならず。
 ・確率DP、数え上げDP
 ・結果的には、
