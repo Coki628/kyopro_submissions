@@ -4,7 +4,7 @@
 参考：https://www.slideshare.net/chokudai/abc003
 　　　http://tutuz.hateblo.jp/entry/2018/08/23/231229
 　　　http://tkori.hateblo.jp/entry/2015/12/16/180521
-・包徐原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
+・包除原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
 ・自力実装から改善1
 ・まず選び出す所で空白じゃなくてデスクとラックを選んだら、全部同じにできた。
 　確かにそうだ。何でわざわざ空白の方数えたのか。。
@@ -103,7 +103,7 @@ W1H2 = fim.nCr((X-2)*(Y-1), D+L) * fim.nCr(D+L, D) % MOD if X >= 2 else 0
 # 4辺全部
 W2H2 = fim.nCr((X-2)*(Y-2), D+L) * fim.nCr(D+L, D) % MOD if X >= 2 and Y >= 2 else 0
 
-# 包徐原理でNGなパターンの通り数を出す
+# 包除原理でNGなパターンの通り数を出す
 ng = (W1*2 + H1*2 - W2 - H2 - W1H1*4 + W2H1*2 + W1H2*2 - W2H2) % MOD
 ok = (total - ng) % MOD
 

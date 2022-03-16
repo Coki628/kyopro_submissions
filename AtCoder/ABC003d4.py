@@ -4,7 +4,7 @@
 参考：https://www.slideshare.net/chokudai/abc003
 　　　http://tutuz.hateblo.jp/entry/2018/08/23/231229
 　　　http://tkori.hateblo.jp/entry/2015/12/16/180521
-・包徐原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
+・包除原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
 ・自力実装から改善2
 ・ビットを4つ使えば、効率よく全パターンを網羅できる。
 """
@@ -109,7 +109,7 @@ for i in range(1, 1<<4):
         continue
     # 今回の行列数での通り数
     cnt = fim.nCr((X-offsetx)*(Y-offsety), D+L) * fim.nCr(D+L, D) % MOD
-    # 包徐原理で通り数を加減する
+    # 包除原理で通り数を加減する
     # 立っているビットを数えれば、共通領域の偶奇が分かる
     if bit_cnt(i)%2 == 0:
         ng -= cnt

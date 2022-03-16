@@ -4,7 +4,7 @@
 参考：https://www.slideshare.net/chokudai/abc003
 　　　http://tutuz.hateblo.jp/entry/2018/08/23/231229
 　　　http://tkori.hateblo.jp/entry/2015/12/16/180521
-・包徐原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
+・包除原理：奇数個の共通領域を足して、偶数個の共通領域を引く。
 ・とりあえずこれは解説だけ見てほぼ自力実装。一応ちゃんとAC。
 """
 
@@ -101,7 +101,7 @@ PRS = QRS = fim.nCr((X-2)*(Y-1), E-X-Y*2+2) * fim.nCr(D+L, D) % MOD if X >= 2 el
 # 4辺全部
 PQRS = fim.nCr((X-2)*(Y-2), E-X*2-Y*2+4) * fim.nCr(D+L, D) % MOD if X >= 2 and Y >= 2 else 0
 
-# 包徐原理でNGなパターンの通り数を出す
+# 包除原理でNGなパターンの通り数を出す
 ng = (P*2 + R*2 - PQ - RS - PR*4 + PQR*2 + PRS*2 - PQRS) % MOD
 ok = (total - ng) % MOD
 
