@@ -2,7 +2,7 @@
 ・ライブラリ：ダブリングサンプル
 */
 
-#include "_tpl.cpp"
+#include "macros.hpp"
 
 
 // 一番基本の位置だけ

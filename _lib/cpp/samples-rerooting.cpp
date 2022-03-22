@@ -2,7 +2,7 @@
 ・ライブラリ：全方位木DPサンプル
 */
 
-#include "_tpl.cpp"
+#include "macros.hpp"
 
 
 // ・だいたいf2で済ませて、f1は演算だけくらいのがうまくいきそう。

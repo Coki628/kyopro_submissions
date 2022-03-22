@@ -1,6 +1,6 @@
 #include "../macros.hpp"
 
-// 三分探索(整数)
+// 三分探索(整数) [lo,hi)
 template<typename F>
 pll trisearch_min(ll lo, ll hi, const F &func, ll offset=1) {
     ll m1 = lo, l = lo;
@@ -16,7 +16,7 @@ pll trisearch_min(ll lo, ll hi, const F &func, ll offset=1) {
             lo = m1;
         }
     }
-    ll mn = INF;
+    ll mn = numeric_limits<ll>::max();
     pll res;
     rep(i, max(m1-offset, l), min(m2+offset, r)) {
         ll val = func(i);
@@ -29,7 +29,7 @@ pll trisearch_min(ll lo, ll hi, const F &func, ll offset=1) {
 }
 
 
-// 三分探索(整数)
+// 三分探索(整数) [lo,hi)
 template<typename F>
 pll trisearch_max(ll lo, ll hi, const F &func, ll offset=1) {
     ll m1 = lo, l = lo;
@@ -45,7 +45,7 @@ pll trisearch_max(ll lo, ll hi, const F &func, ll offset=1) {
             lo = m1;
         }
     }
-    ll mx = -INF;
+    ll mx = numeric_limits<ll>::min();
     pll res;
     rep(i, max(m1-offset, l), min(m2+offset, r)) {
         ll val = func(i);

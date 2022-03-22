@@ -41,3 +41,9 @@ struct Mo {
         build(add, add, erase, erase, out);
     }
 };
+// auto add = [&](int i) -> void {
+// };
+// auto erase = [&](int i) -> void {
+// };
+// auto out = [&](int i) -> void {
+// };

@@ -10,7 +10,7 @@ map<T, ll> Counter(const vector<T> &A) {
 }
 
 template<typename T>
-vector<ll> Counter(const vector<T> &A, T mx) {
+vector<ll> Counter(const vector<T> &A, int mx) {
 
     vector<ll> res(mx+1);
     for (T a : A) {

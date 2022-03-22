@@ -80,6 +80,7 @@ oj-template -t generate.py https://atcoder.jp/contests/abc232/tasks/abc232_a > g
 のようにすることで、個別生成ができた。
 
 ☆ランダムテスト作成手順個別☆
+cd 問題の階層
 oj-template -t generate.py 問題URL > generate.py
 generate.pyを編集
 oj generate-input "python generate.py" 作成ケース数

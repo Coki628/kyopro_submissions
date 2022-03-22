@@ -1,22 +1,25 @@
 #include "../macros.hpp"
 
 // 累積和
-template<typename T> struct Accumulate {
+template<typename T>
+struct Accumulate {
     vector<T> acc;
     int N;
-
-    Accumulate() {}
 
     Accumulate(int N) : N(N) {
         acc.resize(N);
     }
 
-    Accumulate(const vector<T> &A) {
-        N = A.size(); acc = A; build();
+    Accumulate(const vector<T> &A) : N(A.size()), acc(A) {
+        build();
     }
 
     void set(int i, T a) {
         acc[i] = a;
+    }
+
+    void add(int i, T a) {
+        acc[i] += a;
     }
 
     void build() {
@@ -35,7 +38,7 @@ template<typename T> struct Accumulate {
         return query(i, i+1);
     }
 
-    T operator[](int i){
+    T operator[](int i) {
         return query(i, i+1);
     }
 

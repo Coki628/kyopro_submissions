@@ -6,10 +6,12 @@ using ull = unsigned long long;
 using ld = long double;
 using pll = pair<ll, ll>;
 using pii = pair<int, int>;
+using pli = pair<ll, int>;
 using pil = pair<int, ll>;
 using vvl = vector<vector<ll>>;
 using vvi = vector<vector<int>>;
 using vvpll = vector<vector<pll>>;
+using vvpli = vector<vector<pli>>;
 using vvpil = vector<vector<pil>>;
 #define name4(i, a, b, c, d, e, ...) e
 #define rep(...) name4(__VA_ARGS__, rep4, rep3, rep2, rep1)(__VA_ARGS__)

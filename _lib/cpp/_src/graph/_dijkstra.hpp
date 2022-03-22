@@ -6,11 +6,11 @@
 
 // ダイクストラ
 template<typename T>
-vector<T> dijkstra(const vector<vector<pair<ll, T>>> &nodes, int src, int goal=-1) {
+vector<T> dijkstra(const vector<vector<pair<int, T>>> &nodes, int src, int goal=-1) {
 
     int N = nodes.size();
     vector<T> res(N, INF);
-    priority_queue<pair<T, ll>, vector<pair<T, ll>>, greater<pair<T, ll>>> que;
+    priority_queue<pair<T, int>, vector<pair<T, int>>, greater<pair<T, int>>> que;
     res[src] = 0;
     que.push({0, src});
 

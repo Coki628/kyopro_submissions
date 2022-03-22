@@ -2,7 +2,7 @@
 ・ライブラリ：尺取りサンプル
 */
 
-#include "_tpl.cpp"
+#include "macros.hpp"
 
 
 // 基本形(ABC098d)
