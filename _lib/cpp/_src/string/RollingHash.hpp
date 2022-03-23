@@ -96,4 +96,21 @@ struct RollingHash {
         if (b >= a) return add(hash, mul(b-a, power[len-x-1]));
         else return add(hash, mul(mod+(b-a), power[len-x-1]));
     }
+
+    // テーブルaの区間[l,r)の回文判定(aを反転させたテーブルrevも渡す)
+    bool is_palindrome(
+        const vector<uint64_t> &a,
+        const vector<uint64_t> &rev,
+        int l,
+        int r
+    ) {
+        int n = (int)a.size() - 1;
+        assert(r <= n);
+        int len = r - l;
+        int sl = len%2 == 0 ? l+len/2 : l+len/2+1;
+        int sr = r;
+        int tl = n - (l+len/2);
+        int tr = n - l;
+        return query(a, sl, sr) == query(rev, tl, tr);
+    }
 };
