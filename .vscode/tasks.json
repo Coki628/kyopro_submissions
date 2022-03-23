@@ -26,24 +26,24 @@
                 "-Wall",
                 "-Wextra",
                 // oj-bundle済の提出用ファイル
-                "_dist\\main.cpp",
+                "_dist/main.cpp",
                 "-std=c++17",
                 // ライブラリのパス
                 "-I",
-                "${workspaceFolder}\\_lib\\cpp\\_dist",
+                "${workspaceFolder}/_lib/cpp/_dist",
                 // ACLのパス
                 "-I",
-                "${env:HOMEPATH}\\repos\\ac-library",
+                "${env:HOMEPATH}/repos/ac-library",
                 "-o",
-                "${fileDirname}\\a.exe",
+                "${fileDirname}/a.exe",
             ],
             "dependsOn": [
                 "oj-bundle"
             ],
         },
         {
-            // デバッグ用ビルド
-            "label": "debug_build",
+            // デバッグ用ビルド(旧)
+            "label": "debug_build-old",
             "type": "shell",
             "command": "g++",
             "args": [
@@ -56,16 +56,16 @@
                 // windowsでコンパイルこけるのでコメントアウト
                 // "-fsanitize=undefined",
                 // デバッグしたいのでoj-bundle前の元ファイル
-                "${fileDirname}\\${fileBasename}",
+                "${fileDirname}/${fileBasename}",
                 "-std=c++17",
                 // ライブラリのパス
                 "-I",
-                "${workspaceFolder}\\_lib\\cpp\\_src",
+                "${workspaceFolder}/_lib/cpp/_src",
                 // ACLのパス
                 "-I",
-                "${env:HOMEPATH}\\repos\\ac-library",
+                "${env:HOMEPATH}/repos/ac-library",
                 "-o",
-                "${fileDirname}\\a.exe",
+                "${fileDirname}/a.exe",
             ],
             "dependsOn": [
                 "oj-bundle",
@@ -80,31 +80,24 @@
                 // _distに最新の_srcを反映
                 "compresscpplib.py",
                 "&",
-                // includeの _src -> _dist 変換
-                "python",
-                "_dist/prepare.py",
-                "${fileDirname}\\",
-                "${fileBasename}",
-                "&",
                 "oj-bundle",
-                "${fileDirname}\\_tmp.cpp",
+                "${fileDirname}/${fileBasename}",
                 // ライブラリのパス
                 "-I",
-                "${workspaceFolder}\\_lib\\cpp\\_dist",
+                "${workspaceFolder}/_lib/cpp/_dist",
                 // ACLのパス
                 "-I",
-                "${env:HOMEPATH}\\repos\\ac-library",
+                "${env:HOMEPATH}/repos/ac-library",
                 ">",
-                "_dist\\main.cpp",
+                "_dist/main.cpp",
                 "&",
                 // 後始末と整形処理
                 "python",
-                "_dist\\finalize.py",
-                "${fileDirname}\\_tmp.cpp",
+                "finalize.py",
             ],
         },
         {
-            "label": "oj-test",
+            "label": "oj-test-old",
             "type": "shell",
             "command": "cd",
             "args": [
@@ -116,11 +109,33 @@
             "dependsOn": [
               "test_build",
             ],
+        },
+        {
+            // タスクをpython内で一本化した
+            "label": "oj-test",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "oj-test.py",
+                "${fileDirname}",
+                "${fileBasename}",
+            ],
             "group": {
                 "kind": "build",
                 // この指定があるやつがctrl+shift+Bで実行される
                 "isDefault": true,
             },
+        },
+        {
+            // デバッグ用ビルド
+            "label": "debug-build",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "debug-build.py",
+                "${fileDirname}",
+                "${fileBasename}",
+            ],
         },
     ],
 }

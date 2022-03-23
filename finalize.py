@@ -4,12 +4,6 @@
 """
 
 import os
-import sys
-
-args = sys.argv
-
-# tmp.cppファイルの削除
-os.remove(args[1])
 
 path_r = '{0}/_dist/main.cpp'.format(os.getcwd())
 path_w = '{0}/_dist/main.cpp'.format(os.getcwd())
