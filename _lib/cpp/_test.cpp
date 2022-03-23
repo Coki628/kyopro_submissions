@@ -7,7 +7,8 @@
 // #pragma GCC optimize("unroll-loops")
 
 #define CONSTANTS
-#include "_src/base.hpp"
+// #define CAST_MINT_TO_LL
+#include "base.hpp"
 
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
@@ -16,12 +17,9 @@ constexpr int MOD = 1000000007;
 constexpr long double EPS = 1e-10;
 constexpr long double PI = M_PI;
 
-#include "_src/macros.hpp"
-
-#include "_src/combinatorics/ModInt.hpp"
-using mint = ModInt<MOD>;
-
-#include "_src/template.hpp"
+#include "macros.hpp"
+#include "combinatorics/ModInt.hpp"
+#include "template.hpp"
 
 // template<typename T, typename F>
 // vector<T> accumulate(vector<T> &A, const F &func=[](T a, T b) { return a + b; }) {
