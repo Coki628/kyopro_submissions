@@ -11,6 +11,7 @@
  * ・通った！素因数分解をvectorベースのやつにしたら速くなった。AC1.72秒(制約2.5秒)
  * ・osa_k法の方もvectorベースのやつ作ってみたけど、あんま変化なかった。
  * 　ここでのボトルネックはmoのパートなんかなー。
+ * ・llを全部intにしたらちょっと速くなってAC1.61秒。
  */
 
 // #pragma GCC target("avx2")
@@ -200,13 +201,13 @@ vector<pair<T, int>> RLE(vector<T> &A) {
 }
 
 // 高速素因数分解(osa_k法)、前計算
-vector<ll> eratosthenes_sieve(ll n) {
+vector<int> eratosthenes_sieve(int n) {
 
-    vector<ll> table(n+1);
+    vector<int> table(n+1);
     table[1] = 1;
     rep(i, 2, n+1) {
         if (table[i] == 0) {
-            for (ll j=i; j<=n; j+=i) {
+            for (int j=i; j<=n; j+=i) {
                 table[j] = i;
             }
         }
@@ -215,9 +216,9 @@ vector<ll> eratosthenes_sieve(ll n) {
 }
 
 // 高速素因数分解(osa_k法)
-vector<pair<ll, int>> factorize(vector<ll> &table, ll x) {
+vector<pair<int, int>> factorize(vector<int> &table, int x) {
 
-    vector<ll> V;
+    vector<int> V;
     while (x != table[x]) {
         V.emplace_back(table[x]);
         x /= table[x];
@@ -233,21 +234,22 @@ int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    ll N, Q;
+    int N, Q;
     cin >> N >> Q;
-    vector<ll> A(N);
+    vector<int> A(N);
     rep(i, 0, N) cin >> A[i];
 
     Mo mo(N);
     rep(i, 0, Q) {
-        ll l, r;
+        int l, r;
         cin >> l >> r;
         l--;
         mo.add(l, r);
     }
 
-    auto table = eratosthenes_sieve(max(A));
-    vector<vector<pair<ll, int>>> fact(N);
+    const int M = 100000;
+    auto table = eratosthenes_sieve(M+1);
+    vector<vector<pair<int, int>>> fact(N);
     rep(i, 0, N) {
         fact[i] = factorize(table, A[i]);
     }
@@ -258,7 +260,7 @@ int main() {
     rep(i, 1, N*18) inv[i] = mint(i).inverse();
 
     vector<mint> ans(Q);
-    vector<ll> C(max(A)+1);
+    vector<int> C(M+1);
     mint cnt = 1;
     auto add = [&](int idx) {
         for (auto [k, v] : fact[idx]) {
