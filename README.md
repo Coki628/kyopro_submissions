@@ -14,3 +14,11 @@ pipenv shell
 # install dependencies
 pip install -r requirements.txt
 ```
+- change your python path accordingly in .vscode/settings.json
+- change your python path accordingly in .vscode/tasks.json
+
+```bash
+# create dist files
+mkdir _dist
+touch _dist/main.cpp
+```
