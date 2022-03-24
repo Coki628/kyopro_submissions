@@ -32,6 +32,6 @@ def compress(path_r: str, path_w: str):
 
 # このファイルが実行された時(importで呼ばれた時はやらない)
 if __name__ == '__main__':
-    path_r = '{0}/in.cpp'.format(os.getcwd())
-    path_w = '{0}/out.cpp'.format(os.getcwd())
+    path_r = '{0}/dist/in.cpp'.format(os.getcwd())
+    path_w = '{0}/dist/out.cpp'.format(os.getcwd())
     compress(path_r, path_w)

@@ -8,8 +8,8 @@
 import os
 import re
 
-path_r = '{0}/in.py'.format(os.getcwd())
-path_w = '{0}/out.cpp'.format(os.getcwd())
+path_r = '{0}/dist/in.py'.format(os.getcwd())
+path_w = '{0}/dist/out.cpp'.format(os.getcwd())
 
 out = []
 indent = '    '

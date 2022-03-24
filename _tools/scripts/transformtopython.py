@@ -22,8 +22,8 @@ def get_pair(l, start, end, line):
         r += 1
     return r
 
-path_r = '{0}/in.cpp'.format(os.getcwd())
-path_w = '{0}/out.py'.format(os.getcwd())
+path_r = '{0}/dist/in.cpp'.format(os.getcwd())
+path_w = '{0}/dist/out.py'.format(os.getcwd())
 
 out = []
 indent = '    '

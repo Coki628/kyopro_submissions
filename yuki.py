@@ -15,7 +15,7 @@ project_root = os.getcwd()
 
 os.chdir('{0}/yukicoder'.format(os.getcwd()))
 run(
-    'oj-prepare --config-file {0}/_lib/cpp/oj-configs/prepare.config.ac.toml {1}'.format(project_root, url),
+    'oj-prepare --config-file {0}/_tools/oj-configs/prepare.config.ac.toml {1}'.format(project_root, url),
     shell=True, encoding='utf-8'
 )
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))

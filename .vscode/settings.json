@@ -1,7 +1,7 @@
 {
     "python.linting.pylintEnabled": false,
     // for ubuntu
-    // "python.pythonPath": "/home/coki/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
+    // "python.pythonPath": "${env:HOMEPATH}/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
     // for windows
-    "python.defaultInterpreterPath": "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\python.exe",
+    "python.defaultInterpreterPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
 }

@@ -21,7 +21,7 @@ os.chdir('{0}/CodeForces'.format(os.getcwd()))
 os.makedirs(contest_name, exist_ok=True)
 os.chdir('{0}/{1}'.format(os.getcwd(), contest_name))
 run(
-    'oj-prepare --config-file {0}/_lib/cpp/oj-configs/prepare.config.cf.toml {1}'.format(project_root, url),
+    'oj-prepare --config-file {0}/_tools/oj-configs/prepare.config.cf.toml {1}'.format(project_root, url),
     shell=True, encoding='utf-8'
 )
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))

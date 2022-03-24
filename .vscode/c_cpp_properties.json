@@ -3,7 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/_lib/cpp/_src",
+                "${env:HOMEPATH}/repos/kyopro_library/src",
                 "${env:HOMEPATH}/repos/ac-library"
             ],
             "defines": [],
@@ -13,9 +13,9 @@
             "intelliSenseMode": "gcc-x64"
         },
         {
-            "name": "Windows",
+            "name": "Win32",
             "includePath": [
-                "${workspaceFolder}\\_lib\\cpp\\_src",
+                "${env:HOMEPATH}\\repos\\kyopro_library\\src",
                 "${env:HOMEPATH}\\repos\\ac-library"
             ],
             "defines": [],

@@ -11,15 +11,15 @@ home = os.path.expanduser('~')
 file_dirname = args[1]
 cpp_filename = args[2]
 
-# _distに最新の_srcを反映
-run('python compresscpplib.py', shell=True, encoding='utf-8')
+# distに最新のsrcを反映
+run('python _tools/scripts/compresscpplib.py', shell=True, encoding='utf-8')
 # 提出用ファイル_dist/main.cppの生成
 run(
     [
         'oj-bundle',
         '{0}/{1}'.format(file_dirname, cpp_filename),
         # ライブラリのパス
-        '-I', '_lib/cpp/_dist',
+        '-I', '{0}/repos/kyopro_library/dist'.format(home),
         # ACLのパス
         '-I', '{0}/repos/ac-library'.format(home),
         '>', '_dist/main.cpp'
@@ -32,18 +32,19 @@ run(
 )
 # 後始末と整形処理
 run(
-    'python finalize.py {0}/{1}'.format(file_dirname, cpp_filename),
+    'python _tools/scripts/finalize.py {0}/{1}'.format(file_dirname, cpp_filename),
     shell=True,
     encoding='utf-8'
 )
 # 提出用ビルド
 run(
     [
+        # 参考：https://atcoder.jp/contests/APG4b/rules?lang=ja
         'g++', '-O2', '-Wall', '-Wextra',
         # oj-bundle済の提出用ファイル
         '_dist/main.cpp', '-std=c++17',
         # ライブラリのパス
-        '-I', '_lib/cpp/_dist',
+        '-I', '{0}/repos/kyopro_library/dist'.format(home),
         # ACLのパス
         '-I', '{0}/repos/ac-library'.format(home),
         '-o', '{0}/a.exe'.format(file_dirname),

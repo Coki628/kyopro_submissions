@@ -1,5 +1,6 @@
 """
 ・oj-bundleに読み込ませる前処理
+※include pathで制御できるようになったので今はもう使ってない。
 """
 
 import sys

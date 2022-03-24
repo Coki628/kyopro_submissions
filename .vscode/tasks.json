@@ -8,7 +8,8 @@
                 "executable": "cmd.exe",
                 "args": [
                     "/C",
-                    "C:\\Users\\srcn4\\.virtualenvs\\kyopro-zeOHEd9V\\Scripts\\activate.bat",
+                    // set your python path accordingly
+                    "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\activate.bat",
                     "&",
                 ],
             },
@@ -16,107 +17,12 @@
     },
     "tasks": [
         {
-            // oj-test用ビルド
-            "label": "test_build",
-            "type": "shell",
-            "command": "g++",
-            // 参考：https://atcoder.jp/contests/APG4b/rules?lang=ja
-            "args": [
-                "-O2",
-                "-Wall",
-                "-Wextra",
-                // oj-bundle済の提出用ファイル
-                "_dist/main.cpp",
-                "-std=c++17",
-                // ライブラリのパス
-                "-I",
-                "${workspaceFolder}/_lib/cpp/_dist",
-                // ACLのパス
-                "-I",
-                "${env:HOMEPATH}/repos/ac-library",
-                "-o",
-                "${fileDirname}/a.exe",
-            ],
-            "dependsOn": [
-                "oj-bundle"
-            ],
-        },
-        {
-            // デバッグ用ビルド(旧)
-            "label": "debug_build-old",
-            "type": "shell",
-            "command": "g++",
-            "args": [
-                // ローカルデバッグ用マクロを定義
-                "-D=__LOCAL",
-                "-g3",
-                "-O0",
-                "-D_GLIBCXX_DEBUG",
-                "-Wall",
-                // windowsでコンパイルこけるのでコメントアウト
-                // "-fsanitize=undefined",
-                // デバッグしたいのでoj-bundle前の元ファイル
-                "${fileDirname}/${fileBasename}",
-                "-std=c++17",
-                // ライブラリのパス
-                "-I",
-                "${workspaceFolder}/_lib/cpp/_src",
-                // ACLのパス
-                "-I",
-                "${env:HOMEPATH}/repos/ac-library",
-                "-o",
-                "${fileDirname}/a.exe",
-            ],
-            "dependsOn": [
-                "oj-bundle",
-            ],
-        },
-        {
-            // 提出用ファイル_dist/main.cppの生成
-            "label": "oj-bundle",
-            "type": "shell",
-            "command": "python",
-            "args": [
-                // _distに最新の_srcを反映
-                "compresscpplib.py",
-                "&",
-                "oj-bundle",
-                "${fileDirname}/${fileBasename}",
-                // ライブラリのパス
-                "-I",
-                "${workspaceFolder}/_lib/cpp/_dist",
-                // ACLのパス
-                "-I",
-                "${env:HOMEPATH}/repos/ac-library",
-                ">",
-                "_dist/main.cpp",
-                "&",
-                // 後始末と整形処理
-                "python",
-                "finalize.py",
-            ],
-        },
-        {
-            "label": "oj-test-old",
-            "type": "shell",
-            "command": "cd",
-            "args": [
-                "${fileDirname}",
-                "&",
-                "oj",
-                "test",
-            ],
-            "dependsOn": [
-              "test_build",
-            ],
-        },
-        {
             // タスクをpython内で一本化した
             "label": "oj-test",
             "type": "shell",
             "command": "python",
             "args": [
-                "oj-test.py",
+                "_tools/scripts/oj-test.py",
                 "${fileDirname}",
                 "${fileBasename}",
             ],
@@ -132,7 +38,7 @@
             "type": "shell",
             "command": "python",
             "args": [
-                "debug-build.py",
+                "_tools/scripts/debug-build.py",
                 "${fileDirname}",
                 "${fileBasename}",
             ],

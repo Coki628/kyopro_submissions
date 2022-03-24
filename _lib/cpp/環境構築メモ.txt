@@ -1,7 +1,0 @@
-Windows
-・msys2っていうパッケージマネージャみたいなやつからMingwを入れるのがよかった。
-　単品のMingwはなんか17のオプションつけるとバグったりした。
-参考：https://qiita.com/takey/questions/87d7a7d0f006c3d3ef36
-　　　http://mingw-w64.org/doku.php
-　　　https://www.msys2.org/
-　　　https://gist.github.com/Hamayama/eb4b4824ada3ac71beee0c9bb5fa546d
