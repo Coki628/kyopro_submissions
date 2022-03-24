@@ -9,7 +9,7 @@
 
 ## 前提
 - 基本的にエディタはvscodeで見ている想定
-- このリポジトリと並列な階層に、kyopro_libraryとACLをclone済である想定
+- このリポジトリと並列な階層に、[kyopro_library](https://github.com/Coki628/kyopro_library)と[ACL](https://github.com/atcoder/ac-library)をclone済である想定
 
 ## セットアップ例
 ```bash
