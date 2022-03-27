@@ -2,7 +2,7 @@
 @echo off
 
 @REM 環境に合わせて変更
-set project_root=C:\Users\srcn4\repos\kyopro
+set project_root=C:\Users\srcn4\repos\kyopro\kyopro_submissions
 
 cd librarychecker
 @REM 問題指定(なんかうまく動かない)

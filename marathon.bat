@@ -3,7 +3,7 @@
 @echo off
 
 @REM 環境に合わせて変更
-set project_root=C:\Users\srcn4\repos\kyopro
+set project_root=C:\Users\srcn4\repos\kyopro_submissions
 
 cd marathon
 @REM 全問題取得
