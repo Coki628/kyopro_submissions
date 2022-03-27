@@ -1,3 +1,7 @@
+"""
+・動作確認テスト用
+"""
+
 import sys
 
 def input(): return sys.stdin.readline().strip()

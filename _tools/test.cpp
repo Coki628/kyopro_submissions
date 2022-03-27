@@ -47,8 +47,7 @@ void solve() {
     // print(T4);
     // print(join(v2, '\n'));
 
-    // vector<pll> V = {{1, 3}, {3, 2}, {4, 7}};
-    // print(V);
+    
 }
 
 int main() {
