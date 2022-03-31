@@ -16,6 +16,10 @@ def compress(path_r: str, path_w: str):
             # コメント行
             if line.strip().startswith('//'):
                 continue
+            # 行内コメント
+            comment_start = line.find('//')
+            if comment_start != -1:
+                line = line[:comment_start]
             output.append(line.strip())
 
     for i in range(len(output)):
