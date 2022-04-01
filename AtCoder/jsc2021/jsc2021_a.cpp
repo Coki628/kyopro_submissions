@@ -1,6 +1,3 @@
-/*
-*/
-
 // #pragma GCC target("avx2")
 // #pragma GCC optimize("O3")
 // #pragma GCC optimize("unroll-loops")
@@ -134,20 +131,15 @@ template<int mod> struct ModInt {
 using mint = ModInt<MOD>;
 
 void solve() {
-    ll N, M;
-    cin >> N >> M;
-    auto A = LIST(N);
-    auto B = LIST(M);
-
-    auto C1 = Counter(A);
-    auto C2 = Counter(B);
-    vector<ll> ans;
-    rep(i, 1, 1001) {
-        if (C1[i] ^ C2[i]) {
-            ans.pb(i);
+    ll x, y, z;
+    cin >> x >> y >> z;
+    
+    rep(w, 1000000, -1, -1) {
+        if (y/(ld)x > w/(ld)z) {
+            print(w);
+            break;
         }
     }
-    print(ans);
 }
 
 int main() {
