@@ -144,7 +144,6 @@ void solve() {
     cin >> N;
     auto A = LIST(N);
 
-
     ll M = sum(A);
     auto dp = list2d(N+1, M+1, false);
     dp[0][0] = 1;
