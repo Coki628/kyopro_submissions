@@ -11,6 +11,9 @@ home = os.path.expanduser('~')
 file_dirname = args[1]
 cpp_filename = args[2]
 
+# 落ちた時、前のやつ実行されると紛らわしいので消しておく
+if os.path.exists('{0}/a.exe'.format(file_dirname)):
+    os.remove('{0}/a.exe'.format(file_dirname))
 # デバッグ用ビルド
 run(
     [

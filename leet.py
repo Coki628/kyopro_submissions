@@ -20,7 +20,7 @@ os.makedirs(contest_name, exist_ok=True)
 os.chdir('{0}/{1}'.format(os.getcwd(), contest_name))
 os.makedirs(problem_name, exist_ok=True)
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))
-if (os.path.exists('1.cpp')):
+if os.path.exists('1.cpp'):
     print('1.ccp already exists')
 else:
     shutil.copy(

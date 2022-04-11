@@ -169,6 +169,13 @@ auto h = [](ll a, ll b) -> ll { return a + b; };
 const ll T = INF;
 const ll E = 0;
 
+// 区間加算・区間最大値取得
+auto f = [](ll a, ll b) -> ll { return max(a, b); };
+auto g = [](ll a, ll b) -> ll { return a + b; };
+auto h = [](ll a, ll b) -> ll { return a + b; };
+const ll T = -INF;
+const ll E = 0;
+
 // 区間更新・区間和取得
 // ・座圧とか、各位置に重み付けしたい時もこの区間和取得モノイドが使える。
 // 　区間和取得の時にペアで使う要素数の方に、普通は初期値で1にするけど、
@@ -393,7 +400,12 @@ const ll E = INF;
 
 // 区間等差数列加算・区間最小値取得
 // 参考：aoj3165_hupc2020
-// 使い方：作用素に {その位置を更新した回数cnt, 差し引きしたい量sub} を持たせる。
+// 使い方：要素に {値, 左端}、作用素に {その位置を更新した回数cnt, 差し引きしたい量sub}
+// 　　　　を持たせる。
+// 初期化：数列の先頭を初項0とした公差dの等差数列でleftを初期化
+// 　　　　seg.set(i, {値の初期値, i*d});
+// 更新　：位置lを初項aとした公差dの等差数列を[l,r)に加算
+// 　　　　seg.update(l, r, {1, a-l*公差d});
 struct Node {
     ll val, left;
     operator ll() const { return val; }
@@ -414,6 +426,29 @@ auto h = [](const Func &a, const Func &b) -> Func {
     return { a.cnt+b.cnt, a.sub+b.sub };
 };
 const Node T = {INF, INF};
+const Func E = {0, 0};
+
+// 区間等差数列加算・区間最大値取得
+struct Node {
+    ll val, left;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll cnt, sub;
+    bool operator==(const Func &f) const {
+        return cnt == f.cnt and sub == f.sub;
+    }
+};
+auto f = [](const Node &a, const Node &b) -> Node { 
+    return { max(a.val, b.val), min(a.left, b.left) };
+};
+auto g = [](const Node &a, const Func &b) -> Node {
+    return { a.val+b.cnt*a.left+b.sub, a.left }; 
+};
+auto h = [](const Func &a, const Func &b) -> Func {
+    return { a.cnt+b.cnt, a.sub+b.sub };
+};
+const Node T = {-INF, -INF};
 const Func E = {0, 0};
 
 // 区間等差数列加算・区間和取得

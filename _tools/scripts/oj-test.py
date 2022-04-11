@@ -9,7 +9,14 @@ args = sys.argv
 
 home = os.path.expanduser('~')
 file_dirname = args[1]
-cpp_filename = args[2]
+filename = args[2]
+
+# python版
+ext = filename.split('.')[-1]
+if ext == 'py':
+    os.chdir(file_dirname)
+    run('oj test -c "python {0}"'.format(filename), shell=True, encoding='utf-8')
+    exit()
 
 # distに最新のsrcを反映
 run('python _tools/scripts/compresscpplib.py', shell=True, encoding='utf-8')
@@ -17,7 +24,7 @@ run('python _tools/scripts/compresscpplib.py', shell=True, encoding='utf-8')
 run(
     [
         'oj-bundle',
-        '{0}/{1}'.format(file_dirname, cpp_filename),
+        '{0}/{1}'.format(file_dirname, filename),
         # ライブラリのパス
         '-I', '{0}/repos/kyopro_library/dist'.format(home),
         # ACLのパス
@@ -32,10 +39,13 @@ run(
 )
 # 後始末と整形処理
 run(
-    'python _tools/scripts/finalize.py {0}/{1}'.format(file_dirname, cpp_filename),
+    'python _tools/scripts/finalize.py {0}/{1}'.format(file_dirname, filename),
     shell=True,
     encoding='utf-8'
 )
+# 落ちた時、前のやつ実行されると紛らわしいので消しておく
+if os.path.exists('{0}/a.exe'.format(file_dirname)):
+    os.remove('{0}/a.exe'.format(file_dirname))
 # 提出用ビルド
 run(
     [
@@ -52,6 +62,8 @@ run(
     shell=True,
     encoding='utf-8',
 )
-
+if not os.path.exists('{0}/a.exe'.format(file_dirname)):
+    print('build command failed...')
+    exit()
 os.chdir(file_dirname)
-run('oj t', shell=True, encoding='utf-8')
+run('oj test', shell=True, encoding='utf-8')

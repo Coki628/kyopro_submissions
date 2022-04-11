@@ -31,11 +31,12 @@ else:
 os.chdir('{0}/{1}'.format(os.getcwd(), contest_site))
 os.chdir('{0}/{1}'.format(os.getcwd(), contest_name))
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))
-# generate.pyを作成
-run(
-    'oj-template -t generate.py {0} > generate.py'.format(url),
-    shell=True, encoding='utf-8'
-)
+if not os.path.exists('generate.py'):
+    # generate.pyを作成
+    run(
+        'oj-template -t generate.py {0} > generate.py'.format(url),
+        shell=True, encoding='utf-8'
+    )
 print('update and save generate.py accordingly, then enter')
 input()
 print('input number of test cases that you want to generate, then enter')
