@@ -15,6 +15,8 @@
 　imos[l] += 1, imos[l+1] += 1,
 　imos[r] -= (r-l+1)^2, imos[r+1] += (r-l+1)^2+(r-l)^2-2, imos[r+2] -= (r-l)^2
 　の5点でよさそう。逆向きの16,9,4,1でもこれをほぼ反転させたようなものになる。
+・最近類題で1次関数のやつ(cf1661D)をやったので、
+　ちょっと一般化した版をこっちにも適用してみた。無事AC。
 */
 
 // #pragma GCC target("avx2")
@@ -41,18 +43,21 @@ void solve() {
     cin >> N >> K;
     auto A = LIST(N);
 
-    // 2次関数の列を作る
-    vector<ll> B;
+    // D次関数の列を作る
+    int D = 2;
+    vector<ll> F;
+    // 1^2,2^2...2^(K-1)
     rep(i, 1, K) {
-        B.eb(pow(i, 2));
+        F.eb(pow(i, 2));
     }
+    // K^2,(K-1)^2...1^2
     rep(i, K, 0, -1) {
-        B.eb(pow(i, 2));
+        F.eb(pow(i, 2));
     }
-    ll M = B.size();
-    // 3回差分
-    auto diff = B;
-    rep(_, 3) {
+    ll M = F.size();
+    // D+1回差分
+    auto diff = F;
+    rep(_, D+1) {
         diff.eb(0);
         rep(i, diff.size()-1, 0, -1) {
             diff[i] = diff[i] - diff[i-1];
@@ -65,32 +70,32 @@ void solve() {
             sdiff.eb(i, diff[i]);
         }
     }
-
-    auto imos = list2d(4, N, 0LL);
-    // 区間[l,l+M)に2次関数Bを加算
-    auto add = [&](ll l, ll x) {
-        for (auto [i, d] : sdiff) {
-            if (l+i >= N) break;
-            imos[0][l+i] += d*x;
+    auto imos = list2d(N, D+2, 0LL);
+    // i始点としたD次関数Fをc回加算
+    auto add = [&](ll i, ll c) {
+        for (auto [k, v] : sdiff) {
+            if (i+k >= N) break;
+            imos[i+k][0] += v*c;
         }
     };
+
     rep(i, N) {
         if (i > 0) {
-            // 3回累積
-            rep(j, 1, 4) {
-                imos[j][i] = imos[j][i-1] + imos[j-1][i];
+            // D+1回累積
+            rep(j, 1, D+2) {
+                imos[i][j] = imos[i-1][j] + imos[i][j-1];
             }
         }
-        A[i] -= imos[3][i];
+        A[i] -= imos[i][D+1];
         if (A[i] < 0) {
             No();
             return;
         }
         if (i < N-M+1) {
             add(i, A[i]);
-            // 今回の更新分を累積にも反映させておく
-            rep(j, 1, 4) {
-                imos[j][i] += A[i];
+            // 今回の更新分(初項*回数)を累積にも反映させておく
+            rep(j, 1, D+2) {
+                imos[i][j] += A[i];
             }
             A[i] = 0;
         }
