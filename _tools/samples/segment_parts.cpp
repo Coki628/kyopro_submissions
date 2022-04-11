@@ -452,29 +452,94 @@ const Node T = {-INF, -INF};
 const Func E = {0, 0};
 
 // 区間等差数列加算・区間和取得
-// 参考：aoj3165_hupc2020
-// ・軽くしか試してないけどこれも多分大丈夫そう。
+// 参考：https://null-mn.hatenablog.com/entry/2021/08/22/064325
+// 使い方：こっちのがめちゃ簡単。ほぼ直感的に操作できる。
+// 初期化：{初期値, 左端i, 右端i+1}
+// 更新　：区間[l,r)に{a,b}=関数ax+bを加算
 struct Node {
-    ll val, left;
+    ll val, left, right;
     operator ll() const { return val; }
 };
 struct Func {
-    ll cnt, sub;
+    ll a, b;
     bool operator==(const Func &f) const {
-        return cnt == f.cnt and sub == f.sub;
+        return a == f.a and b == f.b;
     }
 };
 auto f = [](const Node &a, const Node &b) -> Node { 
-    return { a.val+b.val, min(a.left, b.left) };
+    return { a.val+b.val, min(a.left, b.left), max(a.right, b.right) };
 };
-auto g = [](const Node &a, const Func &b) -> Node {
-    return { a.val+b.cnt*a.left+b.sub, a.left }; 
+auto g = [](const Node &a, const Func &func) -> Node {
+    return {
+        a.val+(func.a*(a.left+a.right-1)+func.b*2)*(a.right-a.left)/2,
+        a.left, a.right
+    };
 };
-auto h = [](const Func &a, const Func &b) -> Func {
-    return { a.cnt+b.cnt, a.sub+b.sub };
+auto h = [](const Func &f1, const Func &f2) -> Func {
+    return { f1.a+f2.a, f1.b+f2.b };
 };
-const Node T = {0, INF};
+const Node T = {0, INF, -INF};
 const Func E = {0, 0};
+
+// 区間等差数列更新・最小値取得
+// 参考：https://null-mn.hatenablog.com/entry/2021/08/22/064325
+struct Node {
+    ll val, left, right;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll a, b;
+    bool operator==(const Func &f) const {
+        return a == f.a and b == f.b;
+    }
+};
+auto f = [](const Node &a, const Node &b) -> Node { 
+    return { min(a.val, b.val), min(a.left, b.left), max(a.right, b.right) };
+};
+auto g = [](const Node &a, const Func &func) -> Node {
+    if (func.a == INF) {
+        return a;
+    } elif (func.a >= 0) {
+        return { func.a*a.left+func.b, a.left, a.right };
+    } else {
+        return { func.a*(a.right-1)+func.b, a.left, a.right };
+    }
+};
+auto h = [](const Func &f1, const Func &f2) -> Func {
+    return f2;
+};
+const Node T = {INF, INF, -INF};
+const Func E = {INF, INF};
+
+// 区間等差数列更新・最大値取得(未verify)
+// 参考：https://null-mn.hatenablog.com/entry/2021/08/22/064325
+struct Node {
+    ll val, left, right;
+    operator ll() const { return val; }
+};
+struct Func {
+    ll a, b;
+    bool operator==(const Func &f) const {
+        return a == f.a and b == f.b;
+    }
+};
+auto f = [](const Node &a, const Node &b) -> Node { 
+    return { max(a.val, b.val), min(a.left, b.left), max(a.right, b.right) };
+};
+auto g = [](const Node &a, const Func &func) -> Node {
+    if (func.a == INF) {
+        return a;
+    } elif (func.a >= 0) {
+        return { func.a*(a.right-1)+func.b, a.left, a.right };
+    } else {
+        return { func.a*a.left+func.b, a.left, a.right };
+    }
+};
+auto h = [](const Func &f1, const Func &f2) -> Func {
+    return f2;
+};
+const Node T = {-INF, INF, -INF};
+const Func E = {INF, INF};
 
 // 区間or・区間最小値取得
 auto f = [](ll a, ll b) -> ll { return min(a, b); };
