@@ -56,7 +56,7 @@ run(
         # ライブラリのパス
         '-I', '{0}/repos/kyopro_library/dist'.format(home),
         # ACLのパス
-        '-I', '{0}/repos/ac-library'.format(home),
+        '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
         '-o', '{0}/a.exe'.format(file_dirname),
     ],
     shell=True,

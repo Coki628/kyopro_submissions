@@ -10,7 +10,7 @@ import shutil
 from compresscpp import compress
 
 home = os.path.expanduser('~')
-libdir = '{0}{1}repos{1}kyopro_library'.format(home, os.sep)
+libdir = '{0}{1}repos{1}kyopro_library{1}src'.format(home, os.sep)
 
 for path in glob.glob('{0}{1}**'.format(libdir, os.sep), recursive=True):
     if path.find('kyopro_library{0}dist'.format(os.sep)) != -1:

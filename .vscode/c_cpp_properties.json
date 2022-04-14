@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${env:HOMEPATH}/repos/kyopro_library/src",
-                "${env:HOMEPATH}/repos/ac-library"
+                "${env:HOMEPATH}/repos/kyopro_library/ac-library"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
@@ -16,7 +16,7 @@
             "name": "Win32",
             "includePath": [
                 "${env:HOMEPATH}\\repos\\kyopro_library\\src",
-                "${env:HOMEPATH}\\repos\\ac-library"
+                "${env:HOMEPATH}\\repos\\kyopro_library\\ac-library"
             ],
             "defines": [],
             "compilerPath": "C:\\msys64\\mingw64\\bin\\gcc.exe",
