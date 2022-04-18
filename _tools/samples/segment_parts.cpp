@@ -133,6 +133,10 @@ auto f = [](Node &a, Node &b) -> Node {
 };
 const Node T = Node();
 
+// XOR基底(abc223_h)
+auto f = [](xorbasis a, xorbasis b) { return a.merge(b); };
+const xorbasis T;
+
 
 ///// 遅延セグ木用の各種素材 /////
 // 区間更新・区間最小値取得
