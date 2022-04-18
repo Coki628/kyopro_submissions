@@ -224,8 +224,8 @@ class Geometry:
 def calc(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
-    a = (y2-y1)/(x2-x1)
-    b = -(x1*y2/(x2-x1))+x1*y1/(x2-x1)+y1
+    a = (y2-y1) / (x2-x1)
+    b = (x1*y2-x2*y1) / (x1-x2)
     return a, b
 
 # 2次方程式の解の公式

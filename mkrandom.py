@@ -33,6 +33,7 @@ os.chdir('{0}/{1}'.format(os.getcwd(), contest_name))
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))
 if not os.path.exists('generate.py'):
     # generate.pyを作成
+    print('oj-template -t generate.py {0} > generate.py'.format(url))
     run(
         'oj-template -t generate.py {0} > generate.py'.format(url),
         shell=True, encoding='utf-8'
@@ -42,10 +43,15 @@ input()
 print('input number of test cases that you want to generate, then enter')
 num_of_testcases = int(input())
 # ランダムテストケースの生成
-run(
-    'oj generate-input "python generate.py" {0}'.format(num_of_testcases),
-    shell=True, encoding='utf-8'
-)
+if num_of_testcases:
+    print('oj generate-input "python generate.py" {0}'.format(num_of_testcases))
+    run(
+        'oj generate-input "python generate.py" {0}'.format(num_of_testcases),
+        shell=True, encoding='utf-8'
+    )
+# 落ちた時、前のやつ実行されると紛らわしいので消しておく
+if os.path.exists('{0}/a.exe'.format(os.getcwd())):
+    os.remove('{0}/a.exe'.format(os.getcwd()))
 # naive.cppのコンパイル
 run(
     [
@@ -58,6 +64,7 @@ run(
     shell=True, encoding='utf-8',
 )
 # naive.cppでランダムテストケースの解を生成
+print('oj generate-output')
 run(
     'oj generate-output',
     shell=True, encoding='utf-8'
