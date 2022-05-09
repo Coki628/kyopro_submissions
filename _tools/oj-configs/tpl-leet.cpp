@@ -18,6 +18,7 @@ constexpr long double PI = M_PI;
 
 #include "macros.hpp"
 #include "combinatorics/ModInt.hpp"
+using mint = ModInt<MOD>;
 #include "template.hpp"
 
 // put Solution here
