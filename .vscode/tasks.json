@@ -43,6 +43,17 @@
                 "${fileBasename}",
             ],
         },
+        {
+            // 提出用ビルド
+            "label": "submit-build",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "_tools/scripts/submit-build.py",
+                "${fileDirname}",
+                "${fileBasename}",
+            ],
+        },
     ],
 }
 // 参考：http://koturn.hatenablog.com/entry/2018/07/29/180000

@@ -53,10 +53,6 @@ run(
         'g++', '-O2', '-Wall', '-Wextra',
         # oj-bundle済の提出用ファイル
         '_dist/main.cpp', '-std=c++17',
-        # ライブラリのパス
-        '-I', '{0}/repos/kyopro_library/dist'.format(home),
-        # ACLのパス
-        '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
         '-o', '{0}/a.exe'.format(file_dirname),
     ],
     shell=True,
