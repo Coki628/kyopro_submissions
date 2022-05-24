@@ -3,12 +3,14 @@
 　　　https://ei1333.github.io/luzhiled/snippets/other/offline-dynamic-connectivity.html
 ・オフラインダイコネ
 ・これも有名データ構造だけど使ったことなかったのでこの機会にやってみた。
-・使い方はundoUFとか永続UFよりはちょい複雑め。
+・使い方はUFundoとか永続UFよりはちょい複雑め。
 　色々ソース内コメントに書いておいた。特に経過時間の進め方として、
 　辺追加・削除・回答クエリそれぞれで1ずつ進めると良さそう。
 　回答クエリで状態変わらないからって時間そのままにしたらWAになった。
 ・この問題についてはさすがに冗長なことしてるのでちょい遅くて、AC2.13秒。
 　でも40万クエリでこのくらいなら、十分使える可能性はある。
+・ライブラリ整備で仕上げてきた。これでやってみると、AC1.35秒。
+　内部的にUFundo使ってるのにUFundo単体より速くなっててうける。
 */
 
 // #pragma GCC target("avx2")
@@ -48,12 +50,12 @@ void solve() {
 
     ll Q;
     cin >> Q;
-    OfflineDynamicConnectivity dc(N, M*2+Q);
+    OfflineDynamicConnectivity dc(N, Q*2+1);
     map<pii, vector<pii>> adj;
     int t = 0;
     for (auto [u, v] : edges) {
         if (S[u] == S[v]) {
-            dc.insert(t++, u, v);
+            dc.insert(t, u, v);
         } else {
             if (S[u] > S[v]) swap(u, v);
             adj[{S[u], S[v]}].eb(u, v);
@@ -61,7 +63,7 @@ void solve() {
     }
 
     map<pii, vector<tuple<int, int, int>>> qs;
-    vector<vector<tuple<int, int, int>>> qs2(M*2+Q);
+    vector<vector<tuple<int, int, int>>> qs2(Q*2+1);
     vector<ll> ans(Q);
     rep(i, Q) {
         ll a, b;
@@ -80,14 +82,14 @@ void solve() {
         auto [sa, sb] = k;
         auto tmp = adj[{sa, sb}];
         for (auto [u, v] : tmp) {
-            dc.insert(t++, u, v);
+            dc.insert(t, u, v);
         }
+        t++;
         qs2[t++] = li;
         for (auto [u, v] : tmp) {
-            dc.erase(t++, u, v);
+            dc.erase(t, u, v);
         }
     }
-    dc.build();
     dc.run([&](int t) -> void {
         for (auto [a, b, i] : qs2[t]) {
             ans[i] = dc.uf.same(a, b);
