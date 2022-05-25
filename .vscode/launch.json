@@ -16,6 +16,7 @@
             "internalConsoleOptions": "neverOpen"
         },
         {
+            // デバッグ用ビルドのデバッグ(普段はこっち)
             "name": "gdb (debug)",
             "type": "cppdbg",
             "request": "launch",
@@ -39,6 +40,7 @@
             }
         },
         {
+            // 提出用ビルドのデバッグ
             "name": "gdb (submit)",
             "type": "cppdbg",
             "request": "launch",

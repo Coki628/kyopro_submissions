@@ -1,5 +1,4 @@
 """
-・tmp.cppファイルを削除する。
 ・oj-bundleの出力を自分好みに整形する。
 """
 
@@ -26,6 +25,9 @@ with open(path_r, encoding='utf-8') as f:
             continue
         # 連続する空行をスキップ
         if out and line == out[-1] == '\n':
+            continue
+        # #define __LOCALの除去
+        if line == '#define __LOCAL\n':
             continue
         out.append(line)
 

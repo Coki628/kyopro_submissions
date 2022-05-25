@@ -6,6 +6,7 @@
 // #pragma GCC optimize("unroll-loops")
 
 #define CONSTANTS
+#define __LOCAL
 #include "base.hpp"
 
 constexpr long long INF = 1e18;
@@ -27,13 +28,13 @@ constexpr long double PI = M_PI;
 ld solve(int testcase=-1) {
     #ifdef __LOCAL
         // 入力ファイル読み込み
-        string filename = "tools/in/"+zfill(tostr(testcase), 4)+".txt";
+        string filename = "tools/in/" + zfill(tostr(testcase), 4) + ".txt";
         freopen(filename.c_str(), "r", stdin);
         // 出力ファイル準備
-        filename = "tools/out/"+zfill(tostr(testcase), 4)+".txt";
+        filename = "tools/out/" + zfill(tostr(testcase), 4) + ".txt";
         ofstream ofs(filename.c_str());
         if (!ofs) {
-            print(-1);
+            print("error, please check if 'tools/out/' dir exists");
             exit(0);
         }
     #endif

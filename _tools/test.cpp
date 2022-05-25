@@ -7,6 +7,7 @@
 // #pragma GCC optimize("unroll-loops")
 
 #define CONSTANTS
+#define __LOCAL
 // #define CAST_MINT_TO_LL
 #include "base.hpp"
 
@@ -19,6 +20,7 @@ constexpr long double PI = M_PI;
 
 #include "macros.hpp"
 #include "combinatorics/ModInt.hpp"
+using mint = ModInt<MOD>;
 #include "template.hpp"
 
 // template<typename T, typename F>

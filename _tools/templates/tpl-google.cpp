@@ -6,6 +6,7 @@
 // #pragma GCC optimize("unroll-loops")
 
 #define CONSTANTS
+#define __LOCAL
 // #define CAST_MINT_TO_LL
 #include "base.hpp"
 

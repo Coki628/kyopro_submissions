@@ -50,7 +50,7 @@ if os.path.exists('{0}/a.exe'.format(file_dirname)):
 run(
     [
         # 参考：https://atcoder.jp/contests/APG4b/rules?lang=ja
-        'g++', '-O2', '-Wall', '-Wextra',
+        'g++','-D=__LOCAL', '-O2', '-Wall', '-Wextra',
         # oj-bundle済の提出用ファイル
         '_dist/main.cpp', '-std=c++17',
         '-o', '{0}/a.exe'.format(file_dirname),

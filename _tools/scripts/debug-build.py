@@ -17,7 +17,7 @@ if os.path.exists('{0}/a.exe'.format(file_dirname)):
 # デバッグ用ビルド
 run(
     [
-        'g++', '-D=__LOCAL', '-g3', '-O0', '-D_GLIBCXX_DEBUG', '-Wall',
+        'g++', '-D=__DEBUG', '-g3', '-O0', '-D_GLIBCXX_DEBUG', '-Wall',
         # デバッグしたいのでoj-bundle前の元ファイル
         '{0}/{1}'.format(file_dirname, cpp_filename), '-std=c++17',
         # ライブラリのパス(こちらもdistではなくsrcから)
