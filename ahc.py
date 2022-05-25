@@ -28,7 +28,7 @@ if (os.path.exists('1.cpp')):
     print('1.ccp already exists')
 else:
     shutil.copy(
-        '{0}/_tools/oj-configs/tpl-marathon.cpp'.format(project_root),
+        '{0}/_tools/templates/tpl-marathon.cpp'.format(project_root),
         '{0}/1.cpp'.format(os.getcwd()),
     )
 run('code 1.cpp', shell=True, encoding='utf-8')
