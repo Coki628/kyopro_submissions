@@ -18,6 +18,12 @@ contest_name = url.split('/')[-3]
 problem_name = url.split('/')[-1]
 project_root = os.getcwd()
 
+# AHCなら別処理
+if problem_name.startswith('ahc'):
+    args[0] = 'ahc.py'
+    run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
+    exit()
+
 os.chdir('{0}/AtCoder'.format(os.getcwd()))
 os.makedirs(contest_name, exist_ok=True)
 os.chdir('{0}/{1}'.format(os.getcwd(), contest_name))
@@ -30,7 +36,7 @@ if len(args) >= 3 and args[2] == '-p':
         print('1.py already exists')
     else:
         shutil.copy(
-            '{0}/_tools/pythonlib/tpl.py'.format(project_root),
+            '{0}/_tools/templates/tpl.py'.format(project_root),
             '{0}/1.py'.format(os.getcwd()),
         )
     run('code 1.py', shell=True, encoding='utf-8')

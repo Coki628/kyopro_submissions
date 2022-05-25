@@ -1,8 +1,6 @@
 # 実行方法
 # python ahc.py 問題URL
 
-# ※未verifyなので、次回AHCで動作確認
-
 import sys
 import os
 from subprocess import run
