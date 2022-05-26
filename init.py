@@ -36,7 +36,7 @@ elif pr.netloc == 'yukicoder.me':
     args[0] = '{0}yuki.py'.format(scripts_dir)
     run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
 
-elif pr.nexloc == 'judge.yosupo.jp':
+elif pr.netloc == 'judge.yosupo.jp':
     args[0] = '{0}libc.py'.format(scripts_dir)
     run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
 
