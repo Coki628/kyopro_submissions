@@ -10,7 +10,7 @@ from urllib import parse
 args = sys.argv
 
 pr = parse.urlparse(args[1])
-scripts_dir = '{0}/_tools/scripts/'.format(os.getcwd())
+scripts_dir = '{0}/_tools/scripts/init/'.format(os.getcwd())
 
 if pr.netloc == 'atcoder.jp':
     args[0] = '{0}ac.py'.format(scripts_dir)
