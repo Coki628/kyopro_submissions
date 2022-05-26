@@ -10,7 +10,7 @@
 
 ## 前提
 - 基本的にエディタはvscodeで見ている想定
-- このリポジトリと並列な階層に、[kyopro_library](https://github.com/Coki628/kyopro_library)と[ACL](https://github.com/atcoder/ac-library)をclone済である想定
+- このリポジトリと並列な階層に、[kyopro_library](https://github.com/Coki628/kyopro_library)をclone済である想定
 
 ## セットアップ例
 ```bash
@@ -29,9 +29,9 @@ touch _dist/main.cpp
 ```
 
 ## 問題取得
-- 直下にあるac.py等の各コンテストサイト用スクリプトはoj-prepareをラップしてる。  
-`python ac.py 問題URL` のように実行すれば、適切に階層を作成して、テストケースを取ってきて、テンプレート付cppファイルを生成して、vscodeのタブでそれを開く。
-- バッチからPythonに移行中だけどやってないのもある。次使う時に順次やる予定。
+- `_tools/scripts/init/`にあるac.py等の各コンテストサイト用スクリプトは`oj download`をラップしてる。  
+直下で`python init.py 問題URL`のように実行すれば、各コンテストサイトに応じたスクリプトが呼び出される。  
+適切に階層を作成して、テストケースを取ってきて、テンプレート付cppファイルを生成して、vscodeのタブでそれを開く。
 
 ## 実行方法例
 - F5でデバッグ実行
