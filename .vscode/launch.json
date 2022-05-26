@@ -40,7 +40,7 @@
             }
         },
         {
-            // 提出用ビルドのデバッグ
+            // 提出用ビルドのデバッグ(なんかBreak Point止まらないので、そのうち見る)
             "name": "gdb (submit)",
             "type": "cppdbg",
             "request": "launch",
