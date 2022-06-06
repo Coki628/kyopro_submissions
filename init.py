@@ -40,5 +40,9 @@ elif pr.netloc == 'judge.yosupo.jp':
     args[0] = '{0}libc.py'.format(scripts_dir)
     run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
 
+elif pr.netloc == 'paiza.jp':
+    args[0] = '{0}pz.py'.format(scripts_dir)
+    run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
+
 else:
     print('this contest site not supported...')

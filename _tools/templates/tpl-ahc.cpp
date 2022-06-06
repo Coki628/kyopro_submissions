@@ -53,16 +53,22 @@ int main() {
         vector<ll> T = {
             0,
         };
-        // 100件実施
+
+        // 0からn件実施
+        // int n = 10;
         // vector<ll> T;
-        // rep(i, 100) {
+        // rep(i, n) {
         //     T.eb(i);
         // }
-        ld score = 0;
+
+        ld totalscore = 0;
         for (ll t : T) {
-            score += solve(t);
+            ld score = solve(t);
+            cout << "case #" << t << " ";
+            debug(score);
+            totalscore += score;
         }
-        debug(score);
+        debug(totalscore);
     #else
         solve();
     #endif
