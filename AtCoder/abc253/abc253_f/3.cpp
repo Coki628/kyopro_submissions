@@ -13,6 +13,8 @@
 ・とりあえずオレオレメソッドは生やした。
 　でもhistory配列の宣言とか要るからautoでラムダって訳にいかなくて、
 　非再帰もどうやるか謎っぽかったから、結局ほぼ中身はいじれてない。
+・追記。decltype使ったら宣言ちゃんと書かなくてよくなったので、
+　書くのも楽だしfunctionなくしてラムダにできたので、良い感じ。
 */
 
 // #pragma GCC target("avx2")
@@ -44,8 +46,8 @@ void solve() {
     ll H, W, Q;
     cin >> H >> W >> Q;
 
-    vector<PersistentSegmentTree<ll, function<ll(ll, ll)>>::Node*> history(Q+1);
-    PersistentSegmentTree<ll, function<ll(ll, ll)>> seg(f, 0LL);
+    auto seg = get_persistent_segment_tree(f, 0LL);
+    vector<decltype(seg)::Node*> history(Q+1);
     history[0] = seg.build(vector<ll>(W+1, 0));
     vector<pll> upd(H);
     rep(i, Q) {
