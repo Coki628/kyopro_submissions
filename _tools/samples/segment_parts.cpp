@@ -43,30 +43,22 @@ auto f = [](Node a, Node b) -> Node {
 };
 const Node T = {0, 0, 0, 0};
 
-// 区間行列積取得(これは2*2)
-// 参考：cf_edu_seg1_4b
+// 区間行列積取得(これは4*4)
+// 参考：cf_edu_seg1_4b, abc_256_f
 struct Node {
     // 2次元arrayの初期化は{}をひとつ多く括る
-    array<array<mint, 2>, 2> mat{{
-        {1, 0}, 
-        {0, 1},
+    array<array<mint, 4>, 4> mat{{
+        {1, 0, 0, 0},
+        {0, 1, 0, 0},
+        {0, 0, 1, 0},
+        {0, 0, 0, 1},
     }};
-
-    Node(array<array<mint, 2>, 2> &mat) : mat(mat) {};
-
+    Node(const array<array<mint, 4>, 4> &mat) : mat(mat) {};
     Node() {}
 };
-auto f = [](Node &a, Node &b) -> Node {
-    // グローバルでないarrayは初期化されないので{}で初期化(0埋め)する
-    array<array<mint, 2>, 2> mat{};
-    rep(i, 0, 2) {
-        rep(j, 0, 2) {
-            rep(k, 0, 2) {
-                mat[i][j] += a.mat[i][k] * b.mat[k][j];
-            }
-        }
-    }
-    return Node(mat);
+auto f = [](const Node &a, const Node &b) -> Node {
+    // マージ方向をb,aにする
+    return mat_dot(b.mat, a.mat);
 };
 const Node T = Node();
 
@@ -457,15 +449,18 @@ const Func E = {0, 0};
 
 // 区間等差数列加算・区間和取得
 // 参考：https://null-mn.hatenablog.com/entry/2021/08/22/064325
+// 　　　abc_256_f
 // 使い方：こっちのがめちゃ簡単。ほぼ直感的に操作できる。
 // 初期化：{初期値, 左端i, 右端i+1}
 // 更新　：区間[l,r)に{a,b}=関数ax+bを加算
+mint inv2 = (mint)1 / 2;
 struct Node {
-    ll val, left, right;
-    operator ll() const { return val; }
+    mint val;
+    ll left, right;
+    operator mint() const { return val; }
 };
 struct Func {
-    ll a, b;
+    mint a, b;
     bool operator==(const Func &f) const {
         return a == f.a and b == f.b;
     }
@@ -475,7 +470,7 @@ auto f = [](const Node &a, const Node &b) -> Node {
 };
 auto g = [](const Node &a, const Func &func) -> Node {
     return {
-        a.val+(func.a*(a.left+a.right-1)+func.b*2)*(a.right-a.left)/2,
+        a.val+(func.a*(a.left+a.right-1)+func.b*2)*(a.right-a.left)*inv2,
         a.left, a.right
     };
 };
@@ -551,3 +546,15 @@ auto g = [](ll a, ll b) -> ll { return a | b; };
 auto h = [](ll a, ll b) -> ll { return a | b; };
 const ll T = INF;
 const ll E = 0;
+
+// 区間chmin・区間最小値取得
+auto f = [](ll a, ll b) -> ll { return min(a, b); };
+auto g = [](ll a, ll b) -> ll { return min(a, b); };
+auto h = [](ll a, ll b) -> ll { return min(a, b); };
+const ll T = INF;
+const ll E = INF;
+
+// Beatsでできる。
+// 区間chgcd・区間和取得 (yuki880)
+// 区間chmod2・区間和取得 (yuki879)
+// 区間chfloor・区間和取得 (abc256_h)

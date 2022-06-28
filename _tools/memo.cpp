@@ -1,33 +1,48 @@
-#include "_tpl.cpp"
+// #pragma GCC target("avx2")
+// #pragma GCC optimize("O3")
+// #pragma GCC optimize("unroll-loops")
 
-// 一発全インクルード
-#include <bits/stdc++.h>
-using namespace std;
+#define CONSTANTS
+#define __LOCAL
+// #define CAST_MINT_TO_LL
+#include "base.hpp"
 
-// どっちででもいいみたい
-typedef long long ll;
-using ll = long long;
+constexpr long long INF = 1e18;
+// constexpr long long INF = LONG_LONG_MAX;
+constexpr int MOD = 1000000007;
+// constexpr int MOD = 998244353;
+constexpr long double EPS = 1e-10;
+constexpr long double PI = M_PI;
 
-#define ALL(A) A.begin(), A.end()
+#include "macros.hpp"
+#include "combinatorics/ModInt.hpp"
+using mint = ModInt<MOD>;
+#include "template.hpp"
 
-// 高速化っぽい
-#define fast ios_base::sync_with_stdio(0);cin.tie(NULL);cout.tie(NULL);
+// // 一発全インクルード
+// #include <bits/stdc++.h>
+// using namespace std;
 
-vector<int> A;
+// // どっちでもいい
+// typedef long long ll;
+// using ll = long long;
+
+// // 高速化
+// #define fast ios_base::sync_with_stdio(0);cin.tie(NULL);cout.tie(NULL);
 
 int main() {
     cin.tie(0);
     ios::sync_with_stdio(false);
 
-    // 降順ソート   
-    sort(A.rbegin(), A.rend());
-    // 最大値
-    ll INF = LONG_LONG_MAX;
-    cout << INF << endl;
+    // // 降順ソート
+    // sort(A.rbegin(), A.rend());
+    // // 最大値
+    // ll INF = LONG_LONG_MAX;
+    // cout << INF << endl;
 
-    // 重複削除(案外めんどい)
-    sort(A.begin(), A.end());
-    A.erase(unique(ALL(A)), A.end());
+    // // 重複削除(案外めんどい)
+    // sort(A.begin(), A.end());
+    // A.erase(unique(ALL(A)), A.end());
 
     // 型が決まってれば、ペアもこれで入る
     // pair<int, int> p;
@@ -71,7 +86,7 @@ int main() {
     // cout << t << endl;
 
     // llでもldでも、その型の最大値が取れる
-    ll mx = numeric_limits<ll>::max();
+    // ll mx = numeric_limits<ll>::max();
 
     // main内での再帰の書き方
     // auto dfs = [&](auto&& f, ll u, ll prev) -> void {
@@ -83,16 +98,16 @@ int main() {
     // };
     // dfs(dfs, 0, -1);
 
-    // これで数字判定できるんだって。。
+    // これで数字判定できる
     if (isdigit('0')) {
     }
 
-    // 逆順の回し方
+    // map逆順の回し方
     // for (auto itr = rbegin(mp); itr != rend(mp); itr++) {
     // }
 
     // char -> str
-    cout << string({'a'}) << endl;
+    // cout << string({'a'}) << endl;
 
     // これでカウントできる。(vectorもOK)
     // string s;
@@ -134,10 +149,11 @@ int main() {
     //     return;
     // }
 
-    set<pair<ll, ll>> se;
-    (*se.begin()).first;
-    // これのが楽だね
-    se.begin()->first;
+    // set<pair>の先頭要素
+    // set<pair<ll, ll>> se;
+    // (*se.begin()).first;
+    // // これのが楽だね
+    // se.begin()->first;
 
     // vectorのfind
     // find(ALL(A), x);
@@ -159,6 +175,26 @@ int main() {
     // #ifdef __LOCAL
     //     debug(ans);
     // #endif
+
+    // // ポインタのこと
+    // struct Node {
+    //     Node(ll val) : val(val) {}
+    //     ll val;
+    // };
+    // // 構造体を初期化して普通の変数に代入
+    // Node node = Node(5);
+    // // 普通の変数 → ポインタに変換してポインタ変数に代入
+    // Node *np = &node;
+    // // ポインタ → ポインタ変数に代入
+    // Node *np2 = np;
+    // // ポインタ → 値に変換して普通の変数に代入
+    // Node node3 = *np;
+    // // 構造体を初期化して領域を確保してポインタ変数に代入
+    // Node *np3 = new Node(7);
+    // // 普通の変数からメンバにアクセス
+    // print(node3.val);
+    // // ポインタ変数からメンバにアクセス
+    // print(np3->val);
 
     return 0;
 }
