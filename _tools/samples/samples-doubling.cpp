@@ -5,8 +5,8 @@
 #include "macros.hpp"
 
 
-// 一番基本の位置だけ
-auto f = [](ll prev, ll power) {
+// 一番基本の位置だけ(ABC212_f,ARC060_e,ABC258_e,他多数)
+auto f = [](int prev, int power) {
     return power;
 };
 
