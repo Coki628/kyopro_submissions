@@ -3,5 +3,6 @@
     // for ubuntu
     // "python.pythonPath": "${env:HOMEPATH}/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
     // for windows
-    "python.defaultInterpreterPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
+    // "python.defaultInterpreterPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
+    "python.pythonPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
 }

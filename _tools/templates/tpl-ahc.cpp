@@ -20,6 +20,9 @@ constexpr long double PI = M_PI;
 
 #include "common/input.hpp"
 #include "common/print.hpp"
+#include "common/listnd.hpp"
+#include "common/chmin.hpp"
+#include "common/chmax.hpp"
 #include "common/randrange.hpp"
 #include "common/Timer.hpp"
 #include "grid/constants/directions.hpp"
@@ -63,9 +66,11 @@ int main() {
 
         ld totalscore = 0;
         for (ll t : T) {
+            cout << "case #" << t << " start" << endl;
             ld score = solve(t);
             cout << "case #" << t << " ";
             debug(score);
+            cout << endl;
             totalscore += score;
         }
         debug(totalscore);

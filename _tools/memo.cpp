@@ -196,5 +196,9 @@ int main() {
     // // ポインタ変数からメンバにアクセス
     // print(np3->val);
 
+    // setのマージ
+    set<ll> se1, se2;
+    se1.insert(ALL(se2));
+
     return 0;
 }

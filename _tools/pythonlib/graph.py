@@ -458,7 +458,7 @@ class UnionFind:
             self.par[i] = x
         return self.par[x]
 
-    def union(self, x, y):
+    def merge(self, x, y):
         """ 併合 """
         x = self.find(x)
         y = self.find(y)
@@ -479,7 +479,7 @@ class UnionFind:
             if self.rank[x] == self.rank[y]:
                 self.rank[x] += 1
 
-    def is_same(self, x, y):
+    def same(self, x, y):
         """ 同じ集合に属するか判定 """
         return self.find(x) == self.find(y)
 
@@ -490,7 +490,7 @@ class UnionFind:
         else:
             """ 集合の数 """
             return self.grpcnt
-    
+
     def is_tree(self, x):
         """ 木かどうかの判定 """
         return self.tree[self.find(x)]
@@ -521,7 +521,7 @@ class WeightedUnionFind:
             self.par[x] = y
             return y
 
-    def union(self, x, y, w):
+    def merge(self, x, y, w):
         """ 併合 """
         rx = self.find(x)
         ry = self.find(y)
