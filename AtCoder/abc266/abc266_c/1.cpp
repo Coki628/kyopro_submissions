@@ -45,7 +45,7 @@ void solve() {
         auto p1 = P[i];
         auto p2 = P[(i+1)%4];
         auto p3 = P[(i+2)%4];
-        auto res = degrees(angle(p3, p2, p1));
+        auto res = angle(p3, p2, p1);
         if (res+EPS >= 180) {
             No();
             return;
