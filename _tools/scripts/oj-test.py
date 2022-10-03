@@ -62,4 +62,8 @@ if not os.path.exists('{0}/a.exe'.format(file_dirname)):
     print('build command failed...')
     exit()
 os.chdir(file_dirname)
-run('oj test', shell=True, encoding='utf-8')
+# AHC
+if os.path.exists('tools/in'):
+    run('a.exe', shell=True, encoding='utf-8')
+else:
+    run('oj test', shell=True, encoding='utf-8')

@@ -28,7 +28,8 @@ constexpr long double PI = M_PI;
 #include "grid/constants/directions.hpp"
 #include "string/zfill.hpp"
 
-ld solve(int testcase=-1) {
+auto solve(int testcase=-1) {
+    Timer timer;
     #ifdef __LOCAL
         // 入力ファイル読み込み
         string filename = "tools/in/" + zfill(tostr(testcase), 4) + ".txt";
@@ -42,8 +43,48 @@ ld solve(int testcase=-1) {
         }
     #endif
 
-    ld score = 0;
-    return score;
+    ld mxscore = 0;
+
+    #ifdef __LOCAL
+        ofs << "ans for local" << endl;
+    #else
+        print("ans for submit");
+    #endif
+
+    return mxscore;
+}
+
+// テスト番号指定
+vector<int> gen_cases1(const vector<int>& T) {
+    return T;
+}
+
+// sからn件実施
+vector<int> gen_cases2(int s, int n) {
+    vector<int> T;
+    rep(i, s, s+n) {
+        T.eb(i);
+    }
+    return T;
+}
+
+// [s,t)を実施
+vector<int> gen_cases3(int s, int t) {
+    vector<int> T;
+    rep(i, s, t) {
+        T.eb(i);
+    }
+    return T;
+}
+
+// [s,t)の範囲でランダムにn件実施
+vector<int> gen_cases4(int s, int t, int n) {
+    vector<int> T;
+    rep(i, s, t) {
+        T.eb(i);
+    }
+    shuffle(ALL(T), mt);
+    return vector<int>(T.begin(), T.begin()+n);;
 }
 
 int main() {
@@ -52,22 +93,19 @@ int main() {
     cout << fixed << setprecision(15);
 
     #ifdef __LOCAL
-        // 実施テスト番号
-        vector<ll> T = {
-            0,
-        };
-
-        // 0からn件実施
-        // int n = 10;
-        // vector<ll> T;
-        // rep(i, n) {
-        //     T.eb(i);
-        // }
+        // テスト番号指定
+        auto T = gen_cases1({0});
+        // sからn件実施
+        // auto T = gen_cases2(0, 20);
+        // [s,t)を実施
+        // auto T = gen_cases3(0, 100);
+        // [s,t)の範囲でランダムにn件実施
+        // auto T = gen_cases4(0, 100, 20);
 
         ld totalscore = 0;
-        for (ll t : T) {
+        for (int t : T) {
             cout << "case #" << t << " start" << endl;
-            ld score = solve(t);
+            auto score = solve(t);
             cout << "case #" << t << " ";
             debug(score);
             cout << endl;

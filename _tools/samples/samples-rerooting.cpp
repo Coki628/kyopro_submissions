@@ -9,16 +9,38 @@
 // ・辺の遷移で値を操作する。単位元は自由に設定できるDPの初期値と異なり、
 // 　本当に演算の単位元だと思った方がいい。+演算のやつで初期値1とかやるとバグる。
 // ・根側の状態が遷移に絡むようなものも、f1でうまくやればできるようだ。(ABC160f)
-// ・頂点属性は、葉側の頂点の属性を辺属性として割り当てる。(joisc2008day1-1,cf1324f)
+// ・頂点属性は、葉側の頂点の属性を辺属性として割り当てる。
+// 　つまり実装上は、rr.add_edge_bi(u, v, A[v], A[u]); みたいにする。(joisc2008day1-1,cf1324f,abc267_f)
 
 // aoj1595_uapc2016
-ll f1(ll a, ll b) {
+auto f1 = [](ll a, ll b) -> ll {
     return max(a, b);
-}
-ll f2(ll a, ll x) {
+};
+auto f2 = [](ll a, ll x) -> ll {
     return a+1;
-}
+};
 // chmax(dp[u], dp[v]+1);
+
+// abc267_f
+// dp[u] := 頂点uから一番遠い頂点への距離(重みなし)
+// mxv[u] := 頂点uから一番遠い頂点v
+auto f1 = [](pii a, pii b) -> pii {
+    if (a.first >= b.first) {
+        return a;
+    } else {
+        return b;
+    }
+};
+auto f2 = [](pii a, int v) -> pii {
+    if (a.first == 0) {
+        return {1, v};
+    } else {
+        return {a.first+1, a.second};
+    }
+};
+// if (chmax(dp[u], dp[v]+1)) {
+//     mxv[u] = mxv[v];
+// }
 
 // GRL_5_A,ABC222_f
 // dp[i] := 頂点iを根とした部分木の各頂点への距離の最大値と2番目
