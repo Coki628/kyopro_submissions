@@ -17,7 +17,7 @@ with open(path_r, encoding='utf-8') as f:
             has_comment_lines = True
             continue
         if has_comment_lines:
-            if lines[i-1].startswith('*/'):
+            if lines[i-1].startswith('*/') or lines[i-1].startswith(' */'):
                 has_comment_lines = False
             continue
         # oj-bundleの行表示を非表示
