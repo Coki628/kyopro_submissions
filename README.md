@@ -8,6 +8,16 @@
 - pip
 - pipenv
 
+### WSL環境でのPython準備(参考)
+```bash
+# pip導入
+sudo apt install python3-pip
+# pipenv導入
+pip install pipenv
+# PATH再読み込み
+source ~/.profile
+```
+
 ## 前提
 - 基本的にエディタはvscodeで見ている想定
 - このリポジトリと並列な階層に、[kyopro_library](https://github.com/Coki628/kyopro_library)をclone済である想定
