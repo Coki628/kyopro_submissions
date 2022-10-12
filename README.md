@@ -15,7 +15,7 @@
 ## セットアップ例
 ```bash
 # setup virtual env
-pipenv --python 3.6
+pipenv --python 3.8
 pipenv shell
 # install dependencies
 pip install -r requirements.txt
@@ -29,8 +29,8 @@ touch _dist/main.cpp
 ```
 
 ## 問題取得
-- `_tools/scripts/init/`にあるac.py等の各コンテストサイト用スクリプトは`oj download`をラップしてる。  
-直下で`python init.py 問題URL`のように実行すれば、各コンテストサイトに応じたスクリプトが呼び出される。  
+- `_tools/scripts/init/`にあるac.py等の各コンテストサイト用スクリプトは`oj download`をラップしてる。
+直下で`python init.py 問題URL`のように実行すれば、各コンテストサイトに応じたスクリプトが呼び出される。
 適切に階層を作成して、テストケースを取ってきて、テンプレート付cppファイルを生成して、vscodeのタブでそれを開く。
 
 ## 実行方法例
