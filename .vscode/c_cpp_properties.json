@@ -13,7 +13,7 @@
             "intelliSenseMode": "gcc-x64"
         },
         {
-            "name": "Win32",
+            "name": "Windows",
             "includePath": [
                 "${env:HOMEPATH}\\repos\\kyopro_library\\src",
                 "${env:HOMEPATH}\\repos\\kyopro_library\\ac-library"
