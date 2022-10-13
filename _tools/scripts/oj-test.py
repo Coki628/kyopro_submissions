@@ -22,15 +22,15 @@ if ext == 'py':
 run('python _tools/scripts/compresscpplib.py', shell=True, encoding='utf-8')
 # 提出用ファイル_dist/main.cppの生成
 run(
-    [
+    ' '.join([
         'oj-bundle',
         '{0}/{1}'.format(file_dirname, filename),
         # ライブラリのパス
         '-I', '{0}/repos/kyopro_library/dist'.format(home),
         # ACLのパス
-        '-I', '{0}/repos/ac-library'.format(home),
+        '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
         '>', '_dist/main.cpp'
-    ],
+    ]),
     shell=True,
     encoding='utf-8',
     # 出力出さない
@@ -46,6 +46,8 @@ run(
 # 落ちた時、前のやつ実行されると紛らわしいので消しておく
 if os.path.exists('{0}/a.exe'.format(file_dirname)):
     os.remove('{0}/a.exe'.format(file_dirname))
+# 拡張子をojと合わせる(winならexe、それ以外でout)
+ext = 'exe' if os.name == 'nt' else 'out'
 # 提出用ビルド
 run(
     [
@@ -53,17 +55,16 @@ run(
         'g++','-D=__LOCAL', '-O2', '-Wall', '-Wextra',
         # oj-bundle済の提出用ファイル
         '_dist/main.cpp', '-std=c++17',
-        '-o', '{0}/a.exe'.format(file_dirname),
+        '-o', '{0}/a.{1}'.format(file_dirname, ext),
     ],
-    shell=True,
     encoding='utf-8',
 )
-if not os.path.exists('{0}/a.exe'.format(file_dirname)):
+if not os.path.exists('{0}/a.{1}'.format(file_dirname, ext)):
     print('build command failed...')
     exit()
 os.chdir(file_dirname)
 # AHC
 if os.path.exists('tools/in'):
-    run('a.exe', shell=True, encoding='utf-8')
+    run('a.{0}'.format(ext), shell=True, encoding='utf-8')
 else:
     run('oj test', shell=True, encoding='utf-8')

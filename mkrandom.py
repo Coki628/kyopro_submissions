@@ -52,16 +52,18 @@ if num_of_testcases:
 # 落ちた時、前のやつ実行されると紛らわしいので消しておく
 if os.path.exists('{0}/a.exe'.format(os.getcwd())):
     os.remove('{0}/a.exe'.format(os.getcwd()))
+# 拡張子をojと合わせる(winならexe、それ以外でout)
+ext = 'exe' if os.name == 'nt' else 'out'
 # naive.cppのコンパイル
 run(
     [
         'g++', '-O2', '-Wall', '-Wextra',
         '{0}/naive.cpp'.format(os.getcwd()), '-std=c++17',
         '-I', '{0}/repos/kyopro_library/dist'.format(home),
-        '-I', '{0}/repos/ac-library'.format(home),
-        '-o', '{0}/a.exe'.format(os.getcwd()),
+        '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
+        '-o', '{0}/a.{1}'.format(os.getcwd(), ext),
     ],
-    shell=True, encoding='utf-8',
+    encoding='utf-8',
 )
 # naive.cppでランダムテストケースの解を生成
 print('oj generate-output')

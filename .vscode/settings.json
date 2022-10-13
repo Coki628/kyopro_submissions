@@ -1,8 +1,9 @@
 {
     "python.linting.pylintEnabled": false,
     // for ubuntu
-    // "python.pythonPath": "${env:HOMEPATH}/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
+    "python.defaultInterpreterPath": "${env:HOME}/.local/share/virtualenvs/kyopro_submissions-sE58OA1B/bin/python",
+    // "python.pythonPath": "${env:HOME}/.local/share/virtualenvs/kyopro-nR65H5la/bin/python",
     // for windows
-    "python.defaultInterpreterPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
+    // "python.defaultInterpreterPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
     // "python.pythonPath": "${env:HOMEPATH}\\.virtualenvs\\kyopro_submissions-LrqLoIn1\\Scripts\\python.exe",
 }

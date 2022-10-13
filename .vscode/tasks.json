@@ -2,6 +2,18 @@
     "version": "2.0.0",
     // 参考：https://stackoverflow.com/questions/49237792/vs-code-task-and-python-virtual-environment
     // タスク実行前にpython環境をセットする
+    "linux": {
+        "options": {
+            "shell": {
+                "executable": "bash",
+                "args": [
+                    "--init-file",
+                    "/home/coki/.local/share/virtualenvs/kyopro_submissions-sE58OA1B/bin/activate",
+                    "-ci",
+                ],
+            }
+        },
+    },
     "windows": {
         "options": {
             "shell": {

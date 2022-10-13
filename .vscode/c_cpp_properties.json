@@ -3,8 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${env:HOMEPATH}/repos/kyopro_library/src",
-                "${env:HOMEPATH}/repos/kyopro_library/ac-library"
+                "${env:HOME}/repos/kyopro_library/src",
+                "${env:HOME}/repos/kyopro_library/ac-library"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
