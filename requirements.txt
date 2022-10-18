@@ -26,3 +26,8 @@ soupsieve==2.3.2.post1
 toml==0.10.2
 urllib3==1.26.12
 zipp==3.9.0
+
+# インストール例
+# pip install online-judge-tools
+# pip install online-judge-template-generator
+# pip install online-judge-verify-helper
