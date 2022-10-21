@@ -43,11 +43,11 @@ run(
     shell=True,
     encoding='utf-8'
 )
-# 落ちた時、前のやつ実行されると紛らわしいので消しておく
-if os.path.exists('{0}/a.exe'.format(file_dirname)):
-    os.remove('{0}/a.exe'.format(file_dirname))
 # 拡張子をojと合わせる(winならexe、それ以外でout)
 ext = 'exe' if os.name == 'nt' else 'out'
+# 落ちた時、前のやつ実行されると紛らわしいので消しておく
+if os.path.exists('{0}/a.{1}'.format(file_dirname, ext)):
+    os.remove('{0}/a.{1}'.format(file_dirname, ext))
 # 提出用ビルド
 run(
     [

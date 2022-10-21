@@ -17,7 +17,10 @@ if os.path.exists('{0}/a.exe'.format(file_dirname)):
 # デバッグ用ビルド
 run(
     [
-        'g++', '-D=__DEBUG', '-g3', '-O0', '-D_GLIBCXX_DEBUG', '-Wall',
+        'g++', '-D=__DEBUG',
+        '-g3', '-O0', '-Wall',
+        '-fsanitize=address', '-g', '-fno-omit-frame-pointer',
+        '-D_GLIBCXX_DEBUG', '-D_GLIBCXX_DEBUG_PEDANTIC',
         # デバッグしたいのでoj-bundle前の元ファイル
         '{0}/{1}'.format(file_dirname, cpp_filename), '-std=c++17',
         # ライブラリのパス(こちらもdistではなくsrcから)
@@ -28,3 +31,7 @@ run(
     ],
     encoding='utf-8',
 )
+
+# 参考：https://xn--kst.jp/blog/2019/08/29/cpp-comp/#%E3%82%B3%E3%83%B3%E3%83%91%E3%82%A4%E3%83%AB%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A7%E5%A2%83%E7%95%8C%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF
+# 　　　https://codeforces.com/blog/entry/15547#comment-205104
+# '-Wall', '-Wextra', '-pedantic', '-O2', '-Wshadow', '-Wformat=2', '-Wfloat-equal', '-Wconversion', '-Wlogical-op', '-Wshift-overflow=2', '-Wduplicated-cond', '-Wcast-qual', '-Wcast-align', '-D_GLIBCXX_DEBUG', '-D_GLIBCXX_DEBUG_PEDANTIC', '-D_FORTIFY_SOURCE=2', '-fsanitize=address', '-fsanitize=undefined', '-fno-sanitize-recover', '-fstack-protector',

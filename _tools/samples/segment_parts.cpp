@@ -44,7 +44,7 @@ auto f = [](Node a, Node b) -> Node {
 const Node T = {0, 0, 0, 0};
 
 // 区間行列積取得(これは4*4)
-// 参考：cf_edu_seg1_4b, abc_256_f
+// 参考：cf_edu_seg1_4b, abc_256_f, cf1743F
 struct Node {
     // 2次元arrayの初期化は{}をひとつ多く括る
     array<array<mint, 4>, 4> mat{{
@@ -555,6 +555,33 @@ auto g = [](ll a, ll b) -> ll { return min(a, b); };
 auto h = [](ll a, ll b) -> ll { return min(a, b); };
 const ll T = INF;
 const ll E = INF;
+
+// 区間行列更新・区間行列積取得(未verify)
+struct Node {
+    // 2次元arrayの初期化は{}をひとつ多く括る
+    array<array<mint, 2>, 2> mat{{
+        {1, 0},
+        {0, 1},
+    }};
+    Node(const array<array<mint, 2>, 2> &mat) : mat(mat) {};
+    Node() {}
+    bool operator==(const Node &f) const {
+        return mat == f.mat;
+    }
+    operator array<array<mint, 2>, 2>() const { return mat; }
+};
+auto f = [](const Node &a, const Node &b) -> Node {
+    // マージ方向をb,aにする
+    return mat_dot(b.mat, a.mat);
+};
+auto g = [](Node a, Node b) -> Node { return b; };
+auto h = [](Node a, Node b) -> Node { return b; };
+const Node T = Node();
+// 要素が取りうる範囲外の値にする
+const Node E = Node({{
+    {-1, -1},
+    {-1, -1},
+}});
 
 // Beatsでできる。
 // 区間chgcd・区間和取得 (yuki880)
