@@ -49,11 +49,11 @@ if num_of_testcases:
         'oj generate-input "python generate.py" {0}'.format(num_of_testcases),
         shell=True, encoding='utf-8'
     )
-# 落ちた時、前のやつ実行されると紛らわしいので消しておく
-if os.path.exists('{0}/a.exe'.format(os.getcwd())):
-    os.remove('{0}/a.exe'.format(os.getcwd()))
 # 拡張子をojと合わせる(winならexe、それ以外でout)
 ext = 'exe' if os.name == 'nt' else 'out'
+# 落ちた時、前のやつ実行されると紛らわしいので消しておく
+if os.path.exists('{0}/a.{1}'.format(os.getcwd(), ext)):
+    os.remove('{0}/a.{1}'.format(os.getcwd(), ext))
 # naive.cppのコンパイル
 run(
     [

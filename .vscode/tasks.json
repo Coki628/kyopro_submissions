@@ -8,7 +8,7 @@
                 "executable": "bash",
                 "args": [
                     "--init-file",
-                    "/home/coki/.local/share/virtualenvs/kyopro_submissions-sE58OA1B/bin/activate",
+                    "${env:HOME}/.local/share/virtualenvs/kyopro_submissions-sE58OA1B/bin/activate",
                     "-ci",
                 ],
             }

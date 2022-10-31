@@ -65,6 +65,9 @@ if not os.path.exists('{0}/a.{1}'.format(file_dirname, ext)):
 os.chdir(file_dirname)
 # AHC
 if os.path.exists('tools/in'):
-    run('a.{0}'.format(ext), shell=True, encoding='utf-8')
+    if ext == 'exe':
+        run('a.{0}'.format(ext), shell=True, encoding='utf-8')
+    else:
+        run('./a.{0}'.format(ext), shell=True, encoding='utf-8')
 else:
     run('oj test', shell=True, encoding='utf-8')

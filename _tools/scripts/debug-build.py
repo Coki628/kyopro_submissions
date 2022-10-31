@@ -11,6 +11,8 @@ home = os.path.expanduser('~')
 file_dirname = args[1]
 cpp_filename = args[2]
 
+# 拡張子をojと合わせる(winならexe、それ以外でout)
+ext = 'exe' if os.name == 'nt' else 'out'
 # 落ちた時、前のやつ実行されると紛らわしいので消しておく
 if os.path.exists('{0}/a.exe'.format(file_dirname)):
     os.remove('{0}/a.exe'.format(file_dirname))
@@ -19,7 +21,7 @@ run(
     [
         'g++', '-D=__DEBUG',
         '-g3', '-O0', '-Wall',
-        '-fsanitize=address', '-g', '-fno-omit-frame-pointer',
+        '-fsanitize=address', '-fno-omit-frame-pointer',
         '-D_GLIBCXX_DEBUG', '-D_GLIBCXX_DEBUG_PEDANTIC',
         # デバッグしたいのでoj-bundle前の元ファイル
         '{0}/{1}'.format(file_dirname, cpp_filename), '-std=c++17',
@@ -27,7 +29,7 @@ run(
         '-I', '{0}/repos/kyopro_library/src'.format(home),
         # ACLのパス
         '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
-        '-o', '{0}/a.exe'.format(file_dirname),
+        '-o', '{0}/a.{1}'.format(file_dirname, ext),
     ],
     encoding='utf-8',
 )
