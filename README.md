@@ -47,3 +47,15 @@ touch _dist/main.cpp
 - F5でデバッグ実行
 - Ctrl+Shift+Bで提出用ファイル生成+oj testが動く。  
 oj-bundleでライブラリ展開済のコードが_dist/main.cppに生成されるので、これをコピペして提出。
+
+## bitsのプリコンパイル
+
+参考：https://qiita.com/DaikiSuyama/items/e502e09a1090f4a2cee3  
+　　　https://oliet.hatenablog.jp/entry/2019/05/28/162324#f-a2efc8d8  
+自分の場合はあんま変化なかったけど、一応覚え書き。
+```bash
+cd /usr/include/x86_64-linux-gnu/c++/9/bits/
+sudo g++ stdc++.h -std=c++17
+# stdc++.h.gchが生成されていればOK
+ls
+```
