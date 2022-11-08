@@ -1,12 +1,16 @@
 /*
 ・なんとか自力AC！
-・高速素因数分解、ビット全探索、包除原理
+・素因数分解、ビット全探索、包除原理
 ・まず降順ソートじゃないやつは弾く。
 　で、2つ目以降、変化したGCD=A[i]で素因数分解して、直前より減った素因数に注目。
 　この位置の要素にはこれらが(このA[i]より多くは)使えないので、
 　それに該当する数をM以下のA[i]の倍数から引く。
 　このままだとor条件でつらいので、これらの素因数でビット全探索して、
 　立ってるビットの偶奇で包除するやつをやる。
+・Nが20万でA[i]が10^9あったから高速素因数分解使ってたんだけど、
+　普通ので試してみても普通に通った…。考えてみると、
+　累積GCDが成り立つ置き方じゃないと無理だから、
+　10^9から1ずつ減らしてって全部とかはできないんだね…。
 */
 
 // #pragma GCC target("avx2")
@@ -30,8 +34,6 @@ constexpr long double PI = M_PI;
 using mint = ModInt<MOD>;
 #include "template.hpp"
 
-#include "numbers/FastPrimeFactorization.hpp"
-
 void solve() {
     ll N, M;
     cin >> N >> M;
@@ -45,7 +47,7 @@ void solve() {
 
     mint ans = 1;
     HashMap<ll, ll> C;
-    for (auto [k, v] : FastPrimeFactorization::factorize(A[0])) {
+    for (auto [k, v] : factorize(A[0])) {
         C[k] = v;
     }
     rep(i, 1, N) {
@@ -54,7 +56,7 @@ void solve() {
             ans *= M / A[i];
         } else {
             HashMap<ll, ll> nxt;
-            for (auto [k, v] : FastPrimeFactorization::factorize(A[i])) {
+            for (auto [k, v] : factorize(A[i])) {
                 // assert(v <= C[k]);
                 if (v > C[k]) {
                     print(0);
