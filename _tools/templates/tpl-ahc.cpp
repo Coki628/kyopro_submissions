@@ -27,6 +27,7 @@ constexpr long double PI = M_PI;
 #include "common/Timer.hpp"
 #include "grid/constants/directions.hpp"
 #include "string/zfill.hpp"
+#include "string/number_format.hpp"
 
 auto solve(int testcase=-1) {
     Timer timer;
@@ -43,7 +44,7 @@ auto solve(int testcase=-1) {
         }
     #endif
 
-    ld mxscore = 0;
+    ll mxscore = 0;
 
     #ifdef __LOCAL
         ofs << "ans for local" << endl;
@@ -84,7 +85,7 @@ vector<int> gen_cases4(int s, int t, int n) {
         T.eb(i);
     }
     shuffle(ALL(T), mt);
-    return vector<int>(T.begin(), T.begin()+n);;
+    return vector<int>(T.begin(), T.begin()+n);
 }
 
 int main() {
@@ -102,16 +103,17 @@ int main() {
         // [s,t)の範囲でランダムにn件実施
         // auto T = gen_cases4(0, 100, 20);
 
-        ld totalscore = 0;
+        ll totalscore = 0;
         for (int t : T) {
             cout << "case #" << t << " start" << endl;
             auto score = solve(t);
-            cout << "case #" << t << " ";
-            debug(score);
+            cout << "case #" << t << " score: ";
+            print(number_format(score));
             cout << endl;
             totalscore += score;
         }
-        debug(totalscore);
+        cout << "total score: ";
+        print(number_format(totalscore));
     #else
         solve();
     #endif
