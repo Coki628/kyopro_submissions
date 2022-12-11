@@ -16,5 +16,6 @@
     // SortIncludes: #includeの順序ソートなし
     // AllowShortFunctionsOnASingleLine: 短い関数を1行に整形なし(repマクロもここに入る)
     // ReflowComments: コメント内改行なし
-    "C_Cpp.clang_format_style": "{ BreakBeforeBraces: Attach, IndentWidth: 4, SortIncludes: Never, AllowShortFunctionsOnASingleLine: None, ReflowComments: false }",
+    // AccessModifierOffset: アクセス修飾子がデフォルトでインデントされるので戻す
+    "C_Cpp.clang_format_style": "{ BreakBeforeBraces: Attach, IndentWidth: 4, SortIncludes: Never, AllowShortFunctionsOnASingleLine: None, ReflowComments: false, AccessModifierOffset: -4 }",
 }
