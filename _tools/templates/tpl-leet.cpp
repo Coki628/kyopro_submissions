@@ -25,10 +25,10 @@ using mint = ModInt<MOD>;
 // put Solution here
 
 #ifdef __LOCAL
-    int main() {
-        // Solution sol;
-        // auto res = sol.funcName();
-        // print(res);
-        return 0;
-    }
+int main() {
+    // Solution sol;
+    // auto res = sol.funcName();
+    // print(res);
+    return 0;
+}
 #endif

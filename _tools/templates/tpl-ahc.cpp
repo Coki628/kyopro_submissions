@@ -29,41 +29,41 @@ constexpr long double PI = M_PI;
 #include "string/zfill.hpp"
 #include "string/number_format.hpp"
 
-auto solve(int testcase=-1) {
+auto solve(int testcase = -1) {
     Timer timer;
-    #ifdef __LOCAL
-        // 入力ファイル読み込み
-        string filename = "tools/in/" + zfill(tostr(testcase), 4) + ".txt";
-        freopen(filename.c_str(), "r", stdin);
-        // 出力ファイル準備
-        filename = "tools/out/" + zfill(tostr(testcase), 4) + ".txt";
-        ofstream ofs(filename.c_str());
-        if (!ofs) {
-            print("error, please check if 'tools/out/' dir exists");
-            exit(0);
-        }
-    #endif
+#ifdef __LOCAL
+    // 入力ファイル読み込み
+    string filename = "tools/in/" + zfill(tostr(testcase), 4) + ".txt";
+    freopen(filename.c_str(), "r", stdin);
+    // 出力ファイル準備
+    filename = "tools/out/" + zfill(tostr(testcase), 4) + ".txt";
+    ofstream ofs(filename.c_str());
+    if (!ofs) {
+        print("error, please check if 'tools/out/' dir exists");
+        exit(0);
+    }
+#endif
 
     ll mxscore = 0;
 
-    #ifdef __LOCAL
-        ofs << "ans for local" << endl;
-    #else
-        print("ans for submit");
-    #endif
+#ifdef __LOCAL
+    ofs << "ans for local" << endl;
+#else
+    print("ans for submit");
+#endif
 
     return mxscore;
 }
 
 // テスト番号指定
-vector<int> gen_cases1(const vector<int>& T) {
+vector<int> gen_cases1(const vector<int> &T) {
     return T;
 }
 
 // sからn件実施
 vector<int> gen_cases2(int s, int n) {
     vector<int> T;
-    rep(i, s, s+n) {
+    rep(i, s, s + n) {
         T.eb(i);
     }
     return T;
@@ -85,7 +85,7 @@ vector<int> gen_cases4(int s, int t, int n) {
         T.eb(i);
     }
     shuffle(ALL(T), mt);
-    return vector<int>(T.begin(), T.begin()+n);
+    return vector<int>(T.begin(), T.begin() + n);
 }
 
 int main() {
@@ -93,30 +93,30 @@ int main() {
     ios::sync_with_stdio(false);
     cout << fixed << setprecision(15);
 
-    #ifdef __LOCAL
-        // テスト番号指定
-        auto T = gen_cases1({0});
-        // sからn件実施
-        // auto T = gen_cases2(0, 20);
-        // [s,t)を実施
-        // auto T = gen_cases3(0, 100);
-        // [s,t)の範囲でランダムにn件実施
-        // auto T = gen_cases4(0, 100, 20);
+#ifdef __LOCAL
+    // テスト番号指定
+    auto T = gen_cases1({0});
+    // sからn件実施
+    // auto T = gen_cases2(0, 20);
+    // [s,t)を実施
+    // auto T = gen_cases3(0, 100);
+    // [s,t)の範囲でランダムにn件実施
+    // auto T = gen_cases4(0, 100, 20);
 
-        ll totalscore = 0;
-        for (int t : T) {
-            cout << "case #" << t << " start" << endl;
-            auto score = solve(t);
-            cout << "case #" << t << " score: ";
-            print(number_format(score));
-            cout << endl;
-            totalscore += score;
-        }
-        cout << "total score: ";
-        print(number_format(totalscore));
-    #else
-        solve();
-    #endif
+    ll totalscore = 0;
+    for (int t : T) {
+        cout << "case #" << t << " start" << endl;
+        auto score = solve(t);
+        cout << "case #" << t << " score: ";
+        print(number_format(score));
+        cout << endl;
+        totalscore += score;
+    }
+    cout << "total score: ";
+    print(number_format(totalscore));
+#else
+    solve();
+#endif
 
     return 0;
 }
