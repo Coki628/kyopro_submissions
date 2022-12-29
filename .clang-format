@@ -1,0 +1,22 @@
+# C++のフォーマッター設定
+# 参考：https://gist.github.com/9sako6/458def885387e8dcd2f0f2742a1dc3e4
+# 　　　https://yasuharu519.hatenablog.com/entry/2015/12/13/210825
+# 　　　https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# ・elifマクロが正しく認識しないので使えなくなる。
+# ・vscode上での適用はShift-Alt-F(Windows)
+
+# ブロック開始時括弧の改行なし
+BreakBeforeBraces: Attach
+IndentWidth: 4
+# #includeの順序ソートなし
+SortIncludes: Never
+# 短い関数を1行に整形なし(repマクロもここに入る)
+AllowShortFunctionsOnASingleLine: None
+# コメント内改行なし
+ReflowComments: false
+# アクセス修飾子がデフォルトでインデントされるので戻す
+AccessModifierOffset: -4
+# 括弧なし1行if文を許容
+AllowShortIfStatementsOnASingleLine: true
+# 括弧なし1行ループを許容
+AllowShortLoopsOnASingleLine: true
