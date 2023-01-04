@@ -46,7 +46,7 @@ void solve() {
         }
         return true;
     };
-    
+
     rep(i, N) {
         if (C[i] == -1) {
             if (!dfs(dfs, i, 0)) {
