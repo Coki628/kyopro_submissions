@@ -1,11 +1,8 @@
 /*
-・なんとか時間内自力AC！
-・周囲の頂点から受けるコストみたいのは前計算しておく。
-　最大値の最小化でにぶたんする。
-　内側のシミュパートは、コストx以下の頂点を選んで消して、
-　その影響を隣接する頂点たちに与えて、みたいにする。
-　このコストの動的変化をsetでやったらTLEで、終了近くなってセグ木で書き直して無事AC…。
-　下界で0取れてなくてWAなの気付くのに結構かかったのも良くなかった。
+参考：https://atcoder.jp/contests/abc267/editorial/4729
+・公式解説読んだ。
+・最大値の最小化、二分探索、キューで貪欲
+・セグ木要らないじゃん、キューでいいじゃん…。となった。
 */
 
 #pragma GCC target("avx2")
@@ -47,22 +44,27 @@ void solve() {
     
     ll mx = max(cost);
     ll res = bisearch_min(-1, mx, [&](ll x) {
-        auto seg = get_segment_tree(cost, [](ll a, ll b) { return min(a, b); }, INF);
-        vector<bool> removed(N);
-        rep(_, N) {
-            ll u = seg.find_first(0, [&](ll a) { return a <= x; });
-            // もう取れない
-            if (u == -1) {
-                return false;
-            }
-            seg.update(u, INF);
-            removed[u] = true;
-            for (auto v : nodes[u]) {
-                if (removed[v]) continue;
-                seg.update(v, seg[v]-A[u]);
+        vector<int> removed(N);
+        auto curcost = cost;
+        queue<ll> que;
+        rep(u, N) {
+            if (curcost[u] <= x) {
+                que.push(u);
+                removed[u] = true;
             }
         }
-        return true;
+        while (que.size()) {
+            ll u = que.front(); que.pop();
+            for (auto v : nodes[u]) {
+                if (removed[v]) continue;
+                curcost[v] -= A[u];
+                if (curcost[v] <= x) {
+                    que.push(v);
+                    removed[v] = true;
+                }
+            }
+        }
+        return sum(removed) == N;
     });
     print(res);
 }
