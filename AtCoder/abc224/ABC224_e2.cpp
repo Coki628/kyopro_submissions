@@ -167,7 +167,9 @@ void solve() {
         RC.eb(r, c);
     }
 
+    // dp[i] := マスiからの操作回数の最大値
     vector<ll> rmx(H, -1), cmx(W, -1), dp(N);
+    // 逆操作で見ていく
     for (auto& [_, li] : A) {
         vector<tuple<ll, ll, ll>> tmp;
         for (auto i : li) {
