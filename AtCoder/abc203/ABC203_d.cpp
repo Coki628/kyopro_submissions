@@ -1,17 +1,5 @@
 /*
-参考：https://twitter.com/kyopro_dekomori/status/1393562300083146752
-　　　https://atcoder.jp/contests/abc201/editorial
-・自力ならず。。
-・木DP、数え上げ、XORの性質
-・XORはビット毎で考える、は、やった。でも解けなかった。。
-・ビット毎に見ると、辺の重みは0,1になって、コスト奇数のパスを
-　数え上げる感じになる。頂点を0,1に塗り分けるイメージにすると、
-　コスト1の辺を通る時に0,1が切り替わると思えばよく、
-　その塗り分けで「0になった頂点数*1になった頂点数」が、
-　該当するパス数になる。これをビット毎にやって合計すれば答え。
-・実装としては、木DPでコスト1のパスを通るところで0,1を入れ替えるようにした。
-・ビット毎で20万頂点の木に60回DFSをやるとさすがに遅くて、
-　ACだけど1.997秒。(制約3秒)
+・これは自力TLE。。
 */
 
 // #pragma GCC target("avx2")
@@ -148,37 +136,202 @@ template<int mod> struct ModInt {
 };
 using mint = ModInt<MOD>;
 
-void solve() {
-    ll N;
-    cin >> N;
-    vvpll nodes(N);
-    rep(i, N-1) {
-        ll u, v, c;
-        cin >> u >> v >> c;
-        u--; v--;
-        nodes[u].pb({v, c});
-        nodes[v].pb({u, c});
+template<typename T>
+struct BIT {
+
+    int sz;
+    vector<T> tree;
+
+    BIT(int n) {
+        // 0-indexed
+        n++;
+        sz = 1;
+        while (sz < n) {
+            sz *= 2;
+        }
+        tree.resize(sz);
     }
 
-    const ll MXLOG = 60;
-    mint ans = 0;
-    rep(k, MXLOG) {
-        vector<mint> dp0(N, 1), dp1(N);
-        auto dfs = [&](auto&& f, ll u, ll prv) -> void {
-            for (auto [v, c] : nodes[u]) {
-                if (v == prv) continue;
-                f(f, v, u);
-                if (c>>k & 1) {
-                    dp0[u] += dp1[v];
-                    dp1[u] += dp0[v];
-                } else {
-                    dp0[u] += dp0[v];
-                    dp1[u] += dp1[v];           
+    // [0, i]を合計する
+    T sum(int i) {
+        T s = 0;
+        i++;
+        while (i > 0) {
+            s += tree[i-1];
+            i -= i & -i;
+        }
+        return s;
+    }
+
+    void add(int i, T x) {
+        i++;
+        while (i <= sz) {
+            tree[i-1] += x;
+            i += i & -i;
+        }
+    }
+
+    // 区間和の取得 [l, r)
+    T query(int l, int r) {
+        return sum(r-1) - sum(l-1);
+    }
+
+    T get(int i) {
+        return query(i, i+1);
+    }
+
+    void update(int i, T x) {
+        add(i, x - get(i));
+    }
+
+    T operator[](int i) {
+        return query(i, i+1);
+    }
+
+    // 区間[l, r]を左から右に向かってx番目の値がある位置
+    ll bisearch_fore(int l, int r, ll x) {
+        ll l_sm = sum(l-1);
+        int ok = r + 1;
+        int ng = l - 1;
+        while (ng+1 < ok) {
+            int mid = (ok+ng) / 2;
+            if (sum(mid) - l_sm >= x) {
+                ok = mid;
+            } else {
+                ng = mid;
+            }
+        }
+        if (ok != r+1) {
+            return ok;
+        } else {
+            return -1;
+        }
+    }
+
+    // 区間[l, r]を右から左に向かってx番目の値がある位置
+    ll bisearch_back(int l, int r, ll x) {
+        ll r_sm = sum(r);
+        int ok = l - 1;
+        int ng = r + 1;
+        while (ok+1 < ng) {
+            int mid = (ok+ng) / 2;
+            if (r_sm - sum(mid-1) >= x) {
+                ok = mid;
+            } else {
+                ng = mid;
+            }
+        }
+        if (ok != l - 1) {
+            return ok;
+        } else {
+            return -1;
+        }
+    }
+};
+
+// 座標圧縮(二分探索ベース)
+template<typename T>
+struct Compress {
+
+    int N;
+    vector<T> dat;
+
+    Compress(vector<T> A) {
+        sort(A.begin(), A.end());
+        A.erase(unique(A.begin(), A.end()), A.end());
+        N = A.size();
+        dat = A;
+    }
+
+    int zip(T x) {
+        return bisect_left(dat, x);
+    }
+
+    T unzip(int x) {
+        return dat[x];
+    }
+
+    int operator[](T x) {
+        return zip(x);
+    }
+
+    int size() {
+        return dat.size();
+    }
+
+    vector<T> zip(vector<T> &A) {
+        int M = A.size();
+        vector<T> res(M);
+        rep(i, M) res[i] = zip(A[i]);
+        return res;
+    }
+};
+
+void solve() {
+    ll N, K;
+    cin >> N >> K;
+    auto grid = list2d(N, N, 0LL);
+    vector<ll> V;
+    rep(i, N) {
+        grid[i] = LIST(N);
+        rep(j, N) {
+            V.pb(grid[i][j]);
+        }
+    }
+
+    Compress<ll> cp(V);
+    ll M = cp.size();
+    rep(i, N) {
+        rep(j, N) {
+            grid[i][j] = cp[grid[i][j]];
+        }
+    }
+
+    BIT<ll> bit(M);
+    rep(i, K) {
+        rep(j, K) {
+            bit.add(grid[i][j], 1);
+        }
+    }
+
+    ll ans = INF;
+    ll mid = K*K/2+1;
+    rep(i, N-K+1) {
+        if (i%2 == 0) {
+            rep(j, N-K+1) {
+                ll m = bit.bisearch_back(0, M, mid);
+                chmin(ans, cp.unzip(m));
+                if (j+K < N) {
+                    rep(k, i, i+K) {
+                        bit.add(grid[k][j], -1);
+                        bit.add(grid[k][j+K], 1);
+                    }
                 }
             }
-        };
-        dfs(dfs, 0, -1);
-        ans += dp0[0]*dp1[0]*(1LL<<k);
+            if (i+K < N) {
+                rep(j, N-K, N) {
+                    bit.add(grid[i][j], -1);
+                    bit.add(grid[i+K][j], 1);
+                }
+            }
+        } else {
+            rep(j, N-K, -1, -1) {
+                ll m = bit.bisearch_back(0, M, mid);
+                chmin(ans, cp.unzip(m));
+                if (j) {
+                    rep(k, i, i+K) {
+                        bit.add(grid[k][j+K-1], -1);
+                        bit.add(grid[k][j-1], 1);
+                    }
+                }
+            }
+            if (i+K < N) {
+                rep(j, K) {
+                    bit.add(grid[i][j], -1);
+                    bit.add(grid[i+K][j], 1);
+                }
+            }
+        }
     }
     print(ans);
 }
