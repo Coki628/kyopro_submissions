@@ -7,6 +7,7 @@
 
 # ブロック開始時括弧の改行なし
 BreakBeforeBraces: Attach
+
 IndentWidth: 4
 # #includeの順序ソートなし
 SortIncludes: Never
@@ -24,3 +25,5 @@ AllowShortLoopsOnASingleLine: true
 AlignAfterOpenBracket: BlockIndent
 # IF文括弧内の改行はこれも付けたら余計なことしなくなってくれた(これだけでもダメ)
 ColumnLimit: 0
+
+SpaceAfterTemplateKeyword: false
