@@ -1,0 +1,7 @@
+#! /bin/bash
+
+URL=$1
+
+# pipenv shell
+
+python a.py $URL

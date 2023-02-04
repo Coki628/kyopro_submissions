@@ -1,6 +1,6 @@
 # 入口を1つにまとめた。
 # 実行方法
-# python init.py 問題URL (+他に引数があれば付ける)
+# python a.py 問題URL (+他に引数があれば付ける)
 
 import sys
 import os
