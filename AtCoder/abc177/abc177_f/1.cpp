@@ -184,6 +184,7 @@ void solve() {
     map<ll, ll> mp;
     multiset<ll> ms;
     rep(w, 1, W+1) {
+        // mp[現在位置(右端)] := 開始位置(左端)の最大値
         mp[w] = w;
         ms.insert(0);
     }
@@ -194,6 +195,7 @@ void solve() {
         cin >> a >> b;
         
         // b以下で最大の右端がa以上の間、消す
+        // (壁にぶつかって下に行けなくなったので壁がない所(b+1)まで動かして状態をまとめる)
         while (prev(mp.upper_bound(b))->first >= a) {
             auto p = *prev(mp.upper_bound(b));
             mp.erase(p.first);
