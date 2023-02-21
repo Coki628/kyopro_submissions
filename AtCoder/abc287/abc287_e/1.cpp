@@ -35,7 +35,6 @@ void solve() {
     vector<pair<string, int>> S(N);
     RollingHash rh;
     vector<vector<uint64_t>> table(N);
-    ll len = 0;
     rep(i, N) {
         cin >> S[i].first;
         S[i].second = i;
