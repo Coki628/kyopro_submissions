@@ -22,6 +22,7 @@ os.makedirs(problem_name, exist_ok=True)
 os.chdir('{0}/{1}'.format(os.getcwd(), problem_name))
 os.makedirs('tools', exist_ok=True)
 os.makedirs('tools/out', exist_ok=True)
+os.makedirs('dist', exist_ok=True)
 if (os.path.exists('1.cpp')):
     print('1.ccp already exists')
 else:

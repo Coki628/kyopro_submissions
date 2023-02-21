@@ -32,14 +32,19 @@ constexpr long double PI = M_PI;
 auto solve(int testcase = -1) {
     Timer timer;
 #ifdef __LOCAL
+#ifdef __DEBUG
+    string basedir = "tools/";
+#else
+    string basedir = "../tools/";
+#endif
     // 入力ファイル読み込み
-    string filename = "tools/in/" + zfill(tostr(testcase), 4) + ".txt";
+    string filename = basedir + "in/" + zfill(tostr(testcase), 4) + ".txt";
     freopen(filename.c_str(), "r", stdin);
     // 出力ファイル準備
-    filename = "tools/out/" + zfill(tostr(testcase), 4) + ".txt";
+    filename = basedir + "out/" + zfill(tostr(testcase), 4) + ".txt";
     ofstream ofs(filename.c_str());
     if (!ofs) {
-        print("error, please check if 'tools/out/' dir exists");
+        print("error, please check if '" + basedir + "out/' dir exists");
         exit(0);
     }
 #endif
