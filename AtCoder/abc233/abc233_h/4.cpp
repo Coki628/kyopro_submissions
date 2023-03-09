@@ -1,16 +1,6 @@
 /*
-参考：https://www.youtube.com/watch?v=nAnN5fBjEqA&list=PLLeJZg4opYKZMA68O5LKWyNEJEulInKAi&index=3
-・ABC高難度埋め
-・45度回転、WM、座圧、二分探索
-・まず、マンハッタン距離を45度回転させる。解説動画の図ですごく納得したんだけど、
-　45度回転するとマンハッタン距離の範囲が、ひし形から長方形になるので、
-　データ構造でとても管理しやすくなるんだね。今回はある距離以下の点の個数が数えられれば
-　にぶたんでK番目が分かるから、これを長方形領域にプロットできていれば、WMのrange_freqが使える。
-　そのままだと負数が使えなかったり、X座標が同じ所に2つの点を置けなかったりするから、
-　そこは座圧でよしなにする。(領域探索でもこれやったけど、ここがまあまあ面倒)
-　これで適切に準備ができていれば、クエリ先読みも不要で直接全部答えられる。
-　計算量はにぶたん、range_freq、座圧と3つのlogが乗ってるんだけど、
-　それでも2秒切れて、AC1.52秒だった。(制約7秒)
+・abc283_fで座圧パートのlogが外せたので、こっちでもやってみた。
+　やっぱり結構速くなって、AC1.52秒→0.88秒。
 */
 
 // #pragma GCC target("avx2")
@@ -64,6 +54,14 @@ void solve() {
     }
     WaveletMatrix<int> wm(wmtmp);
 
+    // 下処理で座圧のlogを外す
+    vector<int> mpu(400007), mpv(400007);
+    int offset = 200000;
+    rep(i, -offset, 200007) {
+        mpu[i + offset] = cpu[{i, -MOD}];
+        mpv[i + offset] = cpv[i];
+    }
+
     int Q;
     cin >> Q;
     rep(i, Q) {
@@ -73,11 +71,11 @@ void solve() {
         int v = x + y;
         int res = bisearch_min(-1, 200007, [&](int m) {
             // (u,v)を中心とした1辺が2mの正方形領域の中にある点の個数
-            int lu = u - m;
-            int ru = u + m + 1;
-            int lv = v - m;
-            int rv = v + m + 1;
-            int cnt = wm.range_freq(cpu[{lu, -MOD}], cpu[{ru, -MOD}], cpv[lv], cpv[rv]);
+            int lu = max(u - m + offset, 0);
+            int ru = min(u + m + 1 + offset, 400006);
+            int lv = max(v - m + offset, 0);
+            int rv = min(v + m + 1 + offset, 400006);
+            int cnt = wm.range_freq(mpu[lu], mpu[ru], mpv[lv], mpv[rv]);
             return cnt >= k;
         });
         print(res);
