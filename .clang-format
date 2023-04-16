@@ -9,21 +9,33 @@
 BreakBeforeBraces: Attach
 
 IndentWidth: 4
+
 # #includeの順序ソートなし
 SortIncludes: Never
+
 # 短い関数を1行に整形なし(repマクロもここに入る)
 AllowShortFunctionsOnASingleLine: None
+
 # コメント内改行なし
 ReflowComments: false
+
 # アクセス修飾子がデフォルトでインデントされるので戻す
 AccessModifierOffset: -4
+
 # 括弧なし1行if文を許容
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+
 # 括弧なし1行ループを許容
 AllowShortLoopsOnASingleLine: true
+
 # 引数が長い時の改行方法(これだけだとIF文の括弧とかには効かない)
 AlignAfterOpenBracket: BlockIndent
+
 # IF文括弧内の改行はこれも付けたら余計なことしなくなってくれた(これだけでもダメ)
-ColumnLimit: 0
+# ※PackConstructorInitializersが効かなくなるので辞めた。
+# ColumnLimit: 0
 
 SpaceAfterTemplateKeyword: false
+
+# コンストラクタ初期化時のコロン以降の挙動
+PackConstructorInitializers: CurrentLine
