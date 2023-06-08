@@ -80,10 +80,10 @@ void solve() {
             bool ok = true;
             // ソート済か
             if (seg.query(l + 1, r) >= 0) {
-                while (que.front().second == 0) {
+                while (que.size() and que.front().second == 0) {
                     que.pop_front();
                 }
-                while (que.back().second == 0) {
+                while (que.size() and que.back().second == 0) {
                     que.pop_back();
                 }
                 ll n = que.size();
