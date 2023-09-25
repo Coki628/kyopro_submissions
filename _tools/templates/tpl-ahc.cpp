@@ -11,8 +11,8 @@
 
 constexpr long long INF = 1e18;
 // constexpr long long INF = LONG_LONG_MAX;
-constexpr int MOD = 1000000007;
-// constexpr int MOD = 998244353;
+// constexpr int MOD = 1000000007;
+constexpr int MOD = 998244353;
 constexpr long double EPS = 1e-10;
 constexpr long double PI = M_PI;
 
