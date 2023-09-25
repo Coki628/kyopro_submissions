@@ -19,7 +19,7 @@ problem_name = url.split('/')[-1]
 project_root = os.getcwd()
 
 # AHCなら別処理
-if problem_name.startswith('ahc'):
+if contest_name.startswith('ahc'):
     args[0] = '{0}/_tools/scripts/init/ahc.py'.format(project_root)
     run('python {0}'.format(' '.join(args)), shell=True, encoding='utf-8')
     exit()
