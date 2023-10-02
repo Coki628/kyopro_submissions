@@ -18,6 +18,7 @@ constexpr long double EPS = 1e-10;
 constexpr long double PI = M_PI;
 
 #include "macros.hpp"
+#include "common/input.hpp"
 #include "common/print.hpp"
 
 void solve() {
