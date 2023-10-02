@@ -583,6 +583,52 @@ const Node E = Node({{
     {-1, -1},
 }});
 
+// 区間01反転・区間01最大連長取得
+// 参考：abc322_f
+struct Node {
+    // 最大連長0, 最大連長1, 左端から続く0の個数, 左端から続く1の個数, 右端から続く0の個数, 右端から続く1の個数, 区間長
+    ll mx0, mx1, llen0, llen1, rlen0, rlen1, sz;
+    operator ll() const {
+        return mx1;
+    }
+};
+auto f = [](Node a, Node b) -> Node {
+    Node res;
+    res.llen0 = a.llen0;
+    res.llen1 = a.llen1;
+    res.rlen0 = b.rlen0;
+    res.rlen1 = b.rlen1;
+    res.sz = a.sz + b.sz;
+    res.mx0 = max({a.mx0, b.mx0, a.rlen0 + b.llen0});
+    res.mx1 = max({a.mx1, b.mx1, a.rlen1 + b.llen1});
+    if (a.rlen0 == a.sz) {
+        res.llen0 = a.sz + b.llen0;
+    }
+    if (a.rlen1 == a.sz) {
+        res.llen1 = a.sz + b.llen1;
+    }
+    if (b.llen0 == b.sz) {
+        res.rlen0 = a.rlen0 + b.sz;
+    }
+    if (b.llen1 == b.sz) {
+        res.rlen1 = a.rlen1 + b.sz;
+    }
+    return res;
+};
+auto g = [](Node a, bool b) -> Node {
+    // 偶数回反転したらそのまま
+    if (!b) {
+        return a;
+    } else {
+        // 0と1の関係が入れ替わる
+        return {a.mx1, a.mx0, a.llen1, a.llen0, a.rlen1, a.rlen0, a.sz};
+    }
+};
+
+auto h = [](bool a, bool b) -> bool { return a ^ b; };
+const Node T = {0, 0, 0, 0, 0, 0, 1};
+const bool E = false;
+
 // Beatsでできる。
 // 区間chgcd・区間和取得 (yuki880)
 // 区間chmod2・区間和取得 (yuki879)
