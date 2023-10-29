@@ -211,3 +211,14 @@ auto f2 = [](ll a, bool is_leaf) -> ll {
     else return a+1;
 };
 // chmin(dp[u], is_leaf[v] ? 1 : dp[v]+1);
+
+// cf1881f
+// ・最遠点の応用。マークされた所だけ使う場合。
+auto f1 = [](ll a, ll b) -> ll { return max(a, b); };
+auto f2 = [](ll a, bool x) -> ll {
+    if (not x and a == 0) {
+        return 0;
+    } else {
+        return a + 1;
+    }
+};

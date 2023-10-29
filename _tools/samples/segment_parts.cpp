@@ -624,10 +624,69 @@ auto g = [](Node a, bool b) -> Node {
         return {a.mx1, a.mx0, a.llen1, a.llen0, a.rlen1, a.rlen0, a.sz};
     }
 };
-
 auto h = [](bool a, bool b) -> bool { return a ^ b; };
-const Node T = {0, 0, 0, 0, 0, 0, 1};
+const Node T = {0, 0, 0, 0, 0, 0, 0};
 const bool E = false;
+
+// 区間加算、区間回文存在判定取得(両端から1,2番目の値を持つ)
+// see: cf1881G
+struct Node {
+    // 区間長, 回文があるか
+    ll sz, has;
+    // 左端から1,2番目の値、右端から1,2番目の値
+    mint l0, l1, r0, r1;
+    operator ll() const {
+        return has;
+    }
+};
+auto f = [](Node a, Node b) -> Node {
+    // 単位元は演算に関与させない
+    if (a.sz == 0) return b;
+    if (b.sz == 0) return a;
+    assert(a.sz >= 1 and b.sz >= 1);
+
+    Node res;
+    res.sz = a.sz + b.sz;
+    res.l0 = a.l0;
+    res.r0 = b.r0;
+    if (a.sz == 1 and b.sz == 1) {
+        res.l1 = b.l0;
+        res.r1 = a.r0;
+    } else if (a.sz == 1 and b.sz >= 2) {
+        res.l1 = b.l0;
+        res.r1 = b.r1;
+    } else if (a.sz >= 2 and b.sz == 1) {
+        res.l1 = a.l1;
+        res.r1 = a.r0;
+    } else {
+        res.l1 = a.l1;
+        res.r1 = b.r1;
+    }
+    // 判定はa,bの長さが足りてるかしっかりチェックする
+    res.has = a.has || b.has;
+    if (a.sz >= 1 and b.sz >= 1 and a.r0 == b.l0) {
+        res.has = 1;
+    }
+    if (a.sz >= 2 and b.sz >= 1 and a.r1 == b.l0) {
+        res.has = 1;
+    }
+    if (a.sz >= 1 and b.sz >= 2 and a.r0 == b.l1) {
+        res.has = 1;
+    }
+    return res;
+};
+auto g = [](Node a, mint b) -> Node {
+    if (a.sz == 0) {
+        return a;
+    } else if (a.sz == 1) {
+        return {a.sz, a.has, a.l0 + b, a.l1, a.r0 + b, a.r1};
+    } else {
+        return {a.sz, a.has, a.l0 + b, a.l1 + b, a.r0 + b, a.r1 + b};
+    }
+};
+auto h = [](mint a, mint b) -> mint { return a + b; };
+const Node T = {0, 0, 0, 0, 0, 0};
+const mint E = 0;
 
 // Beatsでできる。
 // 区間chgcd・区間和取得 (yuki880)

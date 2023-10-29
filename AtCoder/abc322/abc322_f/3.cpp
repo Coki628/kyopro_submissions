@@ -68,7 +68,7 @@ auto g = [](Node a, bool b) -> Node {
     }
 };
 auto h = [](bool a, bool b) -> bool { return a ^ b; };
-const Node T = {0, 0, 0, 0, 0, 0, 1};
+const Node T = {0, 0, 0, 0, 0, 0, 0};
 const bool E = false;
 
 void solve() {

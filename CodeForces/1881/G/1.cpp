@@ -35,6 +35,7 @@ using mint = ModInt<26>;
 
 #include "datastructure/LazySegmentTree.hpp"
 
+// 区間加算、区間回文存在判定取得(両端から1,2番目の値を持つ)
 struct Node {
     // 区間長, 回文があるか
     ll sz, has;
