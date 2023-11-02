@@ -3,6 +3,13 @@
 
 import sys
 
+# int<->str型変換の制限に対する対応
+# see: https://qiita.com/taikis/items/1b6925088b15892b212c
+if sys.version_info.minor >= 11 or \
+        sys.version_info.minor == 10 and sys.version_info.micro >= 7 or \
+        7 <= sys.version_info.minor <= 9 and sys.version_info.micro >= 14:
+    sys.set_int_max_str_digits(0)
+
 def input(): return sys.stdin.readline().strip()
 def list2d(a, b, c): return [[c] * b for i in range(a)]
 def list3d(a, b, c, d): return [[[d] * c for j in range(b)] for i in range(a)]
