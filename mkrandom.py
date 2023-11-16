@@ -54,6 +54,8 @@ ext = 'exe' if os.name == 'nt' else 'out'
 # 落ちた時、前のやつ実行されると紛らわしいので消しておく
 if os.path.exists('{0}/a.{1}'.format(os.getcwd(), ext)):
     os.remove('{0}/a.{1}'.format(os.getcwd(), ext))
+print('prepare naive.cpp accordingly, then enter')
+input()
 # naive.cppのコンパイル
 run(
     [

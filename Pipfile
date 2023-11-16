@@ -9,3 +9,7 @@ name = "pypi"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+# usage: pipenv run xxx args
+rd = "python mkrandom.py"
