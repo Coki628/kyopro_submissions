@@ -129,6 +129,25 @@ const Node T = Node();
 auto f = [](xorbasis a, xorbasis b) { return a.merge(b); };
 const xorbasis T;
 
+// 最大(最小)部分配列取得(区間和max,min)
+// 参考：cf1843F2
+// 　　　https://hotman78.hatenablog.com/entry/2020/06/17/102519
+struct Node {
+    ll lmx, rmx, mx, lmn, rmn, mn, sm;
+};
+const Node T = Node({0, 0, 0, 0, 0, 0, 0});
+auto f = [](const Node &a, const Node &b) {
+    Node res = T;
+    res.lmx = max(a.lmx, a.sm + b.lmx);
+    res.rmx = max(b.rmx, b.sm + a.rmx);
+    res.mx = max({a.mx, b.mx, a.rmx + b.lmx});
+    res.lmn = min(a.lmn, a.sm + b.lmn);
+    res.rmn = min(b.rmn, b.sm + a.rmn);
+    res.mn = min({a.mn, b.mn, a.rmn + b.lmn});
+    res.sm = a.sm + b.sm;
+    return res;
+};
+
 
 ///// 遅延セグ木用の各種素材 /////
 // 区間更新・区間最小値取得
