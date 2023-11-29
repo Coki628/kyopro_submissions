@@ -35,8 +35,6 @@ run(
         '{0}/{1}'.format(file_dirname, filename),
         # ライブラリのパス
         '-I', '{0}/repos/kyopro_library/dist'.format(home),
-        # ACLのパス
-        '-I', '{0}/repos/kyopro_library/ac-library'.format(home),
         '>', '_dist/main.cpp'
     ]),
     shell=True,
