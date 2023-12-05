@@ -83,4 +83,5 @@ if is_ahc:
     else:
         run('./{1}.{0}'.format(ext, name), shell=True, encoding='utf-8')
 else:
-    run('oj test', shell=True, encoding='utf-8')
+    # スタックオーバーフロー対策を入れる(暫定)
+    run('ulimit -s 262144 && oj test', shell=True, encoding='utf-8')
