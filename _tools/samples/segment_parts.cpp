@@ -148,6 +148,21 @@ auto f = [](const Node &a, const Node &b) {
     return res;
 };
 
+// ロリハをセグ木に乗せる
+// 参考：abc331_f
+RollingHash rh;
+struct Node {
+    ull hash;
+    int sz;
+};
+auto f = [&](const Node &a, const Node &b) {
+    Node res;
+    res.hash = rh.combine(a.hash, b.hash, b.sz);
+    res.sz = a.sz + b.sz;
+    return res;
+};
+const Node T = {0, 0};
+
 
 ///// 遅延セグ木用の各種素材 /////
 // 区間更新・区間最小値取得
