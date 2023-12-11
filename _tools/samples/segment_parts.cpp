@@ -314,6 +314,31 @@ auto h = [](Func a, Func b) -> Func {
 const mint T = 0;
 const Func E = {1, 0, 0};
 
+// 区間乗算・区間加算・1点取得
+// see: abc332_f
+// ・「乗算して加算したい」とはつまりax+bなので、ようは合成関数と同じことをすればいい。
+struct Func {
+    mint mul, add;
+    bool operator==(const Func &f) const {
+        return mul == f.mul and add == f.add;
+    }
+};
+auto f = [](mint a, mint b) -> mint { return a; };
+auto g = [](mint a, Func b) -> mint {
+    return a * b.mul + b.add;
+};
+// ax + b の合成関数
+// h2(h1(x))
+// c * h1(x) + d
+// c * (ax + b) + d
+// c * ax + c * b + d
+// {c * a, c * b + d}
+auto h = [](Func a, Func b) -> Func {
+    return {b.mul * a.mul, b.mul * a.add + b.add};
+};
+const mint T = 0;
+const Func E = {1, 0};
+
 // 区間01反転・区間和取得
 // 参考：s8pc2_h, joisc2012day3-1
 struct Node {
@@ -616,6 +641,24 @@ const Node E = Node({{
     {-1, -1},
     {-1, -1},
 }});
+
+// 区間行列積更新・1点取得
+// see: abc332_f
+using Matrix = array<array<mint, 2>, 2>;
+auto f = [](mint a, mint b) -> mint { return a; };
+auto g = [](mint a, const Matrix &b) -> mint {
+    return a * b[0][0] + b[0][1];
+};
+auto h = [](const Matrix &a, const Matrix &b) -> Matrix {
+    // マージ方向をb,aにする
+    return mat_dot(b, a);
+};
+const mint T = 0;
+// 2次元arrayの初期化は{}をひとつ多く括る
+const Matrix E = {{
+    {1, 0},
+    {0, 1},
+}};
 
 // 区間01反転・区間01最大連長取得
 // 参考：abc322_f
