@@ -31,7 +31,7 @@ void solve() {
     auto A = LIST(N);
 
     A.insert(A.begin(), 0);
-    auto dm = get_difference_manager(A, [](ll a, ll b) { return a - b; });
+    auto dm = get_difference_manager(A);
     ll ans = 0;
     rep(i, 1, N + 1) {
         dm.erase(A[i]);

@@ -31,7 +31,7 @@ void solve() {
     vector<ll> P(N);
     cin >> P;
 
-    auto dm = get_difference_manager(P, [](ll a, ll b) { return a - b; });
+    auto dm = get_difference_manager(P);
     ll ans = dm.size() >= 2 ? (dm.max_val() - dm.min_val()) - dm.max_diff() : 0;
     print(ans);
     rep(i, Q) {

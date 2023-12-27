@@ -31,7 +31,7 @@ void solve() {
     vector<ll> A(N);
     cin >> A;
 
-    auto dm = get_difference_manager(A, [](ll a, ll b) { return a - b; });
+    auto dm = get_difference_manager(A);
     ll Q;
     cin >> Q;
     vector<ll> ans(Q);
