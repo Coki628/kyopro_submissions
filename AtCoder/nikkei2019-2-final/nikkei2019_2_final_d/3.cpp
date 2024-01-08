@@ -10,6 +10,7 @@
 　辺を1本追加/削除した状態のハッシュも容易に再現できる。
 　(辺1本であれば、その遷移分の2乗和1回を足し引きすればいい。)
 ・これやってて思ったけど、やっぱNyaanさんみたいにHashクラス作った方がスッキリするな。やってみるかー。
+・作った。Hashクラスというか、ModInt64クラスだな。
 */
 
 // #pragma GCC target("avx2")
@@ -34,32 +35,25 @@ using mint = ModInt<MOD>;
 #include "template.hpp"
 
 #include "graph/ReRooting.hpp"
+#include "combinatorics/ModInt64.hpp"
 
 void solve() {
     ll N;
     cin >> N;
 
-    ull p = MOD;
     const ull mod = (1ull << 61ull) - 1;
-    using uint128_t = __uint128_t;
-    auto add = [&](ull a, ull b) -> ull {
-        if ((a += b) >= mod) a -= mod;
-        return a;
-    };
-    auto mul = [&](ull a, ull b) -> ull {
-        uint128_t c = (uint128_t)a * b;
-        return add(c >> 61, c & mod);
-    };
+    using mint64 = ModInt64<mod>;
+    mint64 p = MOD;
     // DP遷移
-    // hash[u] = add(hash[u], mul(hash[v] + p, hash[v] + p));
-    auto f1 = [&](ull a, ull b) -> ull {
-        return add(a, b);
+    // hash[u] += pow(hash[v] + p, 2);
+    auto f1 = [&](mint64 a, mint64 b) -> mint64 {
+        return a + b;
     };
-    auto f2 = [&](ull a, ull v) -> ull {
-        return mul(a + p, a + p);
+    auto f2 = [&](mint64 a, mint64 v) -> mint64 {
+        return (a + p).pow(2);
     };
-    auto rr1 = get_rerooting(N + 1, f1, f2, 0ull, 0ull);
-    auto rr2 = get_rerooting(N, f1, f2, 0ull, 0ull);
+    auto rr1 = get_rerooting(N + 1, f1, f2, (mint64)0, (mint64)0);
+    auto rr2 = get_rerooting(N, f1, f2, (mint64)0, (mint64)0);
 
     vvi nodes1(N + 1), nodes2(N);
     rep(u, N) {
@@ -82,14 +76,14 @@ void solve() {
     auto hash1 = rr1.build();
     auto hash2 = rr2.build();
 
-    map<ull, vector<ll>> ok;
+    map<mint64, vector<ll>> ok;
     rep(i, N + 1) {
         ok[hash1[i]].eb(i);
     }
     vector<ll> ans;
     rep(u, N) {
         // 頂点uから消された根に戻る辺を復元
-        ull h = mul(hash2[u] + p, hash2[u] + p);
+        mint64 h = (hash2[u] + p).pow(2);
         // そういう形の木が存在するならここは候補になる
         if (ok.count(h)) {
             for (auto v : ok[h]) {

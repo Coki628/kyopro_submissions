@@ -45,7 +45,7 @@ void solve(int t) {
     TreeHash th(N);
     auto hash = th.get_hash(nodes, 0);
     auto dfs = [&](auto &&f, ll u, ll prv) -> bool {
-        map<ull, vector<ll>> C;
+        map<TreeHash::mint64, vector<ll>> C;
         for (auto v : nodes[u]) {
             if (v == prv) continue;
             C[hash[v]].eb(v);

@@ -66,7 +66,7 @@ void solve() {
             vector<ll> curans;
             auto dfs = [&](auto &&f, ll u1, ll prv1, ll u2, ll prv2) -> bool {
                 // 部分木の各ハッシュから、差分を見つける
-                map<ull, vector<ll>> C1, C2;
+                map<TreeHash::mint64, vector<ll>> C1, C2;
                 vector<ull> keys;
                 for (auto v1 : nodes1[u1]) {
                     if (v1 == prv1) continue;
