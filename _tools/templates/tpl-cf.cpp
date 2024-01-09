@@ -7,7 +7,6 @@
 
 #define CONSTANTS
 #define __LOCAL
-// #define CAST_MINT_TO_LL
 #include "base.hpp"
 
 constexpr long long INF = 1e18;

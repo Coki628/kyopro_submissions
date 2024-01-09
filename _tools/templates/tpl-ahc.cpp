@@ -24,6 +24,7 @@ constexpr long double PI = M_PI;
 #include "common/chmin.hpp"
 #include "common/chmax.hpp"
 #include "common/randrange.hpp"
+#include "common/randint.hpp"
 #include "common/Timer.hpp"
 #include "grid/constants/directions.hpp"
 #include "string/zfill.hpp"
