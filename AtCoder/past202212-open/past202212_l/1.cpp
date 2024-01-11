@@ -1,5 +1,6 @@
 /*
 ・時間外だけどなんとか自力AC！
+・内包する区間
 ・座圧してソートして平面走査っぽく解く。
 　左端で降順ソートしておけば既に終わった要素のLに関する条件は満たされるので、
 　Rについてセグ木に、そこまでの最大個数を詰めていく。
@@ -29,8 +30,6 @@ constexpr long double PI = M_PI;
 #include "combinatorics/ModInt.hpp"
 using mint = ModInt<MOD>;
 #include "template.hpp"
-
-#include "datastructure/WaveletMatrix.hpp"
 
 void solve() {
     ll N;
