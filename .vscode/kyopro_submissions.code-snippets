@@ -1,0 +1,115 @@
+{
+    "木のDFS": {
+        "scope": "cpp",
+        "prefix": "auto dfs",
+        "body": [
+            "auto dfs = [&](auto &&f, ll u, ll prv) -> void {",
+            "    for (auto v : nodes[u]) {",
+            "        if (v == prv) continue;",
+            "        f(f, v, u);",
+            "        $1",
+            "    }",
+            "};",
+            "dfs(dfs, 0, -1);",
+        ],
+    },
+    "入力受け取り(木グラフ重みなし)": {
+        "scope": "cpp",
+        "prefix": "vvi nodes",
+        "body": [
+            "vvi nodes(N);",
+            "rep(i, N - 1) {",
+            "    int u, v;",
+            "    cin >> u >> v;",
+            "    u--, v--;",
+            "    nodes[u].eb(v);",
+            "    nodes[v].eb(u);",
+            "}",
+        ],
+    },
+    "入力受け取り(一般グラフ重みなし)": {
+        "scope": "cpp",
+        "prefix": "vvi nodes",
+        "body": [
+            "vvi nodes(N);",
+            "rep(i, M) {",
+            "    int u, v;",
+            "    cin >> u >> v;",
+            "    u--, v--;",
+            "    nodes[u].eb(v);",
+            "    nodes[v].eb(u);",
+            "}",
+        ],
+    },
+    "入力受け取り(一般グラフ重み付き)": {
+        "scope": "cpp",
+        "prefix": "vvpil nodes",
+        "body": [
+            "vvpil nodes(N);",
+            "rep(i, M) {",
+            "    ll u, v, c;",
+            "    cin >> u >> v >> c;",
+            "    u--, v--;",
+            "    nodes[u].eb(v, c);",
+            "    nodes[v].eb(u, c);",
+            "}",
+        ],
+    },
+    "入力受け取り(辺集合重みなし)": {
+        "scope": "cpp",
+        "prefix": "vector<pii> edges",
+        "body": [
+            "vector<pii> edges;",
+            "rep(i, M) {",
+            "    ll u, v;",
+            "    cin >> u >> v;",
+            "    u--, v--;",
+            "    edges.eb(u, v);",
+            "}",
+        ],
+    },
+    "入力受け取り(辺集合重み付き)": {
+        "scope": "cpp",
+        "prefix": "vector<array<ll, 3>> edges",
+        "body": [
+            "vector<array<ll, 3>> edges;",
+            "rep(i, M) {",
+            "    ll u, v, c;",
+            "    cin >> u >> v >> c;",
+            "    u--, v--;",
+            "    edges.pb({u, v, c});",
+            "}",
+        ],
+    },
+    "ラムダ(min)": {
+        "scope": "cpp",
+        "prefix": "[](ll",
+        "body": [
+            "[](ll a, ll b) { return min(a, b); }",
+        ],
+    },
+    "ラムダ(max)": {
+        "scope": "cpp",
+        "prefix": "[](ll",
+        "body": [
+            "[](ll a, ll b) { return max(a, b); }",
+        ],
+    },
+    "入力受け取り(整数グリッド)": {
+        "scope": "cpp",
+        "prefix": "auto grid = listnd",
+        "body": [
+            "auto grid = listnd(H, W, 0LL);",
+            "rep(h, H) {",
+            "    rep(w, W) {",
+            "        cin >> grid[h][w];",
+            "    }",
+            "}",
+        ],
+    },
+    "グリッド枠外": {
+        "scope": "cpp",
+        "prefix": "if (nh < 0 or",
+        "body": "if (nh < 0 or nw < 0 or nh >= H or nw >= W) continue;",
+    }
+}
