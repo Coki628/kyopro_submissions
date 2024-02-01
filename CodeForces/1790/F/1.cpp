@@ -1,6 +1,7 @@
 /*
 参考：https://twitter.com/kude_coder/status/1619018749037928448
 　　　https://codeforces.com/contest/1790/submission/190841094
+・Div.3残埋め
 ・自力ならず。この解法はくでさんを参考に。
 ・木グラフ、最短距離、クエリ平方分割、多点スタートBFS
 ・操作√N回に一度、全体に向かってBFSして最短距離を更新、
