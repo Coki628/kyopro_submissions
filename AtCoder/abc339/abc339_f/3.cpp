@@ -23,9 +23,8 @@ constexpr long double PI = M_PI;
 using mint = ModInt<MOD>;
 #include "template.hpp"
 
-#include "combinatorics/ArbitraryModInt.hpp"
-#include "numbers/FastPrimeFactorization.hpp"
-#include "common/randrange.hpp"
+#include "combinatorics/DynamicModInt.hpp"
+#include "random/rand_prime.hpp"
 
 void solve() {
     ll N;
@@ -33,19 +32,11 @@ void solve() {
     vector<string> A(N);
     cin >> A;
 
-    int p = 1;
-    while (not FastPrimeFactorization::is_prime(p)) {
-        p = randrange(2, MOD);
-    }
-    ArbitraryModInt<1>::set_mod(p);
-    p = 1;
-    while (not FastPrimeFactorization::is_prime(p)) {
-        p = randrange(2, MOD);
-    }
-    ArbitraryModInt<2>::set_mod(p);
+    DynamicModInt<1>::set_mod(rand_prime(2, MOD));
+    DynamicModInt<2>::set_mod(rand_prime(2, MOD));
+    using mint1 = DynamicModInt<1>;
+    using mint2 = DynamicModInt<2>;
 
-    using mint1 = ArbitraryModInt<1>;
-    using mint2 = ArbitraryModInt<2>;
     vector<mint1> A1(N);
     vector<mint2> A2(N);
     map<pii, int> C;
