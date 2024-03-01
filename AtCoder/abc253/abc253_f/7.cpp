@@ -32,7 +32,7 @@ constexpr long double PI = M_PI;
 using mint = ModInt<MOD>;
 #include "template.hpp"
 
-#include "segment/PersistentLazySegmentTree.hpp"
+#include "datastructure/PersistentLazySegmentTree.hpp"
 
 // 1点加算・区間和取得
 auto f = [](ll a, ll b) -> ll { return a + b; };
