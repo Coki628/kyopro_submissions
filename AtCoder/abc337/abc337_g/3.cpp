@@ -38,7 +38,7 @@ void solve() {
         nodes[u].eb(v);
         nodes[v].eb(u);
     }
-    
+
     EulerTour et(nodes);
     WaveletMatrix<ll> wm(N);
     BIT2<ll> bit(N);
